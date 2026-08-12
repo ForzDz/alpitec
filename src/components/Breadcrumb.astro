@@ -1,0 +1,47 @@
+---
+/**
+ * Fil d'Ariane.
+ *
+ * `items` : [{ label, href }] — le dernier élément est la page courante et
+ * n'est pas cliquable (aria-current="page").
+ *
+ * Le JSON-LD BreadcrumbList correspondant est généré par la page, à partir de
+ * la même liste : les deux ne peuvent pas diverger.
+ *
+ * Les liens portent `-my-3 py-3` : 44 px de zone tactile au doigt, sans
+ * modifier la hauteur visuelle du fil.
+ */
+
+const { items, class: className = '' } = Astro.props;
+---
+
+<nav aria-label="Fil d'Ariane" class={className}>
+  <ol class="flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.8125rem] text-navy/55">
+    {
+      items.map((item, i) => {
+        const dernier = i === items.length - 1;
+        return (
+          <li class="flex items-center gap-2">
+            {i > 0 && (
+              <span aria-hidden="true" class="text-navy/25">
+                /
+              </span>
+            )}
+            {dernier ? (
+              <span aria-current="page" class="font-bold text-navy/75">
+                {item.label}
+              </span>
+            ) : (
+              <a
+                href={item.href}
+                class="-my-3 inline-flex min-h-11 items-center py-3 transition-colors duration-150 hover:text-orange focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange"
+              >
+                {item.label}
+              </a>
+            )}
+          </li>
+        );
+      })
+    }
+  </ol>
+</nav>

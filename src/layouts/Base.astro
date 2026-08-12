@@ -1,0 +1,105 @@
+---
+import '../styles/global.css';
+
+/**
+ * Coquille HTML commune à toutes les pages.
+ *
+ * Ne contient aucun élément visuel : ni en-tête, ni pied de page, ni texte.
+ * Tout le contenu affiché vient de src/content/ via les pages qui l'utilisent.
+ *
+ * Le slot nommé « schema » reçoit le JSON-LD propre à chaque page
+ * (LocalBusiness sur l'accueil, Service + FAQPage sur les pages services).
+ */
+
+const {
+  title,
+  description,
+  canonical,
+  ogType = 'website',
+  ogImage = '/og/alpitec.jpg',
+  noindex = false,
+} = Astro.props;
+
+// URL canonique : dérivée de l'URL courante, surchargeable par la page.
+const canonicalURL = new URL(canonical ?? Astro.url.pathname, Astro.site);
+const ogImageURL = new URL(ogImage, Astro.site);
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+    {/* Inter auto-hébergée : préchargée pour ne pas retarder le LCP mobile. */}
+    <link
+      rel="preload"
+      href="/fonts/inter-latin-variable.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
+    {/* Open Graph */}
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content="ALPITEC" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:image" content={ogImageURL} />
+
+    {/* Twitter/X */}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageURL} />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    {/* JSON-LD fourni par la page. */}
+    <slot name="schema" />
+
+    {/* Posé avant le premier rendu : sans JS, aucun élément n'est masqué. */}
+    <script is:inline>
+      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.documentElement.setAttribute('data-reveal-actif', '');
+      }
+    </script>
+  </head>
+
+  <body>
+    <slot />
+
+    <script>
+      // Fade-up unique à l'apparition. Un élément révélé n'est plus observé.
+      const cibles = document.querySelectorAll('[data-reveal]');
+
+      if (!document.documentElement.hasAttribute('data-reveal-actif')) {
+        // Mouvement réduit : rien à faire, le CSS n'a jamais masqué.
+      } else if (!('IntersectionObserver' in window)) {
+        cibles.forEach((el) => el.classList.add('est-visible'));
+      } else {
+        const observateur = new IntersectionObserver(
+          (entrees) => {
+            for (const entree of entrees) {
+              if (entree.isIntersecting) {
+                entree.target.classList.add('est-visible');
+                observateur.unobserve(entree.target);
+              }
+            }
+          },
+          { rootMargin: '0px 0px -10% 0px', threshold: 0.05 },
+        );
+
+        cibles.forEach((el) => observateur.observe(el));
+      }
+    </script>
+  </body>
+</html>

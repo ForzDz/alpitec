@@ -1,0 +1,52 @@
+Modèle d'article de blog ALPITEC
+================================
+
+Copier ce fichier en `src/content/blog/mon-article.md` (extension .md, sans le
+préfixe underscore) et remplir le frontmatter. Le nom du fichier n'a pas
+d'importance : c'est le champ `slug` qui fait l'URL.
+
+L'article apparaît alors automatiquement sur /blog et à l'adresse /blog/<slug>.
+Rien d'autre à modifier : ni la liste, ni le menu, ni le sitemap.
+
+------------------------------------------------------------------------------
+
+---
+title: "Titre de l'article"
+slug: "titre-de-l-article"
+
+metaTitle: "Titre optimisé pour Google, 60 caractères max | ALPITEC"
+metaDescription: "Résumé vendeur en 150 à 160 caractères, avec le mot-clé principal et une raison de cliquer."
+
+h1: "Le titre affiché en haut de la page"
+resume: "Deux ou trois phrases de chapô. Elles s'affichent sur la carte dans la liste et sous le H1 de l'article."
+
+datePublication: 2026-09-01
+# dateMaj: 2026-10-15       # facultatif, affiché « Mis à jour le … »
+auteur: "ALPITEC"
+
+# Slug d'un service de src/content/services/ : affiche un encart de renvoi en
+# bas d'article et exclut ce service de la liste « Nos services » sous l'article.
+# serviceLie: "ravalement"
+
+tags: ["ravalement", "copropriété"]
+
+# image:
+#   src: "/blog/mon-image.jpg"
+#   alt: "Description précise de ce que montre l'image"
+
+brouillon: false          # true = ni généré, ni listé, ni dans le sitemap
+---
+
+## Un intertitre
+
+Le corps de l'article s'écrit en Markdown normal. Les styles sont déjà en
+place : titres, paragraphes, listes, liens, gras, tableaux.
+
+- Les listes portent un tiret orange.
+- Les tableaux défilent seuls sur mobile, sans faire déborder la page.
+
+### Un sous-intertitre
+
+Les liens internes s'écrivent simplement : [nos travaux de couverture](/services/couverture).
+
+Commencer par un H2 : le H1 est déjà généré à partir du champ `h1`.

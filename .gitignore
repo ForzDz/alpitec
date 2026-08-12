@@ -1,0 +1,40 @@
+# build
+dist/
+.astro/
+
+# deps
+node_modules/
+
+# netlify
+.netlify/
+
+# env & secrets
+.env
+.env.*
+!.env.example
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# éditeurs
+.vscode/
+.idea/
+*.swp
+
+# logs
+npm-debug.log*
+yarn-error.log*
+
+# ---------------------------------------------------------------------------
+# Matériel brut du client — hors dépôt.
+#
+# _sources/ contient les .docx d'origine, les vidéos non compressées et les
+# photos non triées : environ 27 Mo qui n'ont aucune utilité en production.
+#
+# ⚠️ Les photos que le SITE utilise ne sont pas ici : elles vivent dans
+# src/assets/photos/<prestation>/ et sont versionnées. Le build en dépend.
+# Voir README.md, section « Ajouter une photo ».
+# ---------------------------------------------------------------------------
+_sources/

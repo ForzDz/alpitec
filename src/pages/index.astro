@@ -1,0 +1,692 @@
+﻿---
+import { Image, getImage } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Button from '../components/Button.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import FaqAccordion from '../components/FaqAccordion.astro';
+import CtaBand from '../components/CtaBand.astro';
+import ContactSection from '../components/ContactSection.astro';
+import { getSite, getAccueil, getServices, getServicePhotos, serviceHref } from '../lib/content.js';
+import heroPoster from '../assets/hero-poster.jpg';
+
+
+/**
+ * Poster du hero, passé par le pipeline Astro : WebP, dimensions explicites.
+ * `getImage` sert à obtenir une URL utilisable dans l'attribut `poster` de la
+ * balise <video>, qui n'accepte pas de composant.
+ */
+const posterWebp = await getImage({ src: heroPoster, format: 'webp', width: 720, quality: 72 });
+
+/**
+ * Page d'accueil.
+ *
+ * Ordre des sections :
+ *   1 Hero (vidéo de chantier en fond, overlay navy)
+ *   2 Les 9 services en cartes
+ *   3 Bandeau chiffres clés
+ *   4 Moyens d'accès
+ *   5 Certifications + Comment ça marche + Pourquoi nous choisir
+ *   6 Témoignages ANONYMISÉS
+ *   7 Zones d'intervention
+ *   8 FAQ
+ *   9 CtaBand final + Contact
+ *
+ * Tous les textes viennent de src/content/home/accueil.md. Les deux blocs dont
+ * la copie n'est pas tirée des .docx (chiffres clés, moyens d'accès) portent un
+ * drapeau `aValider` et déclenchent un avertissement au build.
+ */
+
+const site = await getSite();
+const d = await getAccueil();
+const services = await getServices();
+
+/**
+ * Témoignages : seuls ceux marqués `valide: true` sont rendus.
+ *
+ * Tant que le client n'a pas fourni la fonction des signataires et leur accord
+ * écrit, la section entière disparaît. Publier « Fonction à confirmer par le
+ * client » sur la preuve sociale d'un site qui vise les grands comptes fait
+ * plus de dégâts que de ne rien afficher.
+ */
+const avisPublies = d.testimonials.items.filter((avis) => avis.valide);
+
+// Chaque carte reçoit sa première photo si le dossier du service en contient une.
+const cartes = d.services.cards.map((carte) => {
+  const service = services.find((s) => s.data.slug === carte.slug);
+  // Le texte alternatif vient du frontmatter du service, apparié par nom de
+  // fichier : chaque photo décrit ce qu'elle montre, jamais un libellé générique.
+  const legendes = service?.data.sections.find((s) => s.type === 'realisations')?.photos ?? [];
+  const [photo] = getServicePhotos(carte.slug, legendes, 1);
+  return {
+    ...carte,
+    ordre: service?.data.ordre,
+    shortLabel: service?.data.shortLabel ?? carte.label,
+    image: photo?.alt ? { src: photo.src, alt: photo.alt } : undefined,
+  };
+});
+
+/**
+ * Bande de chantiers : jusqu'à quatre photos de src/assets/photos/accueil/,
+ * appariées par nom de fichier aux textes alternatifs de accueil.md.
+ * Ajouter ou retirer une image du dossier suffit — aucun import à maintenir.
+ */
+const photosAccueil = getServicePhotos('accueil', d.photosAccueil, 4);
+
+/* ------------------------------------------------------------------ JSON-LD */
+
+const accueilUrl = new URL('/', Astro.site).href;
+const adresse = {
+  '@type': 'PostalAddress',
+  ...(site.adresse.rue ? { streetAddress: site.adresse.rue } : {}),
+  postalCode: site.adresse.codePostal,
+  addressLocality: site.adresse.ville,
+  addressRegion: 'Île-de-France',
+  addressCountry: 'FR',
+};
+
+// Les départements listés dans la section « Zones d'intervention » du document.
+const departements = [
+  'Paris',
+  'Hauts-de-Seine',
+  'Seine-Saint-Denis',
+  'Val-de-Marne',
+  'Yvelines',
+  'Essonne',
+  "Val-d'Oise",
+  'Seine-et-Marne',
+];
+
+const anneeCreation = d.chiffres.items.find((i) => i.label === 'Année de création')?.valeur;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'LocalBusiness',
+      '@id': new URL('#entreprise', Astro.site).href,
+      name: site.nom,
+      description: d.metaDescription,
+      url: accueilUrl,
+      logo: new URL('/favicon.svg', Astro.site).href,
+      telephone: site.telephone.lien,
+      email: site.email,
+      address: adresse,
+      ...(anneeCreation ? { foundingDate: anneeCreation } : {}),
+      // `horaires` est encore vide dans coordonnees.md : on n'émet pas de
+      // openingHours plutôt qu'une valeur inventée.
+      ...(site.horaires ? { openingHours: site.horaires } : {}),
+      areaServed: departements.map((nom) => ({ '@type': 'AdministrativeArea', name: nom })),
+      knowsAbout: services.map((s) => s.data.title),
+      hasOfferCatalog: {
+        '@type': 'OfferCatalog',
+        name: d.services.title,
+        itemListElement: services.map((s) => ({
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            name: s.data.title,
+            url: new URL(serviceHref(s.data.slug), Astro.site).href,
+          },
+        })),
+      },
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${accueilUrl}#site`,
+      name: site.nom,
+      url: accueilUrl,
+      inLanguage: 'fr-FR',
+      publisher: { '@id': new URL('#entreprise', Astro.site).href },
+    },
+    {
+      '@type': 'FAQPage',
+      '@id': `${accueilUrl}#faq`,
+      mainEntity: d.faq.items.map((item) => ({
+        '@type': 'Question',
+        name: item.question,
+        acceptedAnswer: { '@type': 'Answer', text: item.answer },
+      })),
+    },
+  ],
+};
+---
+
+<Base title={d.metaTitle} description={d.metaDescription} canonical="/">
+  <script slot="schema" type="application/ld+json" set:html={JSON.stringify(schema)} is:inline />
+
+  <Header transparent />
+
+  <main id="contenu">
+    {/*
+      ---------------------------------------------------------- 1. Hero
+
+      `-mt-16 sm:-mt-20` remonte la section de la hauteur exacte du header, et
+      le padding interne la compense au pixel près : la vidéo passe derrière le
+      header sans qu'aucun contenu ne bouge.
+    */}
+    <section class="relative isolate -mt-16 overflow-hidden bg-navy sm:-mt-20">
+      {/*
+        Fond du hero.
+
+        Sur mobile, seule l'image est chargée : `autoplay` annule `preload`, donc
+        déclarer une <video> ici coûterait 467 Ko à chaque première visite pour
+        un décor. La balise est injectée en JavaScript à partir de 640 px de
+        large, et jamais si le visiteur demande moins de mouvement.
+
+        Cadrage : la source est en portrait. Un cadrage centré sortirait le
+        cordiste du champ sur mobile — d'où le décalage à 62 % / 30 %. À partir
+        de `sm`, le hero s'élargit et le centrage redevient le bon choix.
+      */}
+      <div
+        class="absolute inset-0 -z-10 overflow-hidden"
+        data-hero-fond
+        data-video="/videos/hero-chantier.mp4"
+        data-poster={posterWebp.src}
+      >
+        <Image
+          src={heroPoster}
+          alt=""
+          aria-hidden="true"
+          width={1080}
+          widths={[480, 720, 1080]}
+          sizes="100vw"
+          format="webp"
+          quality={72}
+          loading="eager"
+          fetchpriority="high"
+          class="h-full w-full object-cover object-[62%_30%] sm:object-center"
+        />
+      </div>
+
+      {/*
+        Overlay navy. Dosage : assez dense pour que le blanc reste très
+        au-dessus du seuil AA sur n'importe quelle image de la vidéo, assez
+        léger pour qu'on distingue le cordiste. Plus opaque en bas, là où se
+        trouvent les CTA. Contraste mesuré : voir le rapport.
+      */}
+      <div
+        aria-hidden="true"
+        class="absolute inset-0 -z-10 bg-gradient-to-b from-navy/75 via-navy/82 to-navy/92"
+      >
+      </div>
+
+      {/*
+        Voile supplémentaire sur la bande du header transparent : garantit que
+        le logo blanc et les liens restent au-dessus du seuil AA quelle que
+        soit l'image de la vidéo qui défile derrière.
+      */}
+      <div
+        aria-hidden="true"
+        class="absolute inset-x-0 top-0 -z-10 h-32 bg-gradient-to-b from-navy/70 to-transparent sm:h-40"
+      >
+      </div>
+
+      {/*
+        Sentinelle du header : tant qu'elle est visible, le header reste
+        transparent. Sa hauteur fixe le seuil de bascule (80 px).
+      */}
+      <span
+        aria-hidden="true"
+        data-sentinelle-entete
+        class="pointer-events-none absolute inset-x-0 top-0 h-20"
+      ></span>
+
+      {/* pt = hauteur du header (4rem puis 5rem) + le py d'origine, au pixel près. */}
+      <div class="mx-auto max-w-6xl px-5 pb-14 pt-[7.5rem] sm:px-8 sm:pb-24 sm:pt-[11rem] lg:pb-32 lg:pt-[13rem]">
+        {/*
+          Le fil orange passe à la verticale sur mobile : il descend le long du
+          bloc, du surtitre jusqu'au bouton, et tient toute la composition.
+          C'est la corde. À partir de `sm`, la place ne manque plus et il
+          reprend sa forme horizontale au-dessus du surtitre.
+        */}
+        <div class="border-l-2 border-orange pl-6 sm:border-l-0 sm:pl-0">
+          <span aria-hidden="true" class="mb-7 hidden h-0.5 w-14 bg-orange sm:block"></span>
+
+          <p class="max-w-[24ch] text-[0.6875rem] font-bold uppercase leading-relaxed tracking-[0.13em] text-blanc/85 text-balance sm:max-w-none sm:text-xs sm:tracking-[0.14em] sm:text-blanc/90">
+            {d.hero.surtitre}
+          </p>
+
+          {/*
+            Taille fluide : 40 px dès 375 px de large, mais elle redescend à
+            34 px sur les écrans de 320 px, où sept lignes de titre poussaient
+            le bouton de devis sous la ligne de flottaison.
+          */}
+          <h1 class="mt-6 max-w-[16ch] text-[clamp(2.125rem,10.5vw,2.5rem)] font-bold leading-[1.02] tracking-[-0.025em] text-blanc text-balance sm:mt-5 sm:max-w-[18ch] sm:text-5xl sm:leading-[1.06] sm:tracking-tight lg:text-6xl">
+            {d.hero.h1}
+          </h1>
+
+          {/* Mobile : une seule phrase, la plus différenciante des documents. */}
+          <p class="mt-7 max-w-[30ch] text-lg font-bold leading-snug tracking-tight text-blanc text-balance sm:hidden">
+            {d.hero.introCourte}
+          </p>
+
+          {/* Desktop : l'accroche complète du document. */}
+          <p class="mt-6 hidden max-w-[60ch] text-base leading-relaxed text-blanc/90 text-pretty sm:block sm:text-lg">
+            {d.hero.intro}
+          </p>
+
+          {/*
+            Un seul bouton sur mobile : « Nous appeler » ferait doublon avec la
+            barre fixe du bas, à portée de pouce. Il réapparaît sur écran large,
+            où cette barre n'existe pas.
+          */}
+          <div class="mt-9 flex flex-col gap-3 sm:mt-9 sm:flex-row sm:flex-wrap sm:items-center">
+            <Button
+              href="#devis"
+              variant="primaire"
+              size="lg"
+              class="w-full sm:w-auto"
+              data-cta="devis-hero"
+            >
+              {d.hero.buttons[0].label}
+            </Button>
+            {/*
+              Masqué par un conteneur, pas par une classe sur le bouton :
+              `inline-flex` fait partie des styles de base de Button et
+              l'emporterait sur `hidden` dans la feuille générée.
+            */}
+            <div class="hidden sm:block">
+              <Button
+                href={`tel:${site.telephone.lien}`}
+                variant="secondaire"
+                size="lg"
+                class="border-blanc/70 text-blanc hover:bg-blanc hover:text-navy"
+                data-cta="tel-hero"
+              >
+                Nous appeler
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/*
+          Les badges sortent du bloc de texte et deviennent un socle : filet en
+          travers, une ligne par mention sur mobile. Ils se lisent comme une
+          plaque de certification, pas comme des étiquettes.
+        */}
+        <ul
+          class="mt-12 flex flex-col gap-4 border-t border-blanc/25 pt-7 sm:mt-10 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-8 sm:gap-y-3 sm:border-t-0 sm:pt-0"
+        >
+          {
+            d.hero.badges.map((badge) => (
+              <li class="flex items-center gap-3.5 text-[0.9375rem] font-bold tracking-tight text-blanc sm:gap-2.5 sm:text-[0.8125rem] sm:text-blanc/90">
+                <span aria-hidden="true" class="h-4 w-0.5 shrink-0 bg-orange sm:h-3.5" />
+                {badge}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+
+    {/* ------------------------------------------------------ 2. Services */}
+    <section class="mx-auto max-w-6xl px-5 py-14 sm:px-8 sm:py-20" aria-labelledby="services" data-reveal>
+      <h2
+        id="services"
+        class="border-l-2 border-orange pl-5 text-2xl font-bold leading-tight tracking-tight text-navy text-balance sm:text-3xl"
+      >
+        {d.services.title}
+      </h2>
+      <p class="mt-6 max-w-[68ch] pl-5 text-base leading-relaxed text-navy/75 text-pretty">
+        {d.services.intro}
+      </p>
+
+      <ul class="mt-11 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          cartes.map((carte) => (
+            <li class="flex">
+              <ServiceCard service={carte} image={carte.image} linkLabel={d.services.linkLabel} />
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    {/* ------------------------------------------------- 3. Chiffres clés */}
+    <section class="bg-navy" aria-labelledby="chiffres" data-reveal>
+      <div class="mx-auto max-w-6xl px-5 py-14 sm:px-8 sm:py-16">
+        <h2 id="chiffres" class="sr-only">{d.chiffres.title}</h2>
+
+        <dl class="grid grid-cols-2 gap-x-8 gap-y-10 lg:grid-cols-4">
+          {
+            d.chiffres.items.map((item) => (
+              <div class="border-l-2 border-orange pl-5">
+                <dt class="sr-only">{item.label}</dt>
+                <dd>
+                  <span class="block text-3xl font-bold leading-none tracking-tight text-blanc sm:text-4xl">
+                    {item.valeur}
+                  </span>
+                  <span class="mt-3 block text-[0.8125rem] leading-snug text-blanc/65 text-pretty">
+                    {item.label}
+                  </span>
+                </dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+    </section>
+
+    {/* ------------------------------------------------ 4. Moyens d'accès */}
+    <section class="mx-auto max-w-6xl px-5 py-14 sm:px-8 sm:py-20" aria-labelledby="moyens" data-reveal>
+      <h2
+        id="moyens"
+        class="border-l-2 border-orange pl-5 text-2xl font-bold leading-tight tracking-tight text-navy text-balance sm:text-3xl"
+      >
+        {d.moyensAcces.title}
+      </h2>
+      <p class="mt-6 max-w-[68ch] pl-5 text-base leading-relaxed text-navy/75 text-pretty">
+        {d.moyensAcces.intro}
+      </p>
+
+      <ul class="mt-10 grid gap-px border border-navy/12 bg-navy/12 lg:grid-cols-3">
+        {
+          d.moyensAcces.items.map((item, i) => (
+            <li class="bg-blanc p-6 sm:p-8">
+              <span
+                aria-hidden="true"
+                class:list={['mb-5 block h-1 w-9', i === 0 ? 'bg-orange' : 'bg-navy/25']}
+              />
+              <h3 class="text-lg font-bold leading-snug tracking-tight text-navy text-balance">
+                {item.label}
+              </h3>
+              <p class="mt-3 text-[0.9375rem] leading-relaxed text-navy/75 text-pretty">
+                {item.text}
+              </p>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    {/* ---------------------------------------------- 5. Certifications */}
+    {/*
+      Traité comme une plaque de qualification, pas comme une grille de cartes :
+      c'est le bloc qu'un conducteur de travaux lit en premier quand il vérifie
+      un sous-traitant. Fond navy, acronymes en très gros, chiffre de rang, et
+      l'intro placée en vis-à-vis plutôt qu'au-dessus — la section rompt le
+      rythme des autres au lieu de le répéter.
+    */}
+    <section class="bg-navy text-blanc" aria-labelledby="certifications" data-reveal>
+      <div class="mx-auto max-w-6xl px-5 py-14 sm:px-8 sm:py-20">
+        <div class="grid gap-8 lg:grid-cols-12 lg:gap-16">
+          <div class="min-w-0 lg:col-span-5">
+            <span aria-hidden="true" class="mb-6 block h-0.5 w-14 bg-orange"></span>
+            <h2
+              id="certifications"
+              class="max-w-[16ch] text-2xl font-bold leading-[1.15] tracking-tight text-balance sm:text-4xl"
+            >
+              {d.certifications.title}
+            </h2>
+          </div>
+
+          <p class="min-w-0 self-end text-base leading-relaxed text-blanc/80 text-pretty lg:col-span-7">
+            {d.certifications.intro}
+          </p>
+        </div>
+
+        <dl class="mt-12 grid grid-cols-2 border-t border-blanc/20 lg:grid-cols-4">
+          {
+            d.certifications.items.map((item, i) => (
+              <div
+                class:list={[
+                  'border-b border-blanc/20 py-7 pr-5',
+                  i % 2 === 1 && 'border-l border-blanc/20 pl-5',
+                  'lg:border-b-0 lg:pr-8',
+                  i > 0 && 'lg:border-l lg:pl-8',
+                  i % 2 === 1 && 'lg:pl-8',
+                ]}
+              >
+                <span
+                  aria-hidden="true"
+                  class="block text-[0.625rem] font-bold tracking-[0.2em] text-orange"
+                >
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <dt class="mt-4 text-2xl font-bold leading-none tracking-tight sm:text-3xl">
+                  {item.label}
+                </dt>
+                <dd class="mt-3 text-[0.8125rem] leading-snug text-blanc/60 text-pretty">
+                  {item.text}
+                </dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+    </section>
+
+    {/* --------------------------------------------- Comment ça marche */}
+    <section class="mx-auto max-w-6xl px-5 py-14 sm:px-8 sm:py-20" aria-labelledby="methode" data-reveal>
+      <h2
+        id="methode"
+        class="border-l-2 border-orange pl-5 text-2xl font-bold leading-tight tracking-tight text-navy text-balance sm:text-3xl"
+      >
+        {d.process.title}
+      </h2>
+      <p class="mt-6 max-w-[68ch] pl-5 text-base leading-relaxed text-navy/75 text-pretty">
+        {d.process.intro}
+      </p>
+
+      <ol class="mt-12 grid gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
+        {
+          d.process.steps.map((step) => (
+            <li>
+              <span aria-hidden="true" class="mb-5 block h-1 w-9 bg-orange" />
+              <p class="text-[0.6875rem] font-bold uppercase tracking-[0.14em] text-navy/50">
+                {step.step}
+              </p>
+              <h3 class="mt-2 text-lg font-bold leading-snug tracking-tight text-navy text-balance">
+                {step.label}
+              </h3>
+              <p class="mt-2.5 text-[0.9375rem] leading-relaxed text-navy/75 text-pretty">
+                {step.text}
+              </p>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
+    {/* ------------------------------------------- Pourquoi nous choisir */}
+    <section class="mx-auto max-w-6xl px-5 pb-14 sm:px-8 sm:pb-20" aria-labelledby="pourquoi" data-reveal>
+      <h2
+        id="pourquoi"
+        class="border-l-2 border-orange pl-5 text-2xl font-bold leading-tight tracking-tight text-navy text-balance sm:text-3xl"
+      >
+        {d.why.title}
+      </h2>
+      <p class="mt-6 max-w-[68ch] pl-5 text-base leading-relaxed text-navy/75 text-pretty">
+        {d.why.intro}
+      </p>
+
+      <ul class="mt-10 grid gap-px border border-navy/12 bg-navy/12 sm:grid-cols-2">
+        {
+          d.why.items.map((item) => (
+            <li class="bg-blanc p-6 sm:p-8">
+              <h3 class="text-lg font-bold leading-snug tracking-tight text-navy text-balance">
+                {item.label}
+              </h3>
+              <p class="mt-3 text-[0.9375rem] leading-relaxed text-navy/75 text-pretty">
+                {item.text}
+              </p>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    {/* --------------------------------------------- 6. Témoignages */}
+    {/*
+      ANONYMISÉS : citations reprises mot pour mot des documents, signatures
+      (nom + entreprise cliente) supprimées. Format imposé par CLAUDE.md :
+      « citation » — Fonction, type d'entreprise.
+      La section n'apparaît que si au moins un avis porte `valide: true`.
+    */}
+    {avisPublies.length > 0 && (
+    <section class="bg-gris" aria-labelledby="temoignages" data-reveal>
+      <div class="mx-auto max-w-6xl px-5 py-14 sm:px-8 sm:py-20">
+        <h2
+          id="temoignages"
+          class="border-l-2 border-orange pl-5 text-2xl font-bold leading-tight tracking-tight text-navy text-balance sm:text-3xl"
+        >
+          {d.testimonials.title}
+        </h2>
+        <p class="mt-6 max-w-[68ch] pl-5 text-base leading-relaxed text-navy/75 text-pretty">
+          {d.testimonials.intro}
+        </p>
+
+        <ul class="mt-11 grid gap-6 lg:grid-cols-3">
+          {
+            avisPublies.map((avis) => (
+              <li class="flex">
+                <figure class="flex h-full flex-col border-l-2 border-orange bg-blanc p-6 sm:p-7">
+                  <blockquote class="flex-1">
+                    <p class="text-[0.9375rem] leading-relaxed text-navy/85 text-pretty">
+                      {avis.quote}
+                    </p>
+                  </blockquote>
+                  <figcaption class="mt-6 border-t border-navy/12 pt-4 text-[0.8125rem] leading-snug text-navy/60">
+                    <span class="font-bold text-navy/75">{avis.role}</span>
+                    {', '}
+                    {avis.company}
+                  </figcaption>
+                </figure>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+    )}
+
+    {/*
+      Bande de chantiers.
+
+      Aucun titre : ces photos ne portent pas de discours, elles cassent le
+      rythme des sections de texte et donnent à voir le métier. Le filet orange
+      en tête garde le motif, la grille sans gouttière tient l'ensemble.
+    */}
+    {
+      photosAccueil.length > 0 && (
+        <section class="bg-navy" aria-label="Chantiers ALPITEC" data-reveal>
+          <ul class="grid grid-cols-2 gap-px bg-blanc/15 lg:grid-cols-4">
+            {photosAccueil.map((photo) => (
+              <li class="relative bg-navy">
+                <Image
+                  src={photo.src}
+                  alt={photo.alt}
+                  width={640}
+                  widths={[320, 480, 640]}
+                  sizes="(min-width: 1024px) 25vw, 50vw"
+                  format="webp"
+                  quality={68}
+                  loading="lazy"
+                  decoding="async"
+                  class="aspect-[4/5] h-full w-full object-cover sm:aspect-[4/3]"
+                />
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    {/* ------------------------------------------------------- 7. Zones */}
+    <section class="mx-auto max-w-6xl px-5 py-14 sm:px-8 sm:py-20" aria-labelledby="zones" data-reveal>
+      <div class="grid gap-10 lg:grid-cols-12 lg:gap-16">
+        <div class="min-w-0 lg:col-span-7">
+          <h2
+            id="zones"
+            class="border-l-2 border-orange pl-5 text-2xl font-bold leading-tight tracking-tight text-navy text-balance sm:text-3xl"
+          >
+            {d.zones.title}
+          </h2>
+          {
+            d.zones.paragraphs.map((paragraphe) => (
+              <p class="mt-5 max-w-[68ch] pl-5 text-base leading-relaxed text-navy/75 text-pretty">
+                {paragraphe}
+              </p>
+            ))
+          }
+        </div>
+
+        <aside class="min-w-0 lg:col-span-5">
+          <div class="border border-navy/12 bg-gris p-6 sm:p-8">
+            <h3 class="text-xs font-bold uppercase tracking-[0.14em] text-orange">
+              {d.zones.encart.label}
+            </h3>
+            <p class="mt-4 text-[0.9375rem] leading-relaxed text-navy/80 text-pretty">
+              {d.zones.encart.text}
+            </p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    {/* --------------------------------------------------------- 8. FAQ */}
+    <div class="mx-auto max-w-3xl px-5 pb-14 sm:px-8 sm:pb-20">
+      <FaqAccordion items={d.faq.items} title={d.faq.title} id="faq-accueil" />
+    </div>
+
+    {/* ------------------------------------------------- 9. CtaBand final */}
+    <CtaBand
+      title={d.contact.title}
+      text={d.contact.text}
+      buttons={[
+        { label: 'Demander mon devis gratuit', action: 'devis' },
+        { label: 'Nous appeler', action: 'tel' },
+      ]}
+    />
+
+    {/* Le CtaBand ci-dessus porte déjà le titre du bloc contact du document :
+        on ne le répète pas ici, le formulaire devient l'intitulé de la section. */}
+    <ContactSection id="devis" avecIntro={false} />
+  </main>
+
+  <Footer />
+</Base>
+
+<script>
+  /**
+   * Montage conditionnel de la vidéo du hero.
+   *
+   * Elle n'est créée qu'à partir de 640 px de large et seulement si le visiteur
+   * n'a pas demandé de réduire les animations. En dessous, le poster WebP suffit
+   * et 467 Ko ne sont jamais téléchargés — le trafic BTP local est très
+   * majoritairement mobile.
+   *
+   * La vidéo se superpose au poster dans le même conteneur en position absolue :
+   * aucun décalage de mise en page à l'insertion.
+   */
+  const fond = document.querySelector('[data-hero-fond]');
+
+  if (fond) {
+    const assezLarge = matchMedia('(min-width: 640px)');
+    const mouvementReduit = matchMedia('(prefers-reduced-motion: reduce)');
+    let montee = false;
+
+    const monter = () => {
+      if (montee || !assezLarge.matches || mouvementReduit.matches) return;
+      montee = true;
+
+      const video = document.createElement('video');
+      video.src = fond.dataset.video;
+      video.poster = fond.dataset.poster;
+      video.autoplay = true;
+      video.muted = true;
+      video.loop = true;
+      video.playsInline = true;
+      video.tabIndex = -1;
+      video.setAttribute('aria-hidden', 'true');
+      video.className = 'absolute inset-0 h-full w-full object-cover';
+      fond.appendChild(video);
+    };
+
+    monter();
+    // Un passage en paysage ou un agrandissement de fenêtre déclenche le montage.
+    assezLarge.addEventListener('change', monter);
+  }
+</script>

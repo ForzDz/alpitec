@@ -1,0 +1,265 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import ContactSection from '../components/ContactSection.astro';
+import { getSite, getServices, whatsappHref } from '../lib/content.js';
+
+/**
+ * Page contact.
+ *
+ * Le formulaire est celui de ContactSection — celui décrit par le document
+ * d'accueil. Ses sept champs couvrent les cinq demandés (nom, téléphone,
+ * email, service en liste déroulante, message) et y ajoutent prénom et ville.
+ * Un second formulaire divergent aurait cassé le suivi des conversions et
+ * dédoublé la maintenance.
+ *
+ * Carte : chargée seulement au clic. Un iframe OpenStreetMap posé d'emblée
+ * transmettrait l'adresse IP du visiteur à un tiers avant tout consentement.
+ */
+
+const site = await getSite();
+const services = await getServices();
+
+const filAriane = [
+  { label: 'Accueil', href: '/' },
+  { label: 'Contact', href: '/contact' },
+];
+
+const titre = 'Contact & devis gratuit — Cordistes Paris & IDF | ALPITEC';
+const description =
+  "Contactez ALPITEC pour un devis gratuit : cordistes certifiés à Paris et en Île-de-France. Téléphone, WhatsApp ou formulaire, réponse rapide à chaque demande.";
+
+const adresseComplete = [site.adresse.rue, `${site.adresse.codePostal} ${site.adresse.ville}`]
+  .filter((l) => l.trim())
+  .join(', ');
+
+// Vitry-sur-Seine — cadrage à l'échelle de la commune : l'adresse exacte du
+// siège n'est pas encore connue, poser une épingle serait inventer une position.
+const zoneCarte = '2.3620,48.7660,2.4300,48.8020';
+const urlCarte = `https://www.openstreetmap.org/export/embed.html?bbox=${zoneCarte}&layer=mapnik`;
+const lienCarte = 'https://www.openstreetmap.org/#map=13/48.7871/2.3928';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'ContactPage',
+      '@id': `${new URL('/contact', Astro.site).href}#page`,
+      name: 'Contact',
+      description,
+      url: new URL('/contact', Astro.site).href,
+      inLanguage: 'fr-FR',
+      about: { '@id': new URL('#entreprise', Astro.site).href },
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: filAriane.map((item, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        name: item.label,
+        item: new URL(item.href, Astro.site).href,
+      })),
+    },
+  ],
+};
+---
+
+<Base title={titre} description={description} canonical="/contact">
+  <script slot="schema" type="application/ld+json" set:html={JSON.stringify(schema)} is:inline />
+
+  <Header />
+
+  <main id="contenu">
+    <section class="border-b border-navy/10">
+      <div class="mx-auto max-w-6xl px-5 pb-12 pt-6 sm:px-8 sm:pb-16 sm:pt-8">
+        <Breadcrumb items={filAriane} class="mb-10 sm:mb-14" />
+
+        <p class="text-xs font-bold uppercase tracking-[0.14em] text-navy/55">Contact</p>
+
+        <h1 class="mt-5 max-w-[18ch] text-[2rem] font-bold leading-[1.08] tracking-tight text-navy text-balance sm:text-5xl lg:text-6xl">
+          Parlons de votre chantier
+        </h1>
+
+        <p class="mt-6 max-w-[62ch] text-base leading-relaxed text-navy/75 text-pretty sm:text-lg">
+          Une fuite à traiter en urgence, un ravalement à planifier, une façade à
+          sécuriser : décrivez-nous la situation par téléphone, par WhatsApp ou
+          via le formulaire. Nous vous rappelons rapidement pour qualifier votre
+          projet et planifier la visite technique.
+        </p>
+      </div>
+    </section>
+
+    {/* Coordonnées */}
+    <section class="mx-auto max-w-6xl px-5 py-14 sm:px-8 sm:py-20" aria-labelledby="coordonnees" data-reveal>
+      <h2
+        id="coordonnees"
+        class="border-l-2 border-orange pl-5 text-2xl font-bold leading-tight tracking-tight text-navy text-balance sm:text-3xl"
+      >
+        Nous joindre
+      </h2>
+
+      <ul class="mt-10 grid gap-px border border-navy/12 bg-navy/12 sm:grid-cols-2 lg:grid-cols-3">
+        <li class="bg-blanc">
+          <a
+            href={`tel:${site.telephone.lien}`}
+            class="group flex h-full min-h-11 flex-col gap-2 p-6 transition-colors duration-150 hover:bg-gris focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-orange sm:p-8"
+            data-cta="tel-page-contact"
+          >
+            <span class="text-xs font-bold uppercase tracking-[0.12em] text-navy/55">Téléphone</span>
+            <span class="text-xl font-bold tracking-tight text-navy transition-colors duration-150 group-hover:text-orange">
+              {site.telephone.affichage}
+            </span>
+            <span class="mt-1 text-[0.8125rem] leading-snug text-navy/60">
+              Le plus rapide pour une urgence — fuite, chute de matériaux, mise en sécurité.
+            </span>
+          </a>
+        </li>
+
+        <li class="bg-blanc">
+          <a
+            href={whatsappHref(site)}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="group flex h-full min-h-11 flex-col gap-2 p-6 transition-colors duration-150 hover:bg-gris focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-orange sm:p-8"
+            data-cta="whatsapp-page-contact"
+          >
+            <span class="text-xs font-bold uppercase tracking-[0.12em] text-navy/55">WhatsApp</span>
+            <span class="text-xl font-bold tracking-tight text-navy transition-colors duration-150 group-hover:text-orange">
+              Nous écrire
+            </span>
+            <span class="mt-1 text-[0.8125rem] leading-snug text-navy/60">
+              Pratique pour envoyer des photos du désordre depuis le chantier.
+            </span>
+          </a>
+        </li>
+
+        <li class="bg-blanc">
+          <a
+            href={`mailto:${site.email}`}
+            class="group flex h-full min-h-11 flex-col gap-2 p-6 transition-colors duration-150 hover:bg-gris focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-orange sm:p-8"
+          >
+            <span class="text-xs font-bold uppercase tracking-[0.12em] text-navy/55">Email</span>
+            <span class="text-lg font-bold tracking-tight text-navy transition-colors duration-150 group-hover:text-orange">
+              {site.email}
+            </span>
+            <span class="mt-1 text-[0.8125rem] leading-snug text-navy/60">
+              Pour les appels d'offres et les pièces de marché.
+            </span>
+          </a>
+        </li>
+
+        <li class="flex flex-col gap-2 bg-blanc p-6 sm:p-8">
+          <span class="text-xs font-bold uppercase tracking-[0.12em] text-navy/55">Adresse</span>
+          <span class="text-lg font-bold leading-snug tracking-tight text-navy">
+            {adresseComplete}
+          </span>
+          {
+            site.horaires && (
+              <span class="mt-1 text-[0.8125rem] leading-snug text-navy/60">{site.horaires}</span>
+            )
+          }
+        </li>
+
+        <li class="flex flex-col gap-2 bg-blanc p-6 sm:p-8">
+          <span class="text-xs font-bold uppercase tracking-[0.12em] text-navy/55">
+            Zone d'intervention
+          </span>
+          <span class="text-[0.9375rem] font-bold leading-snug tracking-tight text-navy">
+            Paris (75), 92, 93, 94, 78, 91, 95 et 77
+          </span>
+          <span class="mt-1 text-[0.8125rem] leading-snug text-navy/60">
+            Interventions partout en France pour les chantiers d'envergure et les
+            contrats récurrents.
+          </span>
+        </li>
+
+        <li class="flex flex-col gap-2 bg-blanc p-6 sm:p-8">
+          <span class="text-xs font-bold uppercase tracking-[0.12em] text-navy/55">Prestations</span>
+          <span class="text-[0.9375rem] font-bold leading-snug tracking-tight text-navy">
+            {services.length} services cordistes
+          </span>
+          <span class="mt-1 text-[0.8125rem] leading-snug text-navy/60">
+            Du ravalement à la pose de lignes de vie.
+          </span>
+          {/* Lien sorti du paragraphe : au doigt, une cible de 16 px est inutilisable. */}
+          <a
+            href="/services"
+            class="-mb-2 mt-1 inline-flex min-h-11 items-center gap-2 self-start text-[0.9375rem] font-bold tracking-tight text-navy underline decoration-orange underline-offset-4 transition-colors duration-150 hover:text-orange focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange"
+          >
+            Voir la liste des services
+          </a>
+        </li>
+      </ul>
+    </section>
+
+    {/* Carte — chargée au clic uniquement */}
+    <section class="mx-auto max-w-6xl px-5 pb-14 sm:px-8 sm:pb-20" aria-labelledby="carte" data-reveal>
+      <h2
+        id="carte"
+        class="border-l-2 border-orange pl-5 text-2xl font-bold leading-tight tracking-tight text-navy text-balance sm:text-3xl"
+      >
+        Où nous trouver
+      </h2>
+
+      <div
+        class="mt-9 border border-navy/12 bg-gris"
+        data-carte
+        data-src={urlCarte}
+        data-titre={`Carte de localisation d'ALPITEC à ${site.adresse.ville}`}
+      >
+        <div class="flex flex-col items-start gap-5 p-6 sm:p-10" data-carte-invite>
+          <p class="max-w-[54ch] text-[0.9375rem] leading-relaxed text-navy/75 text-pretty">
+            La carte est fournie par OpenStreetMap. Elle n'est chargée qu'à votre
+            demande : afficher la carte transmet votre adresse IP à
+            openstreetmap.org.
+          </p>
+
+          <button
+            type="button"
+            class="inline-flex min-h-11 items-center justify-center gap-2.5 border-2 border-navy px-6 py-3 text-base font-bold tracking-tight text-navy transition-colors duration-150 hover:bg-navy hover:text-blanc focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange"
+            data-carte-bouton
+          >
+            Afficher la carte
+          </button>
+
+          <p class="text-[0.8125rem] text-navy/55">
+            Ou l'ouvrir directement sur
+            <a
+              href={lienCarte}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="font-bold text-navy underline decoration-orange underline-offset-2 transition-colors duration-150 hover:text-orange"
+            >
+              openstreetmap.org
+            </a>.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <ContactSection id="devis" />
+  </main>
+
+  <Footer />
+</Base>
+
+<script>
+  // Carte à chargement différé : aucune requête vers OpenStreetMap tant que le
+  // visiteur n'a pas cliqué. Le bouton disparaît une fois l'iframe en place.
+  const conteneur = document.querySelector('[data-carte]');
+  const bouton = conteneur?.querySelector('[data-carte-bouton]');
+
+  bouton?.addEventListener('click', () => {
+    const cadre = document.createElement('iframe');
+    cadre.src = conteneur.dataset.src;
+    cadre.title = conteneur.dataset.titre;
+    cadre.loading = 'lazy';
+    cadre.referrerPolicy = 'no-referrer';
+    cadre.className = 'block h-[22rem] w-full border-0 sm:h-[28rem]';
+    conteneur.querySelector('[data-carte-invite]')?.remove();
+    conteneur.appendChild(cadre);
+    cadre.focus();
+  });
+</script>

@@ -1,0 +1,178 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import OtherServices from '../../components/OtherServices.astro';
+
+/**
+ * Liste des articles.
+ *
+ * La collection est vide pour l'instant : la page affiche alors un état
+ * d'attente plutôt qu'une grille creuse, et n'est pas indexée — une page de
+ * liste vide dans l'index de Google est un mauvais signal de qualité.
+ * Dès qu'un article existe, la liste s'affiche et le noindex disparaît.
+ */
+
+const articles = (await getCollection('blog'))
+  .filter((a) => !a.data.brouillon)
+  .sort((a, b) => b.data.datePublication - a.data.datePublication);
+
+const vide = articles.length === 0;
+
+const filAriane = [
+  { label: 'Accueil', href: '/' },
+  { label: 'Conseils & actualités', href: '/blog' },
+];
+
+const titre = 'Conseils & actualités des travaux en hauteur | ALPITEC';
+const description =
+  "Conseils pratiques sur le ravalement, la couverture, l'entretien des façades et la sécurité en hauteur, par les cordistes d'ALPITEC à Paris et en Île-de-France.";
+
+const dateFr = (d) =>
+  new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }).format(d);
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Blog',
+      '@id': `${new URL('/blog', Astro.site).href}#blog`,
+      name: 'Conseils & actualités ALPITEC',
+      description,
+      url: new URL('/blog', Astro.site).href,
+      inLanguage: 'fr-FR',
+      publisher: { '@id': new URL('#entreprise', Astro.site).href },
+      blogPost: articles.map((a) => ({
+        '@type': 'BlogPosting',
+        headline: a.data.title,
+        url: new URL(`/blog/${a.data.slug}`, Astro.site).href,
+        datePublished: a.data.datePublication.toISOString().slice(0, 10),
+      })),
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: filAriane.map((item, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        name: item.label,
+        item: new URL(item.href, Astro.site).href,
+      })),
+    },
+  ],
+};
+---
+
+<Base title={titre} description={description} canonical="/blog" noindex={vide}>
+  <script slot="schema" type="application/ld+json" set:html={JSON.stringify(schema)} is:inline />
+
+  <Header />
+
+  <main id="contenu">
+    <section class="border-b border-navy/10">
+      <div class="mx-auto max-w-6xl px-5 pb-12 pt-6 sm:px-8 sm:pb-16 sm:pt-8">
+        <Breadcrumb items={filAriane} class="mb-10 sm:mb-14" />
+
+        <p class="text-xs font-bold uppercase tracking-[0.14em] text-navy/55">Le blog</p>
+
+        <h1 class="mt-5 max-w-[18ch] text-[2rem] font-bold leading-[1.08] tracking-tight text-navy text-balance sm:text-5xl lg:text-6xl">
+          Conseils &amp; actualités
+        </h1>
+
+        <p class="mt-6 max-w-[62ch] text-base leading-relaxed text-navy/75 text-pretty sm:text-lg">
+          Entretien des façades, obligations des copropriétés, sécurité en
+          hauteur : ce que nos cordistes constatent sur le terrain, expliqué
+          simplement.
+        </p>
+      </div>
+    </section>
+
+    {
+      vide ? (
+        <section class="mx-auto max-w-3xl px-5 py-16 sm:px-8 sm:py-24" data-reveal>
+          <div class="border-l-2 border-orange bg-gris px-6 py-8 sm:px-9 sm:py-10">
+            <h2 class="text-xl font-bold leading-tight tracking-tight text-navy text-balance sm:text-2xl">
+              Les premiers articles arrivent bientôt
+            </h2>
+            <p class="mt-4 max-w-[54ch] text-[0.9375rem] leading-relaxed text-navy/75 text-pretty">
+              En attendant, les pages de nos prestations détaillent chaque
+              intervention, avec une foire aux questions à la fin de chacune.
+            </p>
+            <p class="mt-6">
+              <a
+                href="/services"
+                class="inline-flex min-h-11 items-center gap-2 text-[0.9375rem] font-bold tracking-tight text-navy underline decoration-orange underline-offset-4 transition-colors duration-150 hover:text-orange"
+              >
+                Voir nos 9 services cordistes
+              </a>
+            </p>
+          </div>
+        </section>
+      ) : (
+        <section class="mx-auto max-w-6xl px-5 py-14 sm:px-8 sm:py-20" aria-label="Liste des articles">
+          <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {articles.map((article) => (
+              <li class="flex">
+                <article
+                  class="group relative flex h-full flex-col border border-navy/12 bg-blanc p-6 transition-colors duration-150 hover:border-navy/35 focus-within:border-navy/35"
+                  data-reveal
+                >
+                  <span aria-hidden="true" class="mb-5 block h-1 w-9 bg-orange" />
+
+                  <time
+                    datetime={article.data.datePublication.toISOString().slice(0, 10)}
+                    class="text-[0.6875rem] font-bold uppercase tracking-[0.14em] text-navy/50"
+                  >
+                    {dateFr(article.data.datePublication)}
+                  </time>
+
+                  <h2 class="mt-3 text-lg font-bold leading-snug tracking-tight text-navy text-balance">
+                    <a
+                      href={`/blog/${article.data.slug}`}
+                      class="after:absolute after:inset-0 after:content-[''] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orange"
+                    >
+                      {article.data.title}
+                    </a>
+                  </h2>
+
+                  <p class="mt-3 flex-1 text-[0.9375rem] leading-relaxed text-navy/75 text-pretty">
+                    {article.data.resume}
+                  </p>
+
+                  <span class="mt-5 inline-flex items-center gap-2 text-sm font-bold tracking-tight text-navy transition-colors duration-150 group-hover:text-orange">
+                    Lire l'article
+                    <svg
+                      aria-hidden="true"
+                      viewBox="0 0 16 16"
+                      class="h-3.5 w-3.5 transition-transform duration-150 group-hover:translate-x-1"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path d="M2 8h11M9 4l4 4-4 4" stroke-linecap="square" />
+                    </svg>
+                  </span>
+                </article>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    <CtaBand
+      title="Un chantier à nous confier ?"
+      text="Décrivez-nous votre projet : visite technique planifiée rapidement, devis gratuit, détaillé et sans engagement."
+      buttons={[
+        { label: 'Demander mon devis gratuit', action: 'devis' },
+        { label: 'Nous appeler', action: 'tel' },
+      ]}
+    />
+
+    <OtherServices currentSlug="" title="Nos services cordistes" />
+  </main>
+
+  <Footer />
+</Base>

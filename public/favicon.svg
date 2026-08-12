@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="ALPITEC">
+  <!--
+    Marque ALPITEC, vectorisée depuis _sources/logo/logo-symbole.jpeg.
+    À REMPLACER par le SVG officiel dès que le client le fournit : ce tracé est
+    une reprise fidèle mais approximative des deux parallélogrammes.
+  -->
+  <path fill="#F96500" d="M34.6 0h28.9L30.2 100H1.3z" />
+  <path fill="#232B4A" d="M50.5 39.7h27.3L98.4 100H69.8z" />
+</svg>

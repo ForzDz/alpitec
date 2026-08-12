@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Outils internes, sans valeur de recherche
+Disallow: /design-system
+Disallow: /merci
+
+Sitemap: https://www.alpitec.fr/sitemap-index.xml

@@ -1,0 +1,163 @@
+﻿---
+import { getSite, getServices, serviceHref } from '../lib/content.js';
+
+/**
+ * Pied de page — coordonnées, les 9 services, certifications, mentions.
+ *
+ * La liste des services est calculée depuis la collection, comme partout
+ * ailleurs : jamais de liste écrite à la main.
+ *
+ * Aplat navy : il ferme la page en écho au CtaBand, et laisse le blanc au
+ * contenu utile au-dessus.
+ */
+
+const site = await getSite();
+const services = await getServices();
+const annee = new Date().getFullYear();
+
+const adresseComplete = [site.adresse.rue, `${site.adresse.codePostal} ${site.adresse.ville}`]
+  .filter((l) => l.trim())
+  .join(', ');
+---
+
+<footer class="bg-navy text-blanc">
+  <div class="mx-auto max-w-6xl px-5 pb-14 pt-14 sm:px-8 sm:pb-16 sm:pt-20 lg:pb-20">
+    <div class="grid gap-12 lg:grid-cols-12 lg:gap-10">
+      <!-- Identité + coordonnées -->
+      <div class="lg:col-span-4">
+        {/*
+          Marque en version inversée : le symbole fourni est un JPEG à fond noir,
+          inutilisable sur l'aplat navy. Tracé repris de _sources/logo/logo-symbole.jpeg,
+          à remplacer par le SVG officiel dès que le client le fournit.
+        */}
+        <svg
+          viewBox="0 0 100 100"
+          class="h-11 w-auto"
+          role="img"
+          aria-label={site.nom}
+        >
+          <path fill="#F96500" d="M34.6 0h28.9L30.2 100H1.3z" />
+          <path fill="currentColor" d="M50.5 39.7h27.3L98.4 100H69.8z" />
+        </svg>
+
+        <p class="mt-5 max-w-[34ch] text-sm leading-relaxed text-blanc/70 text-pretty">
+          {site.baseline} à Paris et en Île-de-France.
+        </p>
+
+        <address class="mt-7 space-y-3 text-sm not-italic">
+          <a
+            href={`tel:${site.telephone.lien}`}
+            class="-my-2.5 flex min-h-11 items-center gap-2.5 py-2.5 font-bold tracking-tight transition-colors duration-150 hover:text-orange focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orange"
+            data-cta="tel-footer"
+          >
+            <span aria-hidden="true" class="h-4 w-0.5 bg-orange"></span>
+            {site.telephone.affichage}
+          </a>
+
+          <a
+            href={`mailto:${site.email}`}
+            class="-my-2.5 flex min-h-11 items-center gap-2.5 py-2.5 text-blanc/75 transition-colors duration-150 hover:text-orange focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orange"
+          >
+            <span aria-hidden="true" class="h-4 w-0.5 bg-orange/45"></span>
+            {site.email}
+          </a>
+
+          {
+            adresseComplete && (
+              <p class="flex items-start gap-2.5 text-blanc/75">
+                <span aria-hidden="true" class="mt-1 h-4 w-0.5 shrink-0 bg-orange/45" />
+                {adresseComplete}
+              </p>
+            )
+          }
+
+          {
+            site.horaires && (
+              <p class="flex items-start gap-2.5 text-blanc/75">
+                <span aria-hidden="true" class="mt-1 h-4 w-0.5 shrink-0 bg-orange/45" />
+                {site.horaires}
+              </p>
+            )
+          }
+        </address>
+      </div>
+
+      <!-- Les 9 services -->
+      <div class="lg:col-span-5">
+        <h2 class="text-xs font-bold uppercase tracking-[0.14em] text-blanc/50">
+          Nos services
+        </h2>
+        <ul class="mt-6 grid gap-x-8 gap-y-3 sm:grid-cols-2">
+          {
+            services.map((service) => (
+              <li>
+                <a
+                  href={serviceHref(service.data.slug)}
+                  class="group inline-flex min-h-11 items-center gap-2.5 text-sm leading-snug text-blanc/75 transition-colors duration-150 hover:text-blanc focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orange"
+                >
+                  <span
+                    aria-hidden="true"
+                    class="h-3 w-0.5 shrink-0 bg-orange/45 transition-all duration-150 group-hover:h-4 group-hover:bg-orange"
+                  />
+                  {service.data.shortLabel}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <!-- Certifications -->
+      <div class="lg:col-span-3">
+        <h2 class="text-xs font-bold uppercase tracking-[0.14em] text-blanc/50">
+          Certifications
+        </h2>
+        <dl class="mt-6 space-y-4">
+          {
+            site.certifications.map((certif) => (
+              <div class="border-l-2 border-orange/60 pl-4">
+                <dt class="text-sm font-bold tracking-tight">{certif.label}</dt>
+                <dd class="mt-0.5 text-[0.8125rem] leading-snug text-blanc/60">
+                  {certif.text}
+                </dd>
+              </div>
+            ))
+          }
+        </dl>
+
+        {
+          site.legal.assurance && (
+            <p class="mt-6 border-l-2 border-orange/60 pl-4 text-sm font-bold tracking-tight">
+              {site.legal.assurance}
+            </p>
+          )
+        }
+      </div>
+    </div>
+
+    <!-- Mentions -->
+    <div
+      class="mt-14 flex flex-col gap-4 border-t border-blanc/15 pt-7 text-[0.8125rem] text-blanc/55 sm:flex-row sm:items-center sm:justify-between"
+    >
+      <p>
+        © {annee} {site.legal.copyright}
+        {site.legal.siret && <span class="ml-2">SIRET {site.legal.siret}</span>}
+      </p>
+
+      <ul class="flex flex-wrap gap-x-6 gap-y-2">
+        {
+          site.legal.liens.map((lien) => (
+            <li>
+              <a
+                href={lien.href}
+                class="-my-3.5 inline-flex items-center py-3.5 transition-colors duration-150 hover:text-blanc focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orange"
+              >
+                {lien.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</footer>

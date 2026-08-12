@@ -1,0 +1,221 @@
+﻿---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import Button from '../../components/Button.astro';
+import ServiceSection from '../../components/ServiceSection.astro';
+import FaqAccordion from '../../components/FaqAccordion.astro';
+import ContactSection from '../../components/ContactSection.astro';
+import OtherServices from '../../components/OtherServices.astro';
+import { getSite, getServicePhotos, actionHref, serviceHref } from '../../lib/content.js';
+
+/**
+ * Template unique des 9 pages services.
+ *
+ * Les 11 sections des documents client, dans l'ordre imposé :
+ *   1  Bandeau d'accueil     frontmatter (surtitre, h1, intro, boutons, badges)
+ *   2  Infos clés            sections[] keyFacts      → InfoBox
+ *   3  Notre expertise       sections[] expertise
+ *   4  Comment ça marche     sections[] process
+ *   5  Adapté à vos enjeux   sections[] audiences
+ *   6  Zones d'intervention  sections[] zones
+ *   7  Réalisations          sections[] realisations  → Gallery
+ *   8  FAQ                   frontmatter faq[]        → FaqAccordion
+ *   9  Bloc d'appel final    sections[] cta           → CtaBand
+ *   10 Contact               → ContactSection
+ *   11 Nos autres services   → OtherServices
+ *
+ * La FAQ vit dans le frontmatter et non dans `sections[]` : on coupe donc la
+ * liste des sections au bloc d'appel pour l'insérer entre 7 et 9, comme les
+ * documents l'exigent. Aucun `if` par service nulle part.
+ */
+
+export async function getStaticPaths() {
+  const services = await getCollection('services');
+  return services.map((service) => ({
+    params: { slug: service.data.slug },
+    props: { service },
+  }));
+}
+
+const { service } = Astro.props;
+const d = service.data;
+const site = await getSite();
+
+const url = serviceHref(d.slug);
+const canonical = new URL(url, Astro.site).href;
+
+const filAriane = [
+  { label: 'Accueil', href: '/' },
+  { label: 'Nos services', href: '/services' },
+  { label: d.shortLabel, href: url },
+];
+
+// Galerie : lue sur le disque, vide tant que les photos ne sont pas triées.
+const sectionPhotos = d.sections.find((s) => s.type === 'realisations');
+const photos = getServicePhotos(d.slug, sectionPhotos?.photos ?? [], 4);
+
+// Sections 2 à 7, puis 9 : la FAQ s'intercale au milieu.
+const iCta = d.sections.findIndex((s) => s.type === 'cta');
+const sectionsAvantFaq = iCta === -1 ? d.sections : d.sections.slice(0, iCta);
+const sectionsApresFaq = iCta === -1 ? [] : d.sections.slice(iCta);
+
+/* ------------------------------------------------------------------ JSON-LD */
+/* Construits depuis le contenu qui alimente le HTML : impossible de diverger. */
+
+const expertise = d.sections.find((s) => s.type === 'expertise');
+
+const entreprise = {
+  '@type': 'LocalBusiness',
+  '@id': new URL('#entreprise', Astro.site).href,
+  name: site.nom,
+  description: site.baseline,
+  telephone: site.telephone.lien,
+  email: site.email,
+  address: {
+    '@type': 'PostalAddress',
+    ...(site.adresse.rue ? { streetAddress: site.adresse.rue } : {}),
+    postalCode: site.adresse.codePostal,
+    addressLocality: site.adresse.ville,
+    addressCountry: 'FR',
+  },
+};
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Service',
+      '@id': `${canonical}#service`,
+      name: d.title,
+      description: d.metaDescription,
+      serviceType: d.title,
+      url: canonical,
+      provider: entreprise,
+      areaServed: [
+        { '@type': 'City', name: 'Paris' },
+        { '@type': 'AdministrativeArea', name: 'Île-de-France' },
+      ],
+      ...(expertise
+        ? {
+            hasOfferCatalog: {
+              '@type': 'OfferCatalog',
+              name: expertise.title,
+              itemListElement: expertise.items.map((item) => ({
+                '@type': 'Offer',
+                itemOffered: {
+                  '@type': 'Service',
+                  name: item.label,
+                  description: item.text,
+                },
+              })),
+            },
+          }
+        : {}),
+    },
+    {
+      '@type': 'FAQPage',
+      '@id': `${canonical}#faq`,
+      mainEntity: d.faq.map((item) => ({
+        '@type': 'Question',
+        name: item.question,
+        acceptedAnswer: { '@type': 'Answer', text: item.answer },
+      })),
+    },
+    {
+      '@type': 'BreadcrumbList',
+      '@id': `${canonical}#fil-ariane`,
+      itemListElement: filAriane.map((item, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        name: item.label,
+        item: new URL(item.href, Astro.site).href,
+      })),
+    },
+  ],
+};
+---
+
+<Base title={d.metaTitle} description={d.metaDescription} canonical={url}>
+  <script slot="schema" type="application/ld+json" set:html={JSON.stringify(schema)} is:inline />
+
+  <Header />
+
+  <main id="contenu">
+    {/* 1. Bandeau d'accueil */}
+    <section class="border-b border-navy/10">
+      <div class="mx-auto max-w-6xl px-5 pb-12 pt-6 sm:px-8 sm:pb-16 sm:pt-8">
+        <Breadcrumb items={filAriane} class="mb-10 sm:mb-14" />
+
+        <p class="text-xs font-bold uppercase tracking-[0.14em] text-navy/55">
+          {d.surtitre}
+        </p>
+
+        <h1 class="mt-5 max-w-[20ch] text-[2rem] font-bold leading-[1.08] tracking-tight text-navy text-balance sm:text-5xl lg:text-6xl">
+          {d.h1}
+        </h1>
+
+        <p class="mt-6 max-w-[64ch] text-base leading-relaxed text-navy/75 text-pretty sm:text-lg">
+          {d.intro}
+        </p>
+
+        <div class="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+          {
+            d.heroButtons.map((bouton, i) => (
+              <Button
+                href={actionHref(bouton.action, site)}
+                variant={i === 0 ? 'primaire' : 'secondaire'}
+                size="lg"
+                data-cta={`${bouton.action}-hero`}
+              >
+                {bouton.label}
+              </Button>
+            ))
+          }
+        </div>
+
+        {
+          d.heroBadges.length > 0 && (
+            <ul class="mt-7 flex flex-wrap items-center gap-x-6 gap-y-2">
+              {d.heroBadges.map((badge) => (
+                <li class="flex items-center gap-2.5 text-[0.8125rem] font-bold tracking-tight text-navy/70">
+                  <span aria-hidden="true" class="h-3.5 w-0.5 bg-orange" />
+                  {badge}
+                </li>
+              ))}
+            </ul>
+          )
+        }
+      </div>
+    </section>
+
+    {/* 2 à 7 */}
+    {
+      sectionsAvantFaq.map((section) => (
+        <ServiceSection section={section} photos={photos} shortLabel={d.shortLabel} ordre={d.ordre} />
+      ))
+    }
+
+    {/* 8. FAQ */}
+    <div class="mx-auto max-w-3xl px-5 py-14 sm:px-8 sm:py-20">
+      <FaqAccordion items={d.faq} title={d.faqTitle} id={`faq-${d.slug}`} />
+    </div>
+
+    {/* 9. Bloc d'appel final */}
+    {
+      sectionsApresFaq.map((section) => (
+        <ServiceSection section={section} photos={photos} shortLabel={d.shortLabel} ordre={d.ordre} />
+      ))
+    }
+
+    {/* 10. Contact */}
+    <ContactSection id="devis" typeProjetParDefaut={d.slug} />
+
+    {/* 11. Nos autres services */}
+    <OtherServices currentSlug={d.slug} />
+  </main>
+
+  <Footer />
+</Base>

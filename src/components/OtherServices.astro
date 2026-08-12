@@ -1,0 +1,51 @@
+---
+import { getOtherServices, serviceHref } from '../lib/content.js';
+
+/**
+ * « Nos autres services cordistes ».
+ *
+ * La liste est CALCULÉE : on retire le service courant de la collection et on
+ * affiche les 8 restants. Aucune liste manuelle nulle part — c'est justement ce
+ * que les documents client n'arrivaient pas à tenir à jour (leurs listes vont
+ * de 5 à 8 entrées selon la page, aucune n'était complète).
+ *
+ * Ajouter un 10ᵉ service = déposer un .md dans src/content/services/. Rien d'autre.
+ */
+
+const { currentSlug, title = 'Nos autres services cordistes' } = Astro.props;
+const autres = await getOtherServices(currentSlug);
+
+// La grille se cale sur le nombre d'éléments pour ne jamais laisser de case
+// vide : 8 services tiennent en 4 colonnes, 9 en 3.
+const colonnes = autres.length % 4 === 0 ? 'lg:grid-cols-4' : 'lg:grid-cols-3';
+---
+
+<section class="mx-auto max-w-6xl px-5 py-14 sm:px-8 sm:py-20" aria-labelledby="autres-services" data-reveal>
+  <h2
+    id="autres-services"
+    class="border-l-2 border-orange pl-5 text-2xl font-bold leading-tight tracking-tight text-navy text-balance sm:text-3xl"
+  >
+    {title}
+  </h2>
+
+  <ul class:list={['mt-9 grid gap-px border border-navy/12 bg-navy/12 sm:grid-cols-2', colonnes]}>
+    {
+      autres.map((service) => (
+        <li class="bg-blanc">
+          <a
+            href={serviceHref(service.data.slug)}
+            class="group flex h-full items-start gap-3 p-5 transition-colors duration-150 hover:bg-gris focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-orange"
+          >
+            <span
+              aria-hidden="true"
+              class="mt-1.5 h-4 w-0.5 shrink-0 bg-orange transition-all duration-150 group-hover:h-6"
+            />
+            <span class="text-[0.9375rem] font-bold leading-snug tracking-tight text-navy text-balance">
+              {service.data.shortLabel}
+            </span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</section>

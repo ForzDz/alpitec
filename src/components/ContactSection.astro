@@ -1,0 +1,291 @@
+---
+import Button from './Button.astro';
+import { getSite, getServices, whatsappHref } from '../lib/content.js';
+import { getEntry } from 'astro:content';
+
+/**
+ * Section 10 des documents : « Reprendre le même formulaire que la page
+ * d'accueil — Décrivez votre projet en 1 minute ».
+ *
+ * Tous les libellés viennent de src/content/home/accueil.md (bloc `contact`) :
+ * un seul formulaire décrit à un seul endroit, réutilisé sur les douze pages.
+ *
+ * Envoi : Netlify Forms (attribut `data-netlify`), sans back-end.
+ * Anti-spam : champ appât `bot-field`, invisible et hors tabulation.
+ * Validation : native (`required`, `type`) tant que JS n'a pas pris la main,
+ * puis messages en français au blur et à la soumission.
+ *
+ * `avecIntro` : sur l'accueil, un CtaBand porte déjà le titre et le texte du
+ * bloc contact juste au-dessus. On les masque ici pour ne pas répéter le même
+ * H2 deux fois de suite ; le titre du formulaire devient alors l'intitulé de
+ * la section.
+ */
+
+const { id = 'devis', typeProjetParDefaut, avecIntro = true } = Astro.props;
+
+const site = await getSite();
+const services = await getServices();
+const accueil = await getEntry('home', 'accueil');
+const { contact } = accueil.data;
+
+// Les sept champs listés par le document d'accueil, dans son ordre.
+const champs = [
+  { id: 'prenom', label: 'Prénom', type: 'text', autocomplete: 'given-name', requis: true },
+  { id: 'nom', label: 'Nom', type: 'text', autocomplete: 'family-name', requis: true },
+  { id: 'email', label: 'Email', type: 'email', autocomplete: 'email', inputmode: 'email', requis: true },
+  { id: 'telephone', label: 'Téléphone', type: 'tel', autocomplete: 'tel', inputmode: 'tel', requis: true },
+  { id: 'type-projet', label: 'Type de projet', type: 'select', requis: false },
+  { id: 'ville', label: "Ville d'intervention", type: 'text', autocomplete: 'address-level2', requis: false },
+  { id: 'besoin', label: 'Décrivez votre besoin', type: 'textarea', requis: true },
+];
+
+const classeChamp =
+  'w-full min-w-0 min-h-11 border border-navy/20 bg-blanc px-4 py-3 text-base text-navy ' +
+  'transition-colors duration-150 hover:border-navy/40 focus:border-orange focus:outline-none ' +
+  'aria-[invalid=true]:border-orange aria-[invalid=true]:bg-orange/5';
+---
+
+<section id={id} class="scroll-mt-24 bg-gris" data-reveal>
+  <div class="mx-auto grid max-w-6xl gap-12 px-5 py-14 sm:px-8 sm:py-20 lg:grid-cols-12 lg:gap-16">
+    <!-- Réassurance -->
+    <div class="min-w-0 lg:col-span-5">
+      {
+        avecIntro && (
+          <>
+            <span aria-hidden="true" class="mb-6 block h-0.5 w-14 bg-orange" />
+
+            <h2 class="max-w-[16ch] text-2xl font-bold leading-[1.15] tracking-tight text-navy text-balance sm:text-4xl">
+              {contact.title}
+            </h2>
+
+            <p class="mt-5 max-w-[52ch] text-base leading-relaxed text-navy/75 text-pretty">
+              {contact.text}
+            </p>
+          </>
+        )
+      }
+
+      <ul class:list={['space-y-3', avecIntro ? 'mt-8' : 'mt-0']}>
+        {
+          contact.reassurance.map((point) => (
+            <li class="flex items-start gap-3 text-[0.9375rem] font-bold leading-snug tracking-tight text-navy">
+              <span aria-hidden="true" class="mt-1.5 h-4 w-0.5 shrink-0 bg-orange" />
+              {point}
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="mt-9 flex flex-col gap-3 sm:flex-row">
+        <Button href={`tel:${site.telephone.lien}`} variant="secondaire" size="md" data-cta="tel-contact">
+          {site.telephone.affichage}
+        </Button>
+        <Button
+          href={whatsappHref(site)}
+          variant="secondaire"
+          size="md"
+          target="_blank"
+          rel="noopener noreferrer"
+          data-cta="whatsapp-contact"
+        >
+          WhatsApp
+        </Button>
+      </div>
+    </div>
+
+    <!-- Formulaire -->
+    <div class="min-w-0 lg:col-span-7">
+      <div class="border border-navy/12 bg-blanc p-6 sm:p-9">
+        {
+          avecIntro ? (
+            <h3 class="text-xl font-bold leading-tight tracking-tight text-navy text-balance sm:text-2xl">
+              {contact.form.title}
+            </h3>
+          ) : (
+            <h2 class="text-xl font-bold leading-tight tracking-tight text-navy text-balance sm:text-2xl">
+              {contact.form.title}
+            </h2>
+          )
+        }
+        <p class="mt-2 text-[0.9375rem] leading-relaxed text-navy/70">
+          {contact.form.subtitle}
+        </p>
+
+        <form
+          name="devis"
+          method="POST"
+          data-netlify="true"
+          netlify-honeypot="bot-field"
+          action="/merci"
+          class="mt-8 grid min-w-0 gap-5 sm:grid-cols-2"
+          data-formulaire-devis
+        >
+          <input type="hidden" name="form-name" value="devis" />
+
+          {/* Appât anti-robots : invisible, hors tabulation, jamais lu à voix haute. */}
+          <p class="hidden" aria-hidden="true">
+            <label>
+              Ne pas remplir : <input name="bot-field" tabindex="-1" autocomplete="off" />
+            </label>
+          </p>
+
+          {
+            champs.map((champ) => (
+              <div class:list={['flex min-w-0 flex-col gap-2', champ.type === 'textarea' && 'sm:col-span-2']}>
+                <label
+                  for={champ.id}
+                  class="text-xs font-bold uppercase tracking-[0.12em] text-navy/60"
+                >
+                  {champ.label}
+                  {!champ.requis && <span class="ml-1.5 font-normal normal-case tracking-normal text-navy/40">(facultatif)</span>}
+                </label>
+
+                {champ.type === 'select' ? (
+                  <select
+                    id={champ.id}
+                    name={champ.id}
+                    class={`${classeChamp} appearance-none`}
+                    aria-describedby={`${champ.id}-erreur`}
+                  >
+                    <option value="">Sélectionnez…</option>
+                    {services.map((service) => (
+                      <option value={service.data.slug} selected={service.data.slug === typeProjetParDefaut}>
+                        {service.data.shortLabel}
+                      </option>
+                    ))}
+                    <option value="autre">Autre / je ne sais pas</option>
+                  </select>
+                ) : champ.type === 'textarea' ? (
+                  <textarea
+                    id={champ.id}
+                    name={champ.id}
+                    rows="5"
+                    required={champ.requis}
+                    minlength="10"
+                    class={`${classeChamp} leading-relaxed`}
+                    aria-describedby={`${champ.id}-erreur`}
+                  />
+                ) : (
+                  <input
+                    type={champ.type}
+                    id={champ.id}
+                    name={champ.id}
+                    autocomplete={champ.autocomplete}
+                    inputmode={champ.inputmode}
+                    required={champ.requis}
+                    class={classeChamp}
+                    aria-describedby={`${champ.id}-erreur`}
+                  />
+                )}
+
+                <p
+                  id={`${champ.id}-erreur`}
+                  class="hidden text-[0.8125rem] font-bold leading-snug text-orange"
+                  data-erreur
+                />
+              </div>
+            ))
+          }
+
+          <div class="sm:col-span-2">
+            {/* Récapitulatif d'erreurs, annoncé aux lecteurs d'écran à la soumission. */}
+            <p
+              class="mb-5 hidden border-l-2 border-orange bg-orange/5 px-4 py-3 text-[0.9375rem] font-bold text-navy"
+              role="alert"
+              data-resume-erreurs
+            >
+            </p>
+
+            <Button type="submit" variant="primaire" size="lg" class="w-full sm:w-auto" data-cta="devis-formulaire">
+              {contact.form.submitLabel}
+            </Button>
+            <p class="mt-4 text-[0.8125rem] text-navy/55">
+              {contact.form.legalNote}
+            </p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  /**
+   * Validation progressive.
+   *
+   * Sans JavaScript, le navigateur applique `required`, `type=email` et
+   * `minlength` avec ses propres messages : le formulaire reste utilisable.
+   * Avec JavaScript, on désactive la validation native pour afficher des
+   * messages en français, au bon endroit, liés au champ par aria-describedby.
+   */
+  const formulaire = document.querySelector('[data-formulaire-devis]');
+
+  if (formulaire) {
+    formulaire.setAttribute('novalidate', '');
+
+    const resume = formulaire.querySelector('[data-resume-erreurs]');
+    const REGEX_TEL = /^(?:(?:\+|00)33|0)\s*[1-9](?:[\s.\-]*\d{2}){4}$/;
+    const REGEX_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+    const messageErreur = (champ) => {
+      const valeur = champ.value.trim();
+
+      if (champ.required && !valeur) return 'Ce champ est obligatoire.';
+      if (!valeur) return '';
+
+      if (champ.type === 'email' && !REGEX_EMAIL.test(valeur)) {
+        return 'Saisissez une adresse électronique valide, par exemple nom@domaine.fr';
+      }
+      if (champ.type === 'tel' && !REGEX_TEL.test(valeur)) {
+        return 'Saisissez un numéro de téléphone français à 10 chiffres.';
+      }
+      if (champ.tagName === 'TEXTAREA' && valeur.length < 10) {
+        return 'Décrivez votre besoin en quelques mots (10 caractères minimum).';
+      }
+      return '';
+    };
+
+    const afficher = (champ) => {
+      const erreur = messageErreur(champ);
+      const boite = document.getElementById(`${champ.id}-erreur`);
+      if (!boite) return erreur;
+
+      boite.textContent = erreur;
+      boite.classList.toggle('hidden', !erreur);
+      champ.setAttribute('aria-invalid', erreur ? 'true' : 'false');
+      return erreur;
+    };
+
+    const champs = [...formulaire.querySelectorAll('input:not([type=hidden]), select, textarea')].filter(
+      (c) => c.name !== 'bot-field',
+    );
+
+    for (const champ of champs) {
+      // Au blur seulement : signaler une erreur pendant la frappe est agressif.
+      champ.addEventListener('blur', () => afficher(champ));
+      // Une fois le champ signalé en erreur, on corrige l'affichage en direct.
+      champ.addEventListener('input', () => {
+        if (champ.getAttribute('aria-invalid') === 'true') afficher(champ);
+      });
+    }
+
+    formulaire.addEventListener('submit', (e) => {
+      const enErreur = champs.filter((champ) => afficher(champ));
+
+      if (enErreur.length > 0) {
+        e.preventDefault();
+        if (resume) {
+          resume.textContent =
+            enErreur.length === 1
+              ? 'Un champ doit être corrigé avant l’envoi.'
+              : `${enErreur.length} champs doivent être corrigés avant l’envoi.`;
+          resume.classList.remove('hidden');
+        }
+        enErreur[0].focus();
+        enErreur[0].scrollIntoView({ block: 'center', behavior: 'smooth' });
+      } else if (resume) {
+        resume.classList.add('hidden');
+      }
+    });
+  }
+</script>

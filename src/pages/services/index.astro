@@ -1,0 +1,136 @@
+---
+import { getEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import ServiceCard from '../../components/ServiceCard.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import ContactSection from '../../components/ContactSection.astro';
+import { getServices, getServicePhotos, serviceHref } from '../../lib/content.js';
+
+/**
+ * Page hub : les 9 services.
+ *
+ * Les accroches des 6 premiers services viennent du bloc « Nos services » du
+ * document d'accueil. Les 3 services ajoutés ensuite (chéneaux, dévégétalisation,
+ * points d'ancrage) n'ont AUCUN texte de carte dans les documents : leur carte
+ * s'affiche sans accroche plutôt qu'avec un texte inventé.
+ * Voir le rapport de l'étape 1, point 2 — 3 accroches à demander au client.
+ */
+
+const services = await getServices();
+const accueil = await getEntry('home', 'accueil');
+const cartesAccueil = accueil.data.services;
+
+const titre = 'Nos 9 services cordistes — Paris & Île-de-France | ALPITEC';
+const description =
+  "Ravalement, couverture, nettoyage de vitres, maçonnerie, filets, anti-pigeons, chéneaux, dévégétalisation, points d'ancrage : les 9 prestations cordistes d'ALPITEC. Devis gratuit.";
+
+const filAriane = [
+  { label: 'Accueil', href: '/' },
+  { label: 'Nos services', href: '/services' },
+];
+
+// Chaque carte reçoit sa première photo si le dossier du service en contient une.
+const cartes = services.map((service) => {
+  const accroche = cartesAccueil.cards.find((c) => c.slug === service.data.slug);
+  // Textes alternatifs du frontmatter, appariés par nom de fichier.
+  const legendes = service.data.sections.find((s) => s.type === 'realisations')?.photos ?? [];
+  const [photo] = getServicePhotos(service.data.slug, legendes, 1);
+
+  return {
+    slug: service.data.slug,
+    ordre: service.data.ordre,
+    title: service.data.title,
+    shortLabel: service.data.shortLabel,
+    // Accroche du document d'accueil si elle existe, sinon rien d'inventé.
+    text: accroche?.text,
+    // Pas d'image sans alt propre : la tuile navy prend le relais.
+    image: photo?.alt ? { src: photo.src, alt: photo.alt } : undefined,
+  };
+});
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'CollectionPage',
+      '@id': `${new URL('/services', Astro.site).href}#page`,
+      name: cartesAccueil.title,
+      description,
+      url: new URL('/services', Astro.site).href,
+    },
+    {
+      '@type': 'ItemList',
+      '@id': `${new URL('/services', Astro.site).href}#liste`,
+      numberOfItems: services.length,
+      itemListElement: services.map((service, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        name: service.data.title,
+        url: new URL(serviceHref(service.data.slug), Astro.site).href,
+      })),
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: filAriane.map((item, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        name: item.label,
+        item: new URL(item.href, Astro.site).href,
+      })),
+    },
+  ],
+};
+---
+
+<Base title={titre} description={description} canonical="/services">
+  <script slot="schema" type="application/ld+json" set:html={JSON.stringify(schema)} is:inline />
+
+  <Header />
+
+  <main id="contenu">
+    <section class="border-b border-navy/10">
+      <div class="mx-auto max-w-6xl px-5 pb-12 pt-6 sm:px-8 sm:pb-16 sm:pt-8">
+        <Breadcrumb items={filAriane} class="mb-10 sm:mb-14" />
+
+        <p class="text-xs font-bold uppercase tracking-[0.14em] text-navy/55">Nos services</p>
+
+        <h1 class="mt-5 max-w-[18ch] text-[2rem] font-bold leading-[1.08] tracking-tight text-navy text-balance sm:text-5xl lg:text-6xl">
+          {cartesAccueil.title}
+        </h1>
+
+        <p class="mt-6 max-w-[64ch] text-base leading-relaxed text-navy/75 text-pretty sm:text-lg">
+          {cartesAccueil.intro}
+        </p>
+      </div>
+    </section>
+
+    <section class="mx-auto max-w-6xl px-5 py-14 sm:px-8 sm:py-20" aria-label="Liste des services">
+      <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          cartes.map((carte) => (
+            <li class="flex">
+              <ServiceCard
+                service={carte}
+                image={carte.image}
+                linkLabel={cartesAccueil.linkLabel}
+              />
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <CtaBand
+      title={accueil.data.contact.title}
+      text={accueil.data.contact.text}
+      buttons={[{ label: 'Demander mon devis gratuit', action: 'devis' }, { label: 'Nous appeler', action: 'tel' }]}
+    />
+
+    <ContactSection id="devis" />
+  </main>
+
+  <Footer />
+</Base>

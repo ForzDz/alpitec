@@ -1,0 +1,52 @@
+---
+/**
+ * Bouton — deux variantes seulement.
+ *
+ *   primaire   aplat orange. Réservé à la conversion : devis, téléphone.
+ *              Ne jamais l'utiliser pour un lien de navigation.
+ *   secondaire contour navy 2px. Tout le reste.
+ *
+ * Angles vifs, pas d'ombre : la profondeur vient du contraste, pas des effets.
+ */
+
+const {
+  variant = 'primaire',
+  size = 'md',
+  href,
+  type = 'button',
+  class: className = '',
+  ...rest
+} = Astro.props;
+
+const base =
+  'inline-flex items-center justify-center gap-2.5 font-bold tracking-tight text-center ' +
+  'transition-colors duration-150 ease-out ' +
+  'focus-visible:outline-2 focus-visible:outline-offset-2';
+
+const variants = {
+  primaire: 'bg-orange text-blanc hover:bg-navy focus-visible:outline-navy',
+  secondaire:
+    'border-2 border-navy text-navy hover:bg-navy hover:text-blanc focus-visible:outline-orange',
+};
+
+const sizes = {
+  // py-3 sur `sm` pour rester à 44 px de haut : cible tactile minimale.
+  sm: 'px-4 py-3 text-sm',
+  md: 'px-6 py-3.5 text-base',
+  lg: 'px-7 py-4 text-base sm:text-lg',
+};
+
+const classes = [base, variants[variant], sizes[size], className].join(' ');
+---
+
+{
+  href ? (
+    <a href={href} class={classes} {...rest}>
+      <slot />
+    </a>
+  ) : (
+    <button type={type} class={classes} {...rest}>
+      <slot />
+    </button>
+  )
+}

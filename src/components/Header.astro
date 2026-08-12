@@ -1,0 +1,456 @@
+﻿---
+import { Image } from 'astro:assets';
+import logo from '../assets/logo-complet.jpeg';
+import logoDetoure from '../assets/logo-detoure.png';
+import Button from './Button.astro';
+import { getSite, getServices, serviceHref, whatsappHref } from '../lib/content.js';
+
+/**
+ * En-tête + barre d'action mobile.
+ *
+ * Règle de conversion tenue de bout en bout : le téléphone est atteignable en
+ * permanence. Sur écran large il est dans la barre collante ; sur mobile, où le
+ * header se réduit au logo et au burger, il passe dans la barre fixe du bas —
+ * à portée de pouce, avec WhatsApp et le devis.
+ *
+ * `transparent` : réservé à l'accueil. Le header se pose alors par-dessus la
+ * vidéo du hero, sans fond, logo et liens en blanc. Une sentinelle de 80 px
+ * placée en haut du hero le fait basculer en blanc opaque au défilement.
+ * L'état est porté par `data-etat` (« haut » ou « solide ») : toute la bascule
+ * visuelle est en CSS, le JavaScript ne fait que changer cet attribut.
+ *
+ * Aucun framework : disclosure natif, aria-expanded, Échap, clic extérieur.
+ */
+
+const { transparent = false } = Astro.props;
+
+const site = await getSite();
+const services = await getServices();
+const { pathname } = Astro.url;
+
+const telHref = `tel:${site.telephone.lien}`;
+const waHref = whatsappHref(site);
+
+const liens = [
+  { label: 'Accueil', href: '/' },
+  { label: 'Nos services', href: '/services' },
+  { label: 'Contact', href: '/#devis' },
+];
+
+const estActif = (href) => {
+  const chemin = href.split('#')[0];
+  // Une ancre (« /#devis ») pointe une section, jamais une page courante.
+  if (href.includes('#')) return false;
+  if (chemin === '/') return pathname === '/';
+  return pathname === chemin || pathname.startsWith(`${chemin}/`);
+};
+---
+
+<a
+  href="#contenu"
+  class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[60] focus:bg-navy focus:px-5 focus:py-3 focus:text-sm focus:font-bold focus:text-blanc"
+>
+  Aller au contenu
+</a>
+
+<header
+  class="group sticky top-0 z-50 border-b border-navy/12 bg-blanc transition-[background-color,border-color] duration-200 ease-out data-[etat=haut]:border-transparent data-[etat=haut]:bg-transparent motion-reduce:transition-none"
+  data-header
+  data-entete
+  data-etat={transparent ? 'haut' : 'solide'}
+>
+  <div class="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-5 sm:h-20 sm:px-8">
+    <a
+      href="/"
+      class="inline-flex h-11 shrink-0 items-center focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orange"
+      aria-label={`${site.nom} — accueil`}
+    >
+      {/*
+        Deux logos superposés en fondu. La version claire est le logo détouré
+        (fond blanc retiré au colorkey) repassé en blanc plein par filtre CSS :
+        c'est le vrai tracé de la marque, pas une reconstitution.
+      */}
+      <span class="relative block h-7 w-auto sm:h-8">
+        <Image
+          src={logo}
+          alt={`${site.nom}, ${site.baseline.toLowerCase()}`}
+          widths={[160, 240, 320]}
+          sizes="160px"
+          loading="eager"
+          class="h-7 w-auto opacity-100 transition-opacity duration-200 ease-out group-data-[etat=haut]:opacity-0 motion-reduce:transition-none sm:h-8"
+        />
+        <Image
+          src={logoDetoure}
+          alt=""
+          aria-hidden="true"
+          widths={[160, 240, 320]}
+          sizes="160px"
+          loading="eager"
+          class="absolute inset-0 h-7 w-auto opacity-0 brightness-0 invert transition-opacity duration-200 ease-out group-data-[etat=haut]:opacity-100 motion-reduce:transition-none sm:h-8"
+        />
+      </span>
+    </a>
+
+    <!-- Navigation écran large -->
+    <nav class="hidden lg:block" aria-label="Navigation principale">
+      <ul class="flex items-center gap-8">
+        {
+          liens.map((lien) =>
+            lien.href === '/services' ? (
+              <li class="relative" data-disclosure>
+                <button
+                  type="button"
+                  class="flex items-center gap-1.5 py-2 text-sm font-bold tracking-tight text-navy transition-colors duration-150 hover:text-orange focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orange aria-expanded:text-orange group-data-[etat=haut]:text-blanc group-data-[etat=haut]:hover:text-orange"
+                  aria-expanded="false"
+                  aria-controls="menu-services"
+                  data-disclosure-trigger
+                >
+                  {lien.label}
+                  <svg
+                    aria-hidden="true"
+                    viewBox="0 0 16 16"
+                    class="h-3 w-3 transition-transform duration-200"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M3 6l5 5 5-5" stroke-linecap="square" />
+                  </svg>
+                </button>
+
+                <div
+                  id="menu-services"
+                  class="absolute left-1/2 top-full z-50 w-[42rem] max-w-[calc(100vw-2rem)] -translate-x-1/2 border border-navy/12 bg-blanc p-2 shadow-[0_16px_40px_-24px_rgb(35_43_74_/_0.5)]"
+                  data-disclosure-panel
+                  hidden
+                >
+                  {/* 9 services en 3 colonnes : la grille tombe juste, aucune case vide. */}
+                  <ul class="grid grid-cols-3 gap-px bg-navy/10">
+                    {services.map((service) => (
+                      <li class="bg-blanc">
+                        <a
+                          href={serviceHref(service.data.slug)}
+                          class="group flex items-start gap-2.5 p-3 transition-colors duration-150 hover:bg-gris focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-orange"
+                        >
+                          <span
+                            aria-hidden="true"
+                            class="mt-1 h-3.5 w-0.5 shrink-0 bg-orange transition-all duration-150 group-hover:h-5"
+                          />
+                          <span class="text-sm font-bold leading-snug tracking-tight text-navy text-balance">
+                            {service.data.shortLabel}
+                          </span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </li>
+            ) : (
+              <li>
+                <a
+                  href={lien.href}
+                  aria-current={estActif(lien.href) ? 'page' : undefined}
+                  class="py-2 text-sm font-bold tracking-tight text-navy transition-colors duration-150 hover:text-orange focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orange aria-[current=page]:text-orange group-data-[etat=haut]:text-blanc group-data-[etat=haut]:hover:text-orange group-data-[etat=haut]:aria-[current=page]:text-orange"
+                >
+                  {lien.label}
+                </a>
+              </li>
+            ),
+          )
+        }
+      </ul>
+    </nav>
+
+    <!-- Actions écran large : le téléphone d'abord, en gras, lisible -->
+    <div class="hidden items-center gap-5 lg:flex">
+      <a
+        href={telHref}
+        class="group flex items-center gap-2.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orange"
+        data-cta="tel-header"
+      >
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 20 20"
+          class="h-4 w-4 text-orange"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+        >
+          <path d="M4 3h3l1.5 4L6.5 8.5a11 11 0 005 5L13 11.5l4 1.5v3a1 1 0 01-1 1A13 13 0 013 4a1 1 0 011-1z" />
+        </svg>
+        <span class="flex flex-col leading-none">
+          <span class="text-[0.6875rem] font-bold uppercase tracking-[0.12em] text-navy/50 transition-colors duration-200 group-data-[etat=haut]:text-blanc/75">
+            Appelez-nous
+          </span>
+          <span class="mt-1 text-[0.9375rem] font-bold tracking-tight text-navy transition-colors duration-150 group-hover:text-orange group-data-[etat=haut]:text-blanc">
+            {site.telephone.affichage}
+          </span>
+        </span>
+      </a>
+
+      <Button href="#devis" variant="primaire" size="sm" data-cta="devis-header">
+        Devis gratuit
+      </Button>
+    </div>
+
+    <!-- Burger -->
+    <button
+      type="button"
+      class="-mr-2 flex h-11 w-11 items-center justify-center text-navy transition-colors duration-150 hover:text-orange focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange group-data-[etat=haut]:text-blanc lg:hidden"
+      aria-expanded="false"
+      aria-controls="menu-mobile"
+      aria-label="Ouvrir le menu"
+      data-burger
+    >
+      <svg aria-hidden="true" viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2">
+        <path class="origin-center transition-transform duration-200" d="M3 6h18" data-burger-top stroke-linecap="square" />
+        <path class="transition-opacity duration-200" d="M3 12h18" data-burger-mid stroke-linecap="square" />
+        <path class="origin-center transition-transform duration-200" d="M3 18h18" data-burger-bot stroke-linecap="square" />
+      </svg>
+    </button>
+  </div>
+
+  <!-- Panneau mobile -->
+  <div
+    id="menu-mobile"
+    class="fixed inset-x-0 bottom-0 top-16 z-40 overflow-y-auto overscroll-contain border-t border-navy/12 bg-blanc lg:hidden"
+    data-mobile-panel
+    hidden
+  >
+    <nav class="px-5 pb-40 pt-6" aria-label="Navigation mobile">
+      <a
+        href={telHref}
+        class="flex items-center justify-between gap-4 border-l-2 border-orange bg-gris px-5 py-4"
+        data-cta="tel-menu"
+      >
+        <span class="flex flex-col leading-none">
+          <span class="text-[0.6875rem] font-bold uppercase tracking-[0.12em] text-navy/50 transition-colors duration-200 group-data-[etat=haut]:text-blanc/75">
+            Appelez-nous
+          </span>
+          <span class="mt-1.5 text-lg font-bold tracking-tight text-navy">
+            {site.telephone.affichage}
+          </span>
+        </span>
+        <svg aria-hidden="true" viewBox="0 0 20 20" class="h-5 w-5 shrink-0 text-orange" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M4 3h3l1.5 4L6.5 8.5a11 11 0 005 5L13 11.5l4 1.5v3a1 1 0 01-1 1A13 13 0 013 4a1 1 0 011-1z" />
+        </svg>
+      </a>
+
+      <ul class="mt-8 space-y-1">
+        {
+          liens
+            .filter((l) => l.href !== '/services')
+            .map((lien) => (
+              <li>
+                <a
+                  href={lien.href}
+                  aria-current={estActif(lien.href) ? 'page' : undefined}
+                  class="block border-b border-navy/10 py-4 text-xl font-bold tracking-tight text-navy aria-[current=page]:text-orange"
+                >
+                  {lien.label}
+                </a>
+              </li>
+            ))
+        }
+      </ul>
+
+      <h2 class="mt-9 border-l-2 border-orange pl-4 text-xs font-bold uppercase tracking-[0.14em] text-navy/55">
+        Nos services
+      </h2>
+      <ul class="mt-4 space-y-1">
+        {
+          services.map((service) => (
+            <li>
+              <a
+                href={serviceHref(service.data.slug)}
+                class="flex items-start gap-3 border-b border-navy/10 py-3.5"
+              >
+                <span aria-hidden="true" class="mt-1.5 h-4 w-0.5 shrink-0 bg-orange" />
+                <span class="text-base font-bold leading-snug tracking-tight text-navy text-balance">
+                  {service.data.shortLabel}
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<!-- Barre d'action fixe mobile : Appeler · WhatsApp · Devis -->
+<div
+  class="fixed inset-x-0 bottom-0 z-50 bg-navy pb-[env(safe-area-inset-bottom)] shadow-[0_-1px_0_0_rgb(255_255_255_/_0.14),0_-14px_32px_-10px_rgb(35_43_74_/_0.65)] lg:hidden"
+  data-action-bar
+>
+  {/*
+    Hiérarchie assumée : le devis occupe 60 % de la largeur en orange plein,
+    les deux accès directs restent compacts en navy. Fonds opaques, aucune
+    transparence — la barre doit se détacher franchement du contenu.
+  */}
+  <div class="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,3fr)]">
+    <a
+      href={telHref}
+      class="flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 px-0.5 py-2.5 text-blanc transition-colors duration-150 active:bg-blanc/15 sm:px-1"
+      data-cta="tel-barre"
+    >
+      <svg aria-hidden="true" viewBox="0 0 20 20" class="h-[1.375rem] w-[1.375rem] text-orange" fill="none" stroke="currentColor" stroke-width="1.9">
+        <path d="M4 3h3l1.5 4L6.5 8.5a11 11 0 005 5L13 11.5l4 1.5v3a1 1 0 01-1 1A13 13 0 013 4a1 1 0 011-1z" />
+      </svg>
+      <span class="text-[0.625rem] font-bold uppercase tracking-[0.03em] sm:text-[0.6875rem] sm:tracking-[0.08em]">Appeler</span>
+    </a>
+
+    <a
+      href={waHref}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 border-x border-blanc/15 px-0.5 py-2.5 text-blanc transition-colors duration-150 active:bg-blanc/15 sm:px-1"
+      data-cta="whatsapp-barre"
+    >
+      <svg aria-hidden="true" viewBox="0 0 24 24" class="h-[1.375rem] w-[1.375rem] text-orange" fill="currentColor">
+        <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 004.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0012.04 2zm0 18.15h-.01a8.23 8.23 0 01-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 01-1.26-4.38c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 015.83 2.42 8.19 8.19 0 012.41 5.83c0 4.54-3.69 8.23-8.24 8.23zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.15.16-.29.18-.54.06-.25-.13-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.01-.38.11-.5.11-.11.25-.29.37-.44.13-.15.17-.25.25-.42.08-.16.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.47c-.16 0-.43.06-.65.31-.22.25-.85.83-.85 2.03s.87 2.35.99 2.51c.12.16 1.71 2.61 4.15 3.66.58.25 1.03.4 1.39.51.58.19 1.11.16 1.53.1.47-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.11-.22-.17-.47-.29z"/>
+      </svg>
+      <span class="text-[0.625rem] font-bold uppercase tracking-[0.03em] sm:text-[0.6875rem] sm:tracking-[0.08em]">WhatsApp</span>
+    </a>
+
+    <a
+      href="#devis"
+      class="group/devis flex min-h-14 items-center justify-center gap-2.5 bg-orange px-3 text-blanc transition-colors duration-150 active:bg-navy"
+      data-cta="devis-barre"
+    >
+      <span class="text-[0.9375rem] font-bold leading-none tracking-tight">Devis gratuit</span>
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 16 16"
+        class="h-4 w-4 shrink-0 transition-transform duration-150 group-active/devis:translate-x-1"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.2"
+      >
+        <path d="M2 8h11M9 4l4 4-4 4" stroke-linecap="square" />
+      </svg>
+    </a>
+  </div>
+</div>
+
+<script>
+  /* ------------------------------------------------- header transparent */
+  /**
+   * Bascule « haut » → « solide ».
+   *
+   * Écouteur de défilement passif, borné par requestAnimationFrame, plutôt
+   * qu'un IntersectionObserver : celui-ci ne reçoit aucune notification tant
+   * que la page est considérée comme masquée (onglet d'arrière-plan, rendu
+   * hors écran). Le header resterait alors en blanc sur fond blanc pendant
+   * tout le défilement — un texte invisible, pas juste un effet manqué.
+   *
+   * Le JavaScript ne fait que changer `data-etat` ; toute la bascule visuelle
+   * (fond, bordure, couleur des liens, fondu des deux logos) est en CSS.
+   */
+  const entete = document.querySelector('[data-entete]');
+  const sentinelle = document.querySelector('[data-sentinelle-entete]');
+
+  /** Mémorise l'état lié au défilement, pour le restaurer à la fermeture du menu. */
+  let etatDefilement = entete?.dataset.etat ?? 'solide';
+
+  if (entete && entete.dataset.etat === 'haut') {
+    // Le seuil est la hauteur de la sentinelle : un seul endroit à régler.
+    const seuil = sentinelle?.getBoundingClientRect().height || 80;
+
+    const majEtat = () => {
+      etatDefilement = window.scrollY < seuil ? 'haut' : 'solide';
+      // Menu ouvert : le panneau est blanc, le header doit l'être aussi.
+      const menuOuvert =
+        document.querySelector('[data-burger]')?.getAttribute('aria-expanded') === 'true';
+      if (!menuOuvert) entete.dataset.etat = etatDefilement;
+    };
+
+    // Pas de requestAnimationFrame : le travail se résume à une comparaison et
+    // à l'écriture d'un attribut. L'encadrer coûterait plus cher que de le
+    // faire, et rAF ne s'exécute pas dans un onglet d'arrière-plan — le header
+    // resterait alors blanc sur blanc au retour sur l'onglet.
+    addEventListener('scroll', majEtat, { passive: true });
+
+    // Rechargement en cours de page : l'état doit être juste dès le départ.
+    majEtat();
+  }
+
+  /* ---------------------------------------------------------------- burger */
+  const burger = document.querySelector('[data-burger]');
+  const panneau = document.querySelector('[data-mobile-panel]');
+
+  if (burger && panneau) {
+    const traits = {
+      haut: burger.querySelector('[data-burger-top]'),
+      milieu: burger.querySelector('[data-burger-mid]'),
+      bas: burger.querySelector('[data-burger-bot]'),
+    };
+
+    const basculer = (ouvrir) => {
+      burger.setAttribute('aria-expanded', String(ouvrir));
+      burger.setAttribute('aria-label', ouvrir ? 'Fermer le menu' : 'Ouvrir le menu');
+      panneau.hidden = !ouvrir;
+      document.documentElement.classList.toggle('overflow-hidden', ouvrir);
+
+      // Le panneau mobile est blanc : un header transparent y rendrait le
+      // logo et le burger blancs sur blanc. On force « solide » à l'ouverture.
+      if (entete) entete.dataset.etat = ouvrir ? 'solide' : etatDefilement;
+
+      traits.haut.style.transform = ouvrir ? 'translateY(6px) rotate(45deg)' : '';
+      traits.milieu.style.opacity = ouvrir ? '0' : '';
+      traits.bas.style.transform = ouvrir ? 'translateY(-6px) rotate(-45deg)' : '';
+    };
+
+    burger.addEventListener('click', () =>
+      basculer(burger.getAttribute('aria-expanded') !== 'true'),
+    );
+
+    // Un lien tapé referme le panneau (les ancres ne rechargent pas la page).
+    panneau.addEventListener('click', (e) => {
+      if (e.target.closest('a')) basculer(false);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && burger.getAttribute('aria-expanded') === 'true') {
+        basculer(false);
+        burger.focus();
+      }
+    });
+
+    // Repasser en écran large ne doit pas laisser le scroll bloqué.
+    matchMedia('(min-width: 1024px)').addEventListener('change', (e) => {
+      if (e.matches) basculer(false);
+    });
+  }
+
+  /* ------------------------------------------------ menu services (bureau) */
+  for (const bloc of document.querySelectorAll('[data-disclosure]')) {
+    const declencheur = bloc.querySelector('[data-disclosure-trigger]');
+    const contenu = bloc.querySelector('[data-disclosure-panel]');
+
+    const basculer = (ouvrir) => {
+      declencheur.setAttribute('aria-expanded', String(ouvrir));
+      contenu.hidden = !ouvrir;
+    };
+
+    declencheur.addEventListener('click', () =>
+      basculer(declencheur.getAttribute('aria-expanded') !== 'true'),
+    );
+
+    document.addEventListener('click', (e) => {
+      if (!bloc.contains(e.target)) basculer(false);
+    });
+
+    bloc.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        basculer(false);
+        declencheur.focus();
+      }
+    });
+
+    // Le focus qui sort du bloc au clavier referme le panneau.
+    bloc.addEventListener('focusout', (e) => {
+      if (!bloc.contains(e.relatedTarget)) basculer(false);
+    });
+  }
+</script>

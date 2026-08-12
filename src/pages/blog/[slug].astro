@@ -1,0 +1,155 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import OtherServices from '../../components/OtherServices.astro';
+import { getServices, serviceHref } from '../../lib/content.js';
+
+/**
+ * Gabarit d'article.
+ *
+ * Aucun article n'existe encore : getStaticPaths renvoie un tableau vide et
+ * aucune page n'est générée, sans casser le build. Déposer un .md dans
+ * src/content/blog/ suffit à faire apparaître l'article et sa fiche.
+ */
+
+export async function getStaticPaths() {
+  const articles = await getCollection('blog');
+  return articles
+    .filter((a) => !a.data.brouillon)
+    .map((article) => ({
+      params: { slug: article.data.slug },
+      props: { article },
+    }));
+}
+
+const { article } = Astro.props;
+const d = article.data;
+const { Content } = await render(article);
+
+const services = await getServices();
+const serviceLie = d.serviceLie ? services.find((s) => s.data.slug === d.serviceLie) : undefined;
+
+const url = `/blog/${d.slug}`;
+const filAriane = [
+  { label: 'Accueil', href: '/' },
+  { label: 'Conseils & actualités', href: '/blog' },
+  { label: d.title, href: url },
+];
+
+const dateFr = (date) =>
+  new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }).format(date);
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'BlogPosting',
+      '@id': `${new URL(url, Astro.site).href}#article`,
+      headline: d.title,
+      description: d.resume,
+      url: new URL(url, Astro.site).href,
+      inLanguage: 'fr-FR',
+      datePublished: d.datePublication.toISOString().slice(0, 10),
+      ...(d.dateMaj ? { dateModified: d.dateMaj.toISOString().slice(0, 10) } : {}),
+      author: { '@type': 'Organization', name: d.auteur },
+      publisher: { '@id': new URL('#entreprise', Astro.site).href },
+      ...(d.image ? { image: new URL(d.image.src, Astro.site).href } : {}),
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: filAriane.map((item, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        name: item.label,
+        item: new URL(item.href, Astro.site).href,
+      })),
+    },
+  ],
+};
+---
+
+<Base title={d.metaTitle} description={d.metaDescription} canonical={url} ogType="article">
+  <script slot="schema" type="application/ld+json" set:html={JSON.stringify(schema)} is:inline />
+
+  <Header />
+
+  <main id="contenu">
+    <section class="border-b border-navy/10">
+      <div class="mx-auto max-w-3xl px-5 pb-10 pt-6 sm:px-8 sm:pb-14 sm:pt-8">
+        <Breadcrumb items={filAriane} class="mb-10 sm:mb-14" />
+
+        <h1 class="max-w-[24ch] text-[2rem] font-bold leading-[1.08] tracking-tight text-navy text-balance sm:text-5xl">
+          {d.h1}
+        </h1>
+
+        <p class="mt-6 max-w-[62ch] text-base leading-relaxed text-navy/75 text-pretty sm:text-lg">
+          {d.resume}
+        </p>
+
+        <p class="mt-7 flex flex-wrap items-center gap-x-3 gap-y-1 text-[0.8125rem] text-navy/55">
+          <span aria-hidden="true" class="h-3.5 w-0.5 bg-orange"></span>
+          <span>{d.auteur}</span>
+          <span aria-hidden="true" class="text-navy/25">·</span>
+          <time datetime={d.datePublication.toISOString().slice(0, 10)}>
+            {dateFr(d.datePublication)}
+          </time>
+          {
+            d.dateMaj && (
+              <>
+                <span aria-hidden="true" class="text-navy/25">·</span>
+                <span>Mis à jour le {dateFr(d.dateMaj)}</span>
+              </>
+            )
+          }
+        </p>
+      </div>
+    </section>
+
+    <div class="mx-auto max-w-3xl px-5 py-14 sm:px-8 sm:py-20">
+      <div class="texte-long">
+        <Content />
+      </div>
+
+      {
+        serviceLie && (
+          <aside class="mt-14 border-l-2 border-orange bg-gris px-6 py-7 sm:px-8">
+            <h2 class="text-xs font-bold uppercase tracking-[0.14em] text-navy/55">
+              Le service concerné
+            </h2>
+            <p class="mt-4 text-lg font-bold leading-snug tracking-tight text-navy text-balance">
+              {serviceLie.data.title}
+            </p>
+            <p class="mt-3 max-w-[54ch] text-[0.9375rem] leading-relaxed text-navy/75 text-pretty">
+              {serviceLie.data.intro}
+            </p>
+            <p class="mt-6">
+              <a
+                href={serviceHref(serviceLie.data.slug)}
+                class="inline-flex min-h-11 items-center gap-2 text-[0.9375rem] font-bold tracking-tight text-navy underline decoration-orange underline-offset-4 transition-colors duration-150 hover:text-orange"
+              >
+                Voir la page {serviceLie.data.shortLabel.toLowerCase()}
+              </a>
+            </p>
+          </aside>
+        )
+      }
+    </div>
+
+    <CtaBand
+      title="Un chantier à nous confier ?"
+      text="Décrivez-nous votre projet : visite technique planifiée rapidement, devis gratuit, détaillé et sans engagement."
+      buttons={[
+        { label: 'Demander mon devis gratuit', action: 'devis' },
+        { label: 'Nous appeler', action: 'tel' },
+      ]}
+    />
+
+    <OtherServices currentSlug={d.serviceLie ?? ''} title="Nos services cordistes" />
+  </main>
+
+  <Footer />
+</Base>

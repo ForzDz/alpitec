@@ -1,0 +1,55 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Button from '../components/Button.astro';
+import OtherServices from '../components/OtherServices.astro';
+import { getSite } from '../lib/content.js';
+
+/**
+ * Page 404.
+ *
+ * Nécessaire dès la bascule : les URLs de l'ancien site Joomla qui n'auront pas
+ * de redirection tomberont ici. Elle propose les services plutôt qu'un cul-de-sac.
+ */
+
+const site = await getSite();
+---
+
+<Base
+  title="Page introuvable — ALPITEC"
+  description="Cette page n'existe pas ou plus. Retrouvez nos prestations de travaux en hauteur à Paris et en Île-de-France."
+  canonical="/404"
+  noindex={true}
+>
+  <Header />
+
+  <main id="contenu">
+    <section class="mx-auto max-w-3xl px-5 py-16 sm:px-8 sm:py-24">
+      <span aria-hidden="true" class="mb-7 block h-0.5 w-14 bg-orange"></span>
+
+      <p class="text-xs font-bold uppercase tracking-[0.14em] text-navy/55">Erreur 404</p>
+
+      <h1 class="mt-5 max-w-[20ch] text-[2rem] font-bold leading-[1.08] tracking-tight text-navy text-balance sm:text-5xl">
+        Cette page n'existe pas ou plus
+      </h1>
+
+      <p class="mt-6 max-w-[60ch] text-base leading-relaxed text-navy/75 text-pretty sm:text-lg">
+        Le lien est peut-être ancien, ou la page a été déplacée lors de la refonte
+        du site. Nos prestations sont toutes accessibles ci-dessous, et le
+        téléphone reste le chemin le plus court.
+      </p>
+
+      <div class="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+        <Button href="/services" variant="secondaire" size="lg">Voir nos services</Button>
+        <Button href={`tel:${site.telephone.lien}`} variant="primaire" size="lg" data-cta="tel-404">
+          {site.telephone.affichage}
+        </Button>
+      </div>
+    </section>
+
+    <OtherServices currentSlug="" title="Nos services cordistes" />
+  </main>
+
+  <Footer />
+</Base>

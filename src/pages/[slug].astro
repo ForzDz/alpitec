@@ -1,0 +1,98 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+
+/**
+ * Pages éditoriales de premier niveau : mentions légales, confidentialité.
+ *
+ * Le texte vient du corps Markdown des fichiers de src/content/pages/.
+ * Ajouter une page = déposer un .md, rien d'autre.
+ */
+
+export async function getStaticPaths() {
+  const pages = await getCollection('pages');
+  return pages.map((page) => ({
+    params: { slug: page.data.slug },
+    props: { page },
+  }));
+}
+
+const { page } = Astro.props;
+const d = page.data;
+const { Content } = await render(page);
+
+const url = `/${d.slug}`;
+const filAriane = [
+  { label: 'Accueil', href: '/' },
+  { label: d.title, href: url },
+];
+
+const dateMaj = new Intl.DateTimeFormat('fr-FR', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+}).format(d.maj);
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebPage',
+      '@id': `${new URL(url, Astro.site).href}#page`,
+      name: d.title,
+      description: d.metaDescription,
+      url: new URL(url, Astro.site).href,
+      dateModified: d.maj.toISOString().slice(0, 10),
+      inLanguage: 'fr-FR',
+      publisher: { '@id': new URL('#entreprise', Astro.site).href },
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: filAriane.map((item, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        name: item.label,
+        item: new URL(item.href, Astro.site).href,
+      })),
+    },
+  ],
+};
+---
+
+<Base
+  title={d.metaTitle}
+  description={d.metaDescription}
+  canonical={url}
+  noindex={d.noindex}
+>
+  <script slot="schema" type="application/ld+json" set:html={JSON.stringify(schema)} is:inline />
+
+  <Header />
+
+  <main id="contenu">
+    <section class="border-b border-navy/10">
+      <div class="mx-auto max-w-3xl px-5 pb-10 pt-6 sm:px-8 sm:pb-14 sm:pt-8">
+        <Breadcrumb items={filAriane} class="mb-10 sm:mb-14" />
+
+        <h1 class="max-w-[20ch] text-[2rem] font-bold leading-[1.08] tracking-tight text-navy text-balance sm:text-5xl">
+          {d.h1}
+        </h1>
+
+        <p class="mt-5 text-[0.8125rem] text-navy/55">
+          Dernière mise à jour : <time datetime={d.maj.toISOString().slice(0, 10)}>{dateMaj}</time>
+        </p>
+      </div>
+    </section>
+
+    <div class="mx-auto max-w-3xl px-5 py-14 sm:px-8 sm:py-20">
+      <div class="texte-long">
+        <Content />
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Base>

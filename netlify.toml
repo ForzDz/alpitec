@@ -1,0 +1,121 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# Site 100 % statique : aucun adapter Astro, Netlify sert le HTML pré-rendu.
+
+# =============================================================================
+# REDIRECTIONS 301 — ANCIEN SITE JOOMLA
+# =============================================================================
+# Les anciennes URLs n'ont pas encore été fournies. Sans elles, chaque page
+# indexée depuis 2018 renverra un 404 le jour de la bascule, et le référencement
+# accumulé sera perdu.
+#
+# Comment produire la liste :
+#   1. Google Search Console → Indexation → Pages → « Toutes les pages connues »
+#      → exporter. C'est la source la plus fiable, ce sont les URLs que Google
+#      a réellement en mémoire.
+#   2. Compléter avec le sitemap de l'ancien site (souvent /index.php?option=
+#      com_xmap ou /sitemap.xml) et un crawl de alpitec.fr avant coupure.
+#
+# Format Netlify — une ligne par redirection, ancienne URL puis nouvelle :
+#
+#   [[redirects]]
+#     from = "/index.php?option=com_content&view=article&id=12"
+#     to = "/services/ravalement"
+#     status = 301
+#     force = true
+#
+# `force = true` est nécessaire : sans lui, Netlify ne redirige que si aucun
+# fichier ne correspond déjà à l'ancien chemin.
+#
+# Joomla génère souvent des URLs à paramètres. Netlify les gère via `query` :
+#
+#   [[redirects]]
+#     from = "/index.php"
+#     query = { option = "com_content", view = "article", id = "12" }
+#     to = "/services/ravalement"
+#     status = 301
+#     force = true
+#
+# ⚠️ Ne pas tout rediriger vers l'accueil : Google traite une redirection de
+# masse vers la racine comme un soft 404 et n'en transmet aucune autorité.
+# Chaque ancienne page doit pointer vers son équivalent le plus proche.
+# -----------------------------------------------------------------------------
+# ▼▼▼ COLLER LES REDIRECTIONS ICI ▼▼▼
+
+# (aucune redirection définie pour l'instant)
+
+# ▲▲▲ FIN DES REDIRECTIONS ▲▲▲
+
+# Anciens flux et fichiers Joomla qui n'ont pas d'équivalent : on les sort
+# proprement de l'index plutôt que de laisser un 404 mou.
+[[redirects]]
+  from = "/administrator/*"
+  to = "/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/component/*"
+  to = "/services"
+  status = 301
+  force = true
+
+# Filet de sécurité : toute URL inconnue renvoie la page 404 du site, avec le
+# bon code HTTP (jamais 200, sinon Google indexe des pages d'erreur).
+[[redirects]]
+  from = "/*"
+  to = "/404.html"
+  status = 404
+
+# =============================================================================
+# EN-TÊTES
+# =============================================================================
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # Empêche le navigateur de deviner un type MIME différent de celui annoncé.
+    X-Content-Type-Options = "nosniff"
+    # Interdit l'affichage du site dans une iframe tierce (clickjacking).
+    X-Frame-Options = "SAMEORIGIN"
+    # N'envoie l'URL complète en référent qu'aux pages du même site.
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    # Coupe l'accès aux API sensibles : le site n'en utilise aucune.
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()"
+    # HTTPS obligatoire pendant 2 ans, sous-domaines inclus.
+    # À n'activer qu'une fois le domaine servi en HTTPS et vérifié : un preload
+    # HSTS est très difficile à annuler.
+    Strict-Transport-Security = "max-age=63072000; includeSubDomains"
+    # Politique de sécurité du contenu.
+    # 'unsafe-inline' sur script-src est nécessaire : Astro insère les scripts
+    # de page en ligne. À remplacer par des empreintes si un audit l'exige.
+    # frame-src autorise uniquement la carte OpenStreetMap, chargée au clic.
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; media-src 'self'; frame-src https://www.openstreetmap.org; form-action 'self'; connect-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'"
+
+# Ressources à empreinte : elles ne changent jamais sous la même URL.
+[[headers]]
+  for = "/_astro/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/fonts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/videos/*"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000"
+
+# Le HTML doit être revalidé à chaque visite, sinon une correction de contenu
+# met des jours à apparaître chez les visiteurs revenants.
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"

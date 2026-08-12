@@ -1,0 +1,84 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Button from '../components/Button.astro';
+import OtherServices from '../components/OtherServices.astro';
+import { getSite, whatsappHref } from '../lib/content.js';
+
+/**
+ * Page de confirmation après envoi du formulaire Netlify Forms.
+ *
+ * En `noindex` et hors sitemap : elle n'a aucune valeur de recherche et ne doit
+ * pas remonter sur une requête de marque.
+ *
+ * C'est aussi le point de mesure des conversions : l'arrivée sur cette URL
+ * signale un envoi réussi, sans dépendre d'un écouteur sur le bouton.
+ */
+
+const site = await getSite();
+---
+
+<Base
+  title="Demande envoyée — ALPITEC"
+  description="Votre demande de devis a bien été transmise à ALPITEC."
+  canonical="/merci"
+  noindex={true}
+>
+  <Header />
+
+  <main id="contenu">
+    <section class="mx-auto max-w-3xl px-5 py-16 sm:px-8 sm:py-24">
+      <span aria-hidden="true" class="mb-7 block h-0.5 w-14 bg-orange"></span>
+
+      <h1 class="max-w-[20ch] text-[2rem] font-bold leading-[1.08] tracking-tight text-navy text-balance sm:text-5xl">
+        Votre demande est bien arrivée
+      </h1>
+
+      <p class="mt-6 max-w-[60ch] text-base leading-relaxed text-navy/75 text-pretty sm:text-lg">
+        Merci. Nous avons reçu les éléments de votre projet et nous vous
+        rappelons rapidement pour le qualifier, puis planifier la visite
+        technique. Le devis qui suivra sera gratuit, détaillé et sans engagement.
+      </p>
+
+      <div class="mt-10 border-l-2 border-orange bg-gris px-6 py-7 sm:px-8">
+        <h2 class="text-xs font-bold uppercase tracking-[0.14em] text-navy/55">
+          C'est urgent ?
+        </h2>
+        <p class="mt-4 max-w-[52ch] text-[0.9375rem] leading-relaxed text-navy/80 text-pretty">
+          Une infiltration ou une chute de matériaux n'attend pas. Appelez-nous
+          directement, nous traitons ces situations en priorité.
+        </p>
+
+        <div class="mt-7 flex flex-col gap-3 sm:flex-row">
+          <Button href={`tel:${site.telephone.lien}`} variant="primaire" size="md" data-cta="tel-merci">
+            {site.telephone.affichage}
+          </Button>
+          <Button
+            href={whatsappHref(site)}
+            variant="secondaire"
+            size="md"
+            target="_blank"
+            rel="noopener noreferrer"
+            data-cta="whatsapp-merci"
+          >
+            WhatsApp
+          </Button>
+        </div>
+      </div>
+
+      <p class="mt-10 text-[0.9375rem] text-navy/70">
+        <a
+          href="/"
+          class="font-bold text-navy underline decoration-orange underline-offset-4 transition-colors duration-150 hover:text-orange"
+        >
+          Retour à l'accueil
+        </a>
+      </p>
+    </section>
+
+    <OtherServices currentSlug="" title="Nos services cordistes" />
+  </main>
+
+  <Footer />
+</Base>
