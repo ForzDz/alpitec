@@ -1,4 +1,4 @@
-# ALPITEC — site vitrine
+﻿# ALPITEC — site vitrine
 
 Site vitrine d'ALPITEC, entreprise de travaux d'accès difficile sur cordes
 (cordistes) à Vitry-sur-Seine, intervenant à Paris et en Île-de-France.
@@ -171,7 +171,7 @@ src/
 ├── components/         Header, Footer, Button, ServiceCard, FaqAccordion,
 │                       CtaBand, InfoBox, OtherServices, Gallery, Breadcrumb,
 │                       ContactSection, ServiceSection
-├── lib/content.js      accès unique aux contenus et aux photos
+├── lib/content.ts      accès unique aux contenus et aux photos
 ├── assets/             logo + photos du site
 ├── styles/global.css   tokens de marque, police, styles de texte long
 └── content.config.ts   schémas des collections

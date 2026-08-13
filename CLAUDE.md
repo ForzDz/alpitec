@@ -41,3 +41,100 @@ _sources/videos/   vidéo de chantier
 ## Méthode
 - Montre-moi ton approche avant de coder sur toute tâche non triviale.
 - Un changement = un prompt. Pas de méga-refonte.
+
+---
+
+# État du projet
+
+_Dernière mise à jour : 13 août 2026._
+
+**Le site est complet et fonctionnel : 17 pages, build vert, 4 261 Ko.**
+Il n'est pas encore déployable en l'état — voir « En attente » plus bas.
+
+## Fait
+
+| Étape | Contenu |
+|---|---|
+| 1 | Rangement des sources brutes, inventaire, renommage séquentiel |
+| 2 | Socle Astro + Tailwind, collections de contenu, extraction des 10 `.docx` |
+| 3 | Design system : 8 composants, direction visuelle « le fil orange » |
+| 4 | Gabarit unique des 9 pages services + hub `/services` |
+| 5 | Page d'accueil : hero vidéo, 9 services, chiffres, témoignages, zones |
+| 6 | Contact, formulaire Netlify, pages légales, blog, SEO technique |
+| 7 | Audits mobile et performance, sécurité, relecture design |
+
+Depuis : téléphone réel intégré, hero mobile retravaillé, filigrane de la vidéo
+supprimé au recadrage, photos triées intégrées, barre d'action mobile renforcée,
+header transparent sur l'accueil, mise en dépôt Git.
+
+**Vérifié** : 0 page sans `title` / meta description / H1 unique / canonical.
+0 image sans `alt`. 34 tests mobile (17 pages × 320 et 375 px) sans échec.
+Contrastes AA mesurés sur la vidéo réelle. 0 erreur console.
+
+## En attente — bloque la mise en ligne
+
+1. **Redirections 301 des anciennes URLs Joomla.** Section prête dans
+   `netlify.toml`, vide. Sans elles, tout l'historique SEO tombe en 404.
+2. **9 champs légaux** dans `src/content/site/coordonnees.md` : SIRET, forme
+   juridique, capital, RCS, TVA, directeur de publication, assureur, adresse,
+   horaires. Le build les liste à chaque exécution.
+3. **Mentions `[À COMPLÉTER]`** encore visibles sur `/mentions-legales` et
+   `/confidentialite` — conséquence directe du point 2.
+4. **Chiffres « 2009 » et « 7 000+ »** de l'accueil : absents des `.docx`,
+   fournis oralement. Affirmations factuelles publiées, à confirmer.
+5. **Bloc « Moyens d'accès »** : seule copie du site non tirée des `.docx`, et
+   elle nuance le positionnement « sans échafaudage ni nacelle » des 9 pages
+   services. À valider ou réécrire.
+6. **Témoignages** : fonction des signataires + accord écrit. La section est
+   masquée tant qu'aucun avis ne porte `valide: true`.
+7. **Protection anti-spam** du formulaire à activer côté Netlify (honeypot seul
+   aujourd'hui), et `maxlength` à poser sur les champs.
+8. **Page `/merci`** à tester après un envoi réel.
+
+À surveiller aussi : le filigrane « KlingAI 3.0 » a été retiré par recadrage,
+mais la vidéo du hero reste vraisemblablement générée par IA — à trancher avant
+de la présenter comme un chantier ALPITEC. Et 4 photos sur 10 ne correspondent
+pas à leur dossier de prestation (commentaires « ATTENTION » dans les `.md`).
+
+## Décisions techniques
+
+**Astro 7, pas 5.** Version installée au démarrage du projet.
+
+**`src/content.config.ts`, pas `src/content/config.ts`.** Astro 7 a supprimé les
+_legacy content collections_ : l'ancien emplacement déclenche
+`LegacyContentConfigError` et bloque le build. Les fichiers de contenu restent
+dans `src/content/`. Le fichier est en TypeScript, comme `src/lib/content.ts` —
+les imports y font référence en `.js`, c'est la convention TS attendue.
+
+**Inter auto-hébergée.** woff2 variable dans `public/fonts/`, sous-ensemble latin
+seul, `font-display: swap`, préchargée. Pas de `<link>` vers Google Fonts : une
+requête tierce en moins sur le LCP mobile et aucune donnée visiteur envoyée à
+Google. Le sous-ensemble latin-ext a été retiré, le français n'en a pas besoin.
+
+**Témoignages anonymisés et verrouillés.** Les `.docx` les signent avec des noms
+de personnes et d'entreprises clientes, ce que `CLAUDE.md` interdit. Citations
+conservées mot pour mot, signatures supprimées, fonctions jamais inventées. Le
+champ `valide: false` empêche tout rendu tant que le client n'a pas fourni la
+fonction et l'accord écrit que son propre document réclame.
+
+**Vidéo du hero sur desktop uniquement.** `autoplay` annule `preload` : déclarer
+la balise coûtait 467 Ko à chaque première visite mobile pour un décor. Elle est
+injectée en JavaScript à partir de 640 px, jamais si `prefers-reduced-motion`.
+Sur mobile, seul le poster WebP est chargé.
+
+**Photos dans `src/assets/photos/`, pas `_sources/`.** `_sources/` garde le
+matériel brut du client (docx, vidéos originales, photos non triées, 27 Mo) et
+reste hors du dépôt. Les photos du site sont des ressources de production dont le
+build dépend : un glob sur `_sources/` ferait échouer le déploiement Netlify.
+
+**Une photo sans `alt` écrit n'est pas affichée.** `<Image>` d'Astro exige un
+`alt` : sans ce garde-fou, déposer une photo sans éditer le frontmatter casse le
+build. La galerie complète alors avec des tuiles navy, et le build indique quoi
+écrire.
+
+**Header transparent : écouteur de scroll, pas `IntersectionObserver`.** Ni l'un
+ni l'autre ne se déclenchent sur une page masquée, mais avec l'observateur le
+header serait resté blanc sur blanc au retour sur un onglet d'arrière-plan.
+
+**Page `/design-system` hors production.** Route dynamique dont
+`getStaticPaths` renvoie `[]` en production. Accessible en `npm run dev`.

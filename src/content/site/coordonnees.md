@@ -1,7 +1,7 @@
----
+﻿---
 # Téléphone et WhatsApp : valeurs réelles, fournies par le client.
 # Restent à obtenir : rue, horaires, SIRET et les autres mentions légales.
-# Le build liste automatiquement les champs encore vides (voir lib/content.js).
+# Le build liste automatiquement les champs encore vides (voir lib/content.ts).
 aRenseigner: false
 
 nom: "ALPITEC"
