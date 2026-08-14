@@ -144,45 +144,69 @@ const schema = {
   <Header />
 
   <main id="contenu">
-    {/* 1. Bandeau d'accueil */}
-    <section class="border-b border-navy/10">
-      <div class="mx-auto max-w-6xl px-5 pb-12 pt-6 sm:px-8 sm:pb-16 sm:pt-8">
-        <Breadcrumb items={filAriane} class="mb-10 sm:mb-14" />
+    {/*
+      ------------------------------------------------------ 1. En-tête
 
-        <p class="text-xs font-bold uppercase tracking-[0.14em] text-navy/70">
-          {d.surtitre}
-        </p>
+      Aplat navy, comme le hero de l'accueil et pour la même raison : c'est
+      l'ouverture de la page, elle doit peser. Sans vidéo en revanche — le
+      décor animé est réservé à l'accueil, ici c'est le titre qui travaille.
 
-        <h1 class="mt-5 max-w-[20ch] text-[2rem] font-bold leading-[1.08] tracking-tight text-navy text-balance sm:text-5xl lg:text-6xl">
-          {d.h1}
-        </h1>
+      La corde en version longue descend du surtitre jusqu'aux badges. C'est la
+      seule de la page : les sections « expertise » et « zones » plus bas n'en
+      portent qu'une version courte.
 
-        <p class="mt-6 max-w-[64ch] text-base leading-relaxed text-navy/75 text-pretty sm:text-lg">
-          {d.intro}
-        </p>
+      Bord franc en bas, volontairement : la limite entre l'en-tête et le
+      contenu est une ligne d'architecture, pas une couture à masquer. Les
+      dégradés de jonction servent aux changements de fond DANS le contenu.
+    */}
+    <section class="relative isolate overflow-hidden bg-navy">
+      <span
+        aria-hidden="true"
+        class="pointer-events-none absolute -right-40 -top-24 size-[34rem] rounded-full bg-orange/10 blur-3xl"
+      ></span>
 
-        <div class="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
-          {
-            d.heroButtons.map((bouton, i) => (
-              <Button
-                href={actionHref(bouton.action, site)}
-                variant={i === 0 ? 'primaire' : 'secondaire'}
-                size="lg"
-                data-cta={`${bouton.action}-hero`}
-              >
-                {bouton.label}
-              </Button>
-            ))
-          }
+      <div class="relative mx-auto max-w-6xl px-5 pb-16 pt-6 sm:px-8 sm:pb-24 sm:pt-8">
+        <Breadcrumb items={filAriane} ton="clair" class="mb-12 sm:mb-16" />
+
+        <div class="corde corde-descend">
+          <p class="max-w-[26ch] font-display text-etiquette uppercase text-blanc/85 sm:max-w-none">
+            {d.surtitre}
+          </p>
+
+          <h1 class="mt-7 max-w-[18ch] text-affiche text-blanc">
+            {d.h1}
+          </h1>
+
+          <p class="mt-7 max-w-[58ch] text-corps-large font-light text-blanc/85 text-pretty">
+            {d.intro}
+          </p>
+
+          <div class="mt-10 flex max-w-md flex-col gap-3 sm:max-w-none sm:flex-row sm:flex-wrap sm:items-center">
+            {
+              d.heroButtons.map((bouton, i) => (
+                <Button
+                  href={actionHref(bouton.action, site)}
+                  variant={i === 0 ? 'primaire' : 'clair'}
+                  size="lg"
+                  class="w-full sm:w-auto"
+                  data-cta={`${bouton.action}-hero`}
+                >
+                  {bouton.label}
+                </Button>
+              ))
+            }
+          </div>
         </div>
 
         {
           d.heroBadges.length > 0 && (
-            <ul class="mt-7 flex flex-wrap items-center gap-x-6 gap-y-2">
+            <ul class="mt-14 flex flex-wrap gap-2.5">
               {d.heroBadges.map((badge) => (
-                <li class="flex items-center gap-2.5 text-[0.8125rem] font-bold tracking-tight text-navy/70">
-                  <span aria-hidden="true" class="h-3.5 w-0.5 bg-orange" />
-                  {badge}
+                <li class="flex items-center gap-2.5 rounded-tuile bg-navy-clair/70 px-4 py-2.5 backdrop-blur-sm">
+                  <span aria-hidden="true" class="h-3.5 w-0.5 shrink-0 rounded-full bg-orange" />
+                  <span class="font-display text-[0.8125rem] font-bold tracking-tight text-blanc">
+                    {badge}
+                  </span>
                 </li>
               ))}
             </ul>
@@ -198,8 +222,8 @@ const schema = {
       ))
     }
 
-    {/* 8. FAQ */}
-    <div class="mx-auto max-w-3xl px-5 py-14 sm:px-8 sm:py-20">
+    {/* 8. FAQ — même rythme que partout ailleurs */}
+    <div class="mx-auto max-w-3xl px-5 py-[var(--espace-section)] sm:px-8">
       <FaqAccordion items={d.faq} title={d.faqTitle} id={`faq-${d.slug}`} />
     </div>
 

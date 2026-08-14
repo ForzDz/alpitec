@@ -24,7 +24,8 @@ import TuileIcone from './TuileIcone.astro';
  *   cta         bandeau                        fond navy profond
  *
  * C'est l'alternance qui porte la hiérarchie, plus le filet orange répété en
- * tête de chaque bloc — il ne subsiste que sous forme de corde verticale.
+ * tête de chaque bloc. La corde, elle, n'apparaît pas ici : elle appartient à
+ * l'en-tête de la page et au bandeau de conversion, deux par page au maximum.
  */
 
 const { section, photos = [], shortLabel, ordre } = Astro.props;
@@ -46,7 +47,7 @@ const { section, photos = [], shortLabel, ordre } = Astro.props;
     <section class="mx-auto max-w-6xl px-5 py-[var(--espace-section)] sm:px-8" data-reveal>
       <div class="grid gap-x-16 gap-y-10 lg:grid-cols-12">
         <div class="lg:col-span-5">
-          <div class="corde corde-descend lg:sticky lg:top-28">
+          <div class="lg:sticky lg:top-28">
             <TitreSection texte={section.title} data-reveal="titre" />
             <p class="mt-6 max-w-[46ch] text-corps font-light text-navy/75 text-pretty">
               {section.intro}
@@ -124,7 +125,7 @@ const { section, photos = [], shortLabel, ordre } = Astro.props;
         class="pointer-events-none absolute -right-24 top-1/2 size-[28rem] -translate-y-1/2 rounded-full bg-orange/10 blur-3xl"
       />
       <div class="relative mx-auto max-w-6xl px-5 py-[var(--espace-section)] sm:px-8">
-        <div class="corde max-w-[60ch]">
+        <div class="max-w-[60ch]">
           <TitreSection texte={section.title} ton="clair" data-reveal="titre" />
           {section.paragraphs.map((paragraphe) => (
             <p class="mt-6 text-corps-large font-light text-blanc/80 text-pretty">

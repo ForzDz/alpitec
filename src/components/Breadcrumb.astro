@@ -5,6 +5,8 @@
  * `items` : [{ label, href }] — le dernier élément est la page courante et
  * n'est pas cliquable (aria-current="page").
  *
+ * `ton` : « sombre » sur fond clair, « clair » sur un aplat navy.
+ *
  * Le JSON-LD BreadcrumbList correspondant est généré par la page, à partir de
  * la même liste : les deux ne peuvent pas diverger.
  *
@@ -12,35 +14,55 @@
  * modifier la hauteur visuelle du fil.
  */
 
-const { items, class: className = '' } = Astro.props;
+const { items, ton = 'sombre', class: className = '' } = Astro.props;
+
+const clair = ton === 'clair';
+
+/*
+ * Sur navy, l'orange de marque atteint 4,5:1 et peut donc servir au survol.
+ * Sur fond clair il plafonne à 3,9:1 même assombri : le survol y passe par un
+ * soulignement, jamais par la couleur. C'est la règle du site.
+ */
+const couleurs = clair
+  ? {
+      liste: 'text-blanc/70',
+      lien: 'hover:text-orange',
+      courant: 'font-bold text-blanc',
+      separateur: 'text-blanc/70',
+    }
+  : {
+      liste: 'text-navy/70',
+      lien: 'underline-offset-4 decoration-orange decoration-2 hover:underline',
+      courant: 'font-bold text-navy',
+      separateur: 'text-navy/70',
+    };
 ---
 
 <nav aria-label="Fil d'Ariane" class={className}>
-  <ol class="flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.8125rem] text-navy/70">
+  <ol class={`flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.8125rem] ${couleurs.liste}`}>
     {
       items.map((item, i) => {
         const dernier = i === items.length - 1;
         return (
           <li class="flex items-center gap-2">
             {/*
-              Séparateur en `navy/70` et non `navy/25` : il reste du texte à
-              l'écran, et la règle du site ne descend pas en dessous de 70 %
-              — /25 tombait à 1,6:1. Le poids visuel est rattrapé par la
-              graisse légère, pas par la transparence.
+              Le séparateur ne descend pas sous 70 % d'opacité : c'est du texte
+              à l'écran, et /25 tombait à 1,6:1. Le poids visuel est rattrapé
+              par la graisse légère, pas par la transparence.
             */}
             {i > 0 && (
-              <span aria-hidden="true" class="font-light text-navy/70">
+              <span aria-hidden="true" class={`font-light ${couleurs.separateur}`}>
                 /
               </span>
             )}
             {dernier ? (
-              <span aria-current="page" class="font-bold text-navy/75">
+              <span aria-current="page" class={couleurs.courant}>
                 {item.label}
               </span>
             ) : (
               <a
                 href={item.href}
-                class="-my-3 inline-flex min-h-11 items-center py-3 transition-colors duration-150 hover:text-orange focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange"
+                class={`-my-3 inline-flex min-h-11 items-center py-3 transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange ${couleurs.lien}`}
               >
                 {item.label}
               </a>
