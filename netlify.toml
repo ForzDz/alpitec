@@ -46,8 +46,181 @@
 # Chaque ancienne page doit pointer vers son équivalent le plus proche.
 # -----------------------------------------------------------------------------
 # ▼▼▼ COLLER LES REDIRECTIONS ICI ▼▼▼
+#
+# Établies le 14 août 2026 en explorant alpitec.fr, faute de liste fournie.
+# Le sitemap du site en ligne est inexploitable : 2 000 de ses 2 001 URLs sont
+# du spam injecté (voir la note en fin de fichier). La table ci-dessous vient
+# donc d'un parcours des liens réels du site, 24 pages, toutes en 200.
+#
+# Les lignes marquées « À VÉRIFIER » associent une ancienne prestation qui n'a
+# pas d'équivalent exact sur le nouveau site. Elles fonctionnent, mais le choix
+# de destination est le mien et mérite une relecture du client.
 
-# (aucune redirection définie pour l'instant)
+# --- Accueil ------------------------------------------------------------------
+[[redirects]]
+  from = "/home"
+  to = "/"
+  status = 301
+  force = true
+
+# --- Bâtiment : correspondances directes --------------------------------------
+[[redirects]]
+  from = "/services/batiment/ravalement-de-facade"
+  to = "/services/ravalement"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/services/batiment/travaux-de-couverture"
+  to = "/services/couverture"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/services/batiment/maconnerie-en-hauteur"
+  to = "/services/maconnerie"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/services/batiment/pose-filet-de-securite"
+  to = "/services/filets-protection"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/services/batiment/pose-filet-anti-pigeons"
+  to = "/services/pics-anti-pigeons"
+  status = 301
+  force = true
+
+# À VÉRIFIER — « audit de sécurité » n'existe plus tel quel. La page la plus
+# proche est celle des points d'ancrage, qui parle d'étude technique du
+# bâtiment et de conformité EN 795. Alternative possible : /services.
+[[redirects]]
+  from = "/services/batiment/audit-de-securite"
+  to = "/services/points-ancrage"
+  status = 301
+  force = true
+
+# --- Nettoyage : correspondances directes -------------------------------------
+[[redirects]]
+  from = "/services/nettoyage/nettoyage-de-vitres"
+  to = "/services/nettoyage-vitres"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/services/nettoyage/nettoyage-de-cheneaux"
+  to = "/services/cheneaux-gouttieres"
+  status = 301
+  force = true
+
+# À VÉRIFIER — « entretien de façades » recouvre à la fois le nettoyage et la
+# dévégétalisation sur le nouveau site. J'ai retenu le ravalement, qui traite
+# du nettoyage de façade dans son contenu. Alternative : /services/devegetalisation.
+[[redirects]]
+  from = "/services/nettoyage/entretien-de-facades"
+  to = "/services/ravalement"
+  status = 301
+  force = true
+
+# --- Pages de rubrique --------------------------------------------------------
+# Elles listaient des prestations : le hub des services est leur équivalent.
+[[redirects]]
+  from = "/services/batiment"
+  to = "/services"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/services/nettoyage"
+  to = "/services"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/services/travaux-en-hauteur"
+  to = "/services"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/services/autres-services"
+  to = "/services"
+  status = 301
+  force = true
+
+# --- Prestations abandonnées --------------------------------------------------
+# À VÉRIFIER — ces trois prestations ne figurent nulle part sur le nouveau
+# site. Faute de page équivalente, elles pointent vers le hub. Si le client
+# souhaite les conserver commercialement, il faut leur créer une page plutôt
+# que les rediriger.
+[[redirects]]
+  from = "/services/autres-services/ouverture-de-porte"
+  to = "/services"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/services/autres-services/sauvetage-danimaux"
+  to = "/services"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/services/evenementiel"
+  to = "/services"
+  status = 301
+  force = true
+
+# --- Actualité ----------------------------------------------------------------
+# À VÉRIFIER — /actualite était la rubrique d'actualités. Le blog du nouveau
+# site en tient lieu, mais il est vide et en noindex pour l'instant.
+[[redirects]]
+  from = "/actualite"
+  to = "/blog"
+  status = 301
+  force = true
+
+# --- Doublons /index.php ------------------------------------------------------
+# Joomla sert chaque page sous deux formes : /services ET /index.php/services.
+# Les deux sont liées depuis le site et donc potentiellement indexées.
+
+# Les URLs de composant en premier, sinon la règle générique ci-dessous les
+# enverrait vers /component/... et il faudrait une seconde redirection.
+[[redirects]]
+  from = "/index.php/component/*"
+  to = "/"
+  status = 301
+  force = true
+
+# Le splat rejoue le chemin sur le nouveau site, où les redirections ci-dessus
+# prennent ensuite le relais. Une page comme
+# /index.php/services/batiment/ravalement-de-facade passe donc par deux sauts
+# avant d'atteindre /services/ravalement : Google les suit sans perte, et
+# énumérer les vingt variantes doublerait ce fichier pour rien.
+[[redirects]]
+  from = "/index.php/*"
+  to = "/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/index.php"
+  to = "/"
+  status = 301
+  force = true
+
+# --- SP Page Builder ----------------------------------------------------------
+# Les URLs de composant rendent la page hors de son menu : toutes affichent le
+# même titre que l'accueil, aucune n'est identifiable par son sujet. Elles
+# partent donc à l'accueil, faute de mieux.
+[[redirects]]
+  from = "/component/sppagebuilder/*"
+  to = "/"
+  status = 301
+  force = true
 
 # ▲▲▲ FIN DES REDIRECTIONS ▲▲▲
 
@@ -64,6 +237,22 @@
   to = "/services"
   status = 301
   force = true
+
+# -----------------------------------------------------------------------------
+# LE SITE EN LIGNE EST COMPROMIS — constaté le 14 août 2026
+#
+# https://alpitec.fr/sitemap.xml déclare 2 001 URLs. 2 000 d'entre elles sont
+# du spam injecté, de la forme /?adzajsq-148759mitems/etidm. Le robots.txt
+# annonce en plus cinq sitemaps parasites (sitemap195.xml, sitemap524.xml,
+# sitemap153.xml, sitemap849.xml, sitemap43.xml) qui ne viennent pas du site.
+#
+# Ces URLs ne nécessitent AUCUNE redirection : ce sont des chaînes de requête
+# sur la racine, elles arriveront donc sur la nouvelle page d'accueil, dont la
+# balise canonique les ramène à « / ». Google les abandonnera de lui-même.
+#
+# En revanche le client doit être prévenu : tant que l'hébergement Joomla
+# tourne, l'injection continue. À traiter avant la bascule DNS.
+# -----------------------------------------------------------------------------
 
 # Filet de sécurité : toute URL inconnue renvoie la page 404 du site, avec le
 # bon code HTTP (jamais 200, sinon Google indexe des pages d'erreur).
