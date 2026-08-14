@@ -20,7 +20,7 @@ const { items, title, id = 'faq' } = Astro.props;
 <section class="scroll-mt-28" aria-labelledby={`${id}-titre`} data-reveal>
   {
     title && (
-      <TitreSection texte={title} id={`${id}-titre`} class="mb-12 max-w-[20ch]" />
+      <TitreSection texte={title} id={`${id}-titre`} class="mb-12 max-w-[20ch]" data-reveal="titre" />
     )
   }
 
@@ -28,7 +28,7 @@ const { items, title, id = 'faq' } = Astro.props;
     Une carte par question plutôt qu'une pile séparée par des filets : ouverte,
     la carte se détache du fond au lieu de dilater une ligne de tableau.
   */}
-  <div class="grid gap-3" data-faq>
+  <div class="grid gap-3" data-faq data-reveal-groupe>
     {
       items.map((item, i) => (
         <div class="overflow-hidden rounded-carte bg-blanc shadow-repos transition-shadow duration-200 has-[[aria-expanded='true']]:shadow-flottant">

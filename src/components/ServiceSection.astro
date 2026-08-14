@@ -47,14 +47,14 @@ const { section, photos = [], shortLabel, ordre } = Astro.props;
       <div class="grid gap-x-16 gap-y-10 lg:grid-cols-12">
         <div class="lg:col-span-5">
           <div class="corde corde-descend lg:sticky lg:top-28">
-            <TitreSection texte={section.title} />
+            <TitreSection texte={section.title} data-reveal="titre" />
             <p class="mt-6 max-w-[46ch] text-corps font-light text-navy/75 text-pretty">
               {section.intro}
             </p>
           </div>
         </div>
 
-        <ul class="grid gap-8 lg:col-span-7">
+        <ul class="grid gap-8 lg:col-span-7" data-reveal-groupe>
           {section.items.map((item) => (
             <li class="rounded-carte bg-blanc p-6 shadow-repos sm:p-7">
               <h3 class="text-carte text-navy text-balance">{item.label}</h3>
@@ -73,11 +73,11 @@ const { section, photos = [], shortLabel, ordre } = Astro.props;
     demi-pas sur écran large, la lecture cesse d'être une rangée de cases. */}
 {
   section.type === 'process' && (
-    <section class="bg-gris" data-reveal>
+    <section class="jonction bg-gris" style="--jonction-de: var(--color-blanc)">
       <div class="mx-auto max-w-6xl px-5 py-[var(--espace-section)] sm:px-8">
-        <TitreSection texte={section.title} class="max-w-[20ch]" />
+        <TitreSection texte={section.title} class="max-w-[20ch]" data-reveal="titre" />
 
-        <ol class="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        <ol class="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-4" data-reveal-groupe>
           {section.steps.map((step, i) => (
             <li
               class={`eleve rounded-carte bg-blanc p-6 ${i % 2 === 1 ? 'lg:mt-10' : ''}`}
@@ -100,9 +100,9 @@ const { section, photos = [], shortLabel, ordre } = Astro.props;
 {
   section.type === 'audiences' && (
     <section class="mx-auto max-w-6xl px-5 py-[var(--espace-section)] sm:px-8" data-reveal>
-      <TitreSection texte={section.title} class="max-w-[20ch]" />
+      <TitreSection texte={section.title} class="max-w-[20ch]" data-reveal="titre" />
 
-      <ul class="mt-12 grid gap-6 sm:grid-cols-2">
+      <ul class="mt-12 grid gap-6 sm:grid-cols-2" data-reveal-groupe>
         {section.items.map((item) => (
           <li class="eleve rounded-carte bg-blanc p-7 sm:p-8">
             <h3 class="text-carte text-navy text-balance">{item.label}</h3>
@@ -118,14 +118,14 @@ const { section, photos = [], shortLabel, ordre } = Astro.props;
     C'est la respiration sombre au milieu de la page. */}
 {
   section.type === 'zones' && (
-    <section class="relative overflow-hidden bg-navy" data-reveal>
+    <section class="jonction relative overflow-hidden bg-navy" style="--jonction-de: var(--color-blanc)">
       <span
         aria-hidden="true"
         class="pointer-events-none absolute -right-24 top-1/2 size-[28rem] -translate-y-1/2 rounded-full bg-orange/10 blur-3xl"
       />
       <div class="relative mx-auto max-w-6xl px-5 py-[var(--espace-section)] sm:px-8">
         <div class="corde max-w-[60ch]">
-          <TitreSection texte={section.title} ton="clair" />
+          <TitreSection texte={section.title} ton="clair" data-reveal="titre" />
           {section.paragraphs.map((paragraphe) => (
             <p class="mt-6 text-corps-large font-light text-blanc/80 text-pretty">
               {paragraphe}

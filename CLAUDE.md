@@ -60,6 +60,11 @@ orange de marque sur navy. Sous 24 px, un lien actif se signale par un
 soulignement orange, jamais par la couleur. Aucun texte en dessous de
 `navy/70` ni de `blanc/70`.
 
+_Une exception, une seule : le filigrane décoratif — la guillemet géante
+derrière les témoignages, en `orange/8`. Ce n'est pas du texte à lire mais
+un ornement, `aria-hidden`, qui ne porte aucune information. Il ressort dans
+les audits automatiques de contraste : c'est attendu._
+
 **Le bouton primaire porte du texte navy sur l'aplat orange**, pas du blanc :
 blanc sur orange plafonne à 3,0:1, navy monte à 4,5:1 — et c'est le contraste de
 la signalétique de chantier.
@@ -117,6 +122,41 @@ qui unifie la série — contraste +8 %, saturation −5 %, voile navy 6 % en
 multiply — et `.photo-zoom` le zoom lent au survol d'une carte. Une photo pleine
 largeur par page comme respiration. Une entreprise de cordistes doit montrer ses
 chantiers : les images sont grandes, jamais des vignettes.
+
+### Mouvement
+
+_Ajouté le 14 août 2026. Aucune bibliothèque : tout tient dans `global.css` et
+le script de `Base.astro`._
+
+Une courbe (`--sortie`, l'équivalent CSS de power3.out), une durée
+(`--duree-reveal`, 500 ms), un pas de cascade (`--pas-stagger`, 80 ms). Trois
+variantes d'apparition, déclenchées une seule fois par un observateur unique :
+
+| Marqueur | Effet |
+|---|---|
+| `data-reveal` | monte de 20 px en fondu |
+| `data-reveal="titre"` | monte de 24 px |
+| `data-reveal="image"` | fondu et détente de 1,04 vers 1 |
+| `data-reveal-groupe` | les enfants directs entrent en cascade |
+
+**Ne jamais poser `data-reveal` sur un conteneur qui abrite déjà un
+`data-reveal-groupe`** : la section fondrait en bloc puis ses enfants
+referaient le même mouvement.
+
+L'apparition n'utilise que `translate` et `scale`. `transform` est réservé à
+l'élévation au survol et au zoom photo — trois propriétés distinctes se
+composent, alors que deux règles sur `transform` s'écrasent.
+
+Le parallax (`data-parallax`) est limité aux photos pleine largeur : l'image
+est tirée à 115 % et déplacée de ±7,5 % au maximum, dans une boucle rAF unique
+qui ne tourne que tant qu'une photo est à l'écran.
+
+Un filet de sécurité montre tout si, une seconde après le chargement ou le
+premier défilement, un élément présent à l'écran est encore masqué. Il se
+désarme à la première apparition réussie. Sans lui, un observateur défaillant
+laisserait la page vide — un défaut bien pire que l'absence d'animation.
+
+Tout tombe sous `prefers-reduced-motion`, y compris le parallax et la cascade.
 
 ## Témoignages — nominatifs sur accord écrit
 

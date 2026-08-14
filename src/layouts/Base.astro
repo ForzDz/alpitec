@@ -84,27 +84,176 @@ const ogImageURL = new URL(ogImage, Astro.site);
     <slot />
 
     <script>
-      // Fade-up unique à l'apparition. Un élément révélé n'est plus observé.
-      const cibles = document.querySelectorAll('[data-reveal]');
+      /**
+       * MOUVEMENT — apparition au défilement et parallax.
+       *
+       * Tout est gouverné par `data-reveal-actif`, posé sur <html> avant le
+       * premier rendu uniquement si le visiteur n'a pas demandé moins de
+       * mouvement. Sans cet attribut, le CSS n'a jamais rien masqué et ce
+       * script ne fait rien : la page est simplement là, ce qui est son état
+       * final de toute façon.
+       *
+       * Aucune bibliothèque. Un observateur pour les apparitions, un second
+       * pour le parallax, et UNE boucle d'animation partagée qui ne tourne
+       * que tant qu'une photo concernée est à l'écran.
+       */
+      const actif = document.documentElement.hasAttribute('data-reveal-actif');
+      const isolees = document.querySelectorAll('[data-reveal]');
+      const groupes = document.querySelectorAll('[data-reveal-groupe]');
 
-      if (!document.documentElement.hasAttribute('data-reveal-actif')) {
-        // Mouvement réduit : rien à faire, le CSS n'a jamais masqué.
+      if (!actif) {
+        // Mouvement réduit : rien à faire.
       } else if (!('IntersectionObserver' in window)) {
-        cibles.forEach((el) => el.classList.add('est-visible'));
+        // Sans observateur, on montre tout plutôt que de laisser du vide.
+        for (const el of isolees) el.classList.add('est-visible');
+        for (const g of groupes) {
+          for (const enfant of g.children) enfant.classList.add('est-visible');
+        }
       } else {
-        const observateur = new IntersectionObserver(
+        /*
+         * Le retard de cascade est posé une fois, à l'observation, sur les
+         * enfants directs du groupe. Le calculer ici plutôt qu'en CSS évite
+         * autant de règles `:nth-child` qu'il y a de cartes, et le pas reste
+         * modifiable depuis le seul `--pas-stagger` de global.css.
+         */
+        const pas =
+          parseFloat(
+            getComputedStyle(document.documentElement).getPropertyValue('--pas-stagger'),
+          ) || 80;
+
+        // Passe à vrai à la première révélation : l'observateur a fait son
+        // travail, le filet de sécurité n'a plus lieu d'être.
+        let revelationConstatee = false;
+
+        const revele = new IntersectionObserver(
           (entrees) => {
             for (const entree of entrees) {
-              if (entree.isIntersecting) {
-                entree.target.classList.add('est-visible');
-                observateur.unobserve(entree.target);
+              if (!entree.isIntersecting) continue;
+              const el = entree.target;
+              revele.unobserve(el);
+              revelationConstatee = true;
+
+              if (el.hasAttribute('data-reveal-groupe')) {
+                [...el.children].forEach((enfant, i) => {
+                  enfant.style.setProperty('--retard', `${i * pas}ms`);
+                  enfant.classList.add('est-visible');
+                });
+              } else {
+                el.classList.add('est-visible');
               }
             }
           },
           { rootMargin: '0px 0px -10% 0px', threshold: 0.05 },
         );
 
-        cibles.forEach((el) => observateur.observe(el));
+        for (const el of isolees) revele.observe(el);
+        for (const g of groupes) revele.observe(g);
+
+        /*
+         * FILET DE SÉCURITÉ.
+         *
+         * L'apparition masque le contenu en attendant l'observateur. Si celui-ci
+         * ne rendait jamais la main — onglet jamais composité, moteur exotique,
+         * extension qui neutralise l'API — la page resterait blanche, et ce
+         * serait un défaut autrement plus grave que l'absence d'animation.
+         *
+         * Une seconde après le chargement, on vérifie donc qu'aucun élément
+         * présent à l'écran n'est encore masqué. Si c'est le cas, on montre
+         * tout et on cesse d'observer. Quand l'observateur fonctionne — le cas
+         * normal — ce contrôle ne trouve rien et ne coûte qu'un passage.
+         */
+        const toutMontrer = () => {
+          for (const el of isolees) el.classList.add('est-visible');
+          for (const g of groupes) {
+            for (const enfant of g.children) enfant.classList.add('est-visible');
+          }
+          revele.disconnect();
+        };
+
+        /*
+         * Le filet s'arme tant qu'aucune révélation n'a eu lieu, et se désarme
+         * définitivement à la première — celle-ci prouvant que l'observateur
+         * fonctionne. Un contrôle unique ne suffirait pas : sur l'accueil, le
+         * hero ne porte aucune apparition, donc rien n'est « bloqué » tant que
+         * le visiteur n'a pas défilé, et un premier défilement parasite
+         * consommerait le seul contrôle disponible.
+         */
+        let attente = null;
+        const verifier = () => {
+          if (revelationConstatee || attente) return;
+          attente = setTimeout(() => {
+            attente = null;
+            if (revelationConstatee) return;
+            const h = window.innerHeight;
+            const bloque = [...isolees, ...groupes].some((el) => {
+              const r = el.getBoundingClientRect();
+              if (r.top >= h || r.bottom <= 0) return false;
+              return el.hasAttribute('data-reveal-groupe')
+                ? [...el.children].some((c) => !c.classList.contains('est-visible'))
+                : !el.classList.contains('est-visible');
+            });
+            if (bloque) toutMontrer();
+          }, 900);
+        };
+
+        if (document.readyState === 'complete') verifier();
+        else addEventListener('load', verifier, { once: true });
+        addEventListener('scroll', verifier, { passive: true });
+
+        /* ------------------------------------------------------ Parallax */
+        const photos = document.querySelectorAll('[data-parallax]');
+
+        if (photos.length > 0) {
+          // Amplitude en pourcentage de la hauteur du cadre. L'image étant
+          // tirée à 115 %, 7,5 % de chaque côté ne découvre jamais de bord.
+          const AMPLITUDE = 0.075;
+          const visibles = new Set();
+          let planifie = false;
+
+          const placer = () => {
+            planifie = false;
+            const h = window.innerHeight;
+            for (const cadre of visibles) {
+              const image = cadre.querySelector('img, video');
+              if (!image) continue;
+              const r = cadre.getBoundingClientRect();
+              // -1 quand le cadre sort par le haut, +1 quand il entre par le
+              // bas ; 0 quand il est centré.
+              const avance = (r.top + r.height / 2 - h / 2) / (h / 2 + r.height / 2);
+              const y = Math.max(-1, Math.min(1, avance)) * AMPLITUDE * r.height;
+              image.style.transform = `translate3d(0, ${y.toFixed(1)}px, 0)`;
+            }
+          };
+
+          const demander = () => {
+            if (planifie) return;
+            planifie = true;
+            requestAnimationFrame(placer);
+          };
+
+          const suivi = new IntersectionObserver(
+            (entrees) => {
+              for (const entree of entrees) {
+                if (entree.isIntersecting) visibles.add(entree.target);
+                else visibles.delete(entree.target);
+              }
+              // La boucle ne tourne que s'il reste quelque chose à bouger.
+              if (visibles.size > 0) demander();
+            },
+            { rootMargin: '10% 0px' },
+          );
+
+          for (const cadre of photos) {
+            cadre.classList.add('parallax');
+            suivi.observe(cadre);
+          }
+
+          addEventListener('scroll', () => visibles.size > 0 && demander(), {
+            passive: true,
+          });
+          addEventListener('resize', demander, { passive: true });
+          demander();
+        }
       }
     </script>
   </body>

@@ -61,12 +61,11 @@ const dernier = impair ? (parTrois ? 'col-span-2 lg:col-span-1' : 'col-span-2') 
     <section
       class="mx-auto max-w-6xl px-5 py-[var(--espace-section)] sm:px-8"
       aria-labelledby="realisations"
-      data-reveal
     >
-      <TitreSection texte={title} id="realisations" class="max-w-[18ch]" />
+      <TitreSection texte={title} id="realisations" class="max-w-[18ch]" data-reveal="titre" />
 
       {/* Photo de tête, pleine largeur, 16/9. */}
-      <figure class="mt-12">
+      <figure class="mt-12" data-reveal="image">
         <div class="photo aspect-[16/9] w-full rounded-bloc shadow-repos">
           <Image
             src={enTete.src}
@@ -89,7 +88,7 @@ const dernier = impair ? (parTrois ? 'col-span-2 lg:col-span-1' : 'col-span-2') 
 
       {/* Les suivantes en 4/3. Deux ratios sur tout le site, pas un de plus. */}
       {cases > 0 && (
-        <ul class:list={['mt-4 grid grid-cols-2 gap-4 sm:mt-5 sm:gap-5', colonnes]}>
+        <ul class:list={['mt-4 grid grid-cols-2 gap-4 sm:mt-5 sm:gap-5', colonnes]} data-reveal-groupe>
           {reste.map((photo, i) => (
             <li class:list={['flex flex-col', i === cases - 1 && dernier]}>
               <figure class="flex h-full flex-col">

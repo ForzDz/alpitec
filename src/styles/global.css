@@ -142,6 +142,17 @@
      refonte. Il ne descend jamais en dessous de 5 rem. */
   --espace-section: clamp(6rem, 9vw, 10rem);
   --espace-section-serre: clamp(3.5rem, 6vw, 6rem);
+
+  /* --- Mouvement ---
+     Une seule courbe pour tout le site : départ franc, arrivée qui s'installe.
+     C'est l'équivalent CSS de la `power3.out` des bibliothèques d'animation,
+     et la raison pour laquelle on n'en embarque aucune.
+     Une seule durée aussi : au-delà de 600 ms un site de BTP donne
+     l'impression de ramer, en dessous de 400 ms le mouvement ne se lit pas. */
+  --sortie: cubic-bezier(0.22, 1, 0.36, 1);
+  --duree-reveal: 500ms;
+  /* Décalage entre deux éléments d'un même groupe. */
+  --pas-stagger: 80ms;
 }
 
 /* ---------------------------------------------------------------------------
@@ -443,23 +454,115 @@
 --------------------------------------------------------------------------- */
 @media (prefers-reduced-motion: no-preference) {
   /*
-    `translate` et non `transform` : une carte porte souvent les deux à la fois
-    (`data-reveal` pour l'apparition, `.eleve` pour l'élévation au survol). Avec
-    `transform` des deux côtés, le sélecteur d'apparition — plus spécifique —
-    écrasait le survol et la carte ne montait jamais. Les deux propriétés étant
-    distinctes, elles se composent au lieu de se disputer.
+    APPARITION AU DÉFILEMENT — trois variantes, un seul observateur.
+
+      [data-reveal]           bloc courant : monte de 20 px en fondu
+      [data-reveal="titre"]   titre de section : monte de 24 px
+      [data-reveal="image"]   photo : fondu et détente de 1,04 vers 1
+      [data-reveal-groupe]    conteneur : ses enfants directs entrent en
+                              cascade, le retard étant posé par le script
+
+    `translate` et `scale`, jamais `transform` : une carte porte souvent une
+    apparition ET une élévation au survol. Avec `transform` des deux côtés, le
+    sélecteur d'apparition — plus spécifique — écrasait le survol et la carte
+    ne montait jamais. Trois propriétés distinctes se composent au lieu de se
+    disputer, et le zoom photo garde `transform` pour lui seul.
+
+    Aucune de ces propriétés ne provoque de recalcul de mise en page : tout se
+    joue sur le compositeur, le défilement reste fluide.
   */
-  [data-reveal-actif] [data-reveal] {
+  [data-reveal-actif] :is([data-reveal], [data-reveal-groupe] > *) {
     opacity: 0;
-    translate: 0 8px;
+    translate: 0 20px;
     transition:
-      opacity 400ms ease-out,
-      translate 400ms ease-out;
+      opacity var(--duree-reveal) var(--sortie),
+      translate var(--duree-reveal) var(--sortie),
+      scale var(--duree-reveal) var(--sortie);
+    transition-delay: var(--retard, 0ms);
   }
 
-  [data-reveal-actif] [data-reveal].est-visible {
+  [data-reveal-actif] [data-reveal='titre'] {
+    translate: 0 24px;
+  }
+
+  [data-reveal-actif] [data-reveal-groupe] > * {
+    translate: 0 24px;
+  }
+
+  /* La photo ne monte pas, elle se détend : un déplacement ferait bouger le
+     cadre, alors que c'est l'image qui doit s'installer dans le cadre. */
+  [data-reveal-actif] [data-reveal='image'] {
+    translate: none;
+    scale: 1.04;
+  }
+
+  [data-reveal-actif] :is([data-reveal], [data-reveal-groupe] > *).est-visible {
     opacity: 1;
     translate: 0 0;
+    scale: 1;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Parallax — photos pleine largeur uniquement.
+
+   L'image est tirée à 115 % de la hauteur de son cadre et remontée de la
+   moitié du surplus : le script peut alors la déplacer de ±7,5 % sans jamais
+   découvrir de bord. Le mouvement passe par `translate3d`, donc par le
+   compositeur, et une seule boucle rAF sert toutes les photos à l'écran.
+--------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  .parallax :is(img, video) {
+    height: 115%;
+    top: -7.5%;
+    position: absolute;
+    inset-inline: 0;
+    will-change: transform;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Jonctions de fond.
+
+   Deux aplats qui se touchent font une arête. Le dégradé est posé en
+   `background-image` sur la section qui arrive : il se peint au-dessus de sa
+   couleur de fond et en dessous de son contenu, sans élément supplémentaire,
+   sans positionnement et sans z-index à arbitrer.
+
+   `--jonction-de` porte la couleur de la section précédente.
+--------------------------------------------------------------------------- */
+.jonction {
+  background-image: linear-gradient(
+    to bottom,
+    var(--jonction-de, transparent),
+    transparent 6rem
+  );
+}
+
+/* Segment de corde qui traverse une jonction : la corde file d'une section à
+   l'autre au lieu de s'arrêter au bord. Deux par page au maximum. */
+.corde-jonction {
+  position: absolute;
+  top: 0;
+  left: 1.25rem;
+  z-index: 1;
+  width: 2px;
+  height: 4rem;
+  translate: 0 -50%;
+  border-radius: 1px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    var(--color-orange) 30%,
+    var(--color-orange) 70%,
+    transparent
+  );
+}
+
+@media (width >= 48rem) {
+  .corde-jonction {
+    left: 2rem;
+    height: 5rem;
   }
 }
 

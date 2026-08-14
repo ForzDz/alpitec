@@ -352,50 +352,19 @@ const schema = {
     </section>
 
     {/*
-      ═══ RYTHME DE LA PAGE ═══
+      ------------------------------------------------------ 2. Socle chiffré
 
-      Aucune section voisine ne partage ni son fond ni sa mise en page :
-
-        2  Services        blanc        en-tête 5/7, grille de 9 cartes
-        3  Chiffres        navy plein   quatre colonnes, chiffres très gros
-        4  Chantiers       PHOTO        pleine largeur, la respiration
-        5  Moyens d'accès  blanc        titre à gauche collant, cartes à droite
-        6  Certifications  navy plein   plaque de qualification
-        7  Méthode         gris         grille décalée
-        8  Pourquoi nous   blanc        deux colonnes de cartes
-        9  Témoignages     gris         (masqué tant qu'aucun avis validé)
-       10  Zones           navy plein   colonne unique + encart
-       11  FAQ             blanc        colonne étroite
-       12  Conversion      navy profond bandeau
-       13  Contact         gris         formulaire
+      Collé au hero, sans respiration entre les deux : ce n'est pas une section
+      autonome mais la plinthe du hero. D'où le navy PROFOND — sur du navy
+      identique la jonction disparaîtrait, et une couleur franchement autre
+      créerait la séparation qu'on cherche justement à éviter. Le filet orange
+      en tête marque la limite sans la trancher.
     */}
-
-    {/* ------------------------------------------------------ 2. Services */}
-    <section
-      class="mx-auto max-w-6xl px-5 py-[var(--espace-section)] sm:px-8"
-      aria-labelledby="services"
-      data-reveal
-    >
-      <div class="grid gap-x-16 gap-y-8 lg:grid-cols-12">
-        <TitreSection texte={d.services.title} id="services" class="max-w-[14ch] lg:col-span-5" />
-        <p class="max-w-[56ch] self-end text-corps font-light text-navy/75 text-pretty lg:col-span-7">
-          {d.services.intro}
-        </p>
-      </div>
-
-      <ul class="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {
-          cartes.map((carte) => (
-            <li class="flex">
-              <ServiceCard service={carte} image={carte.image} linkLabel={d.services.linkLabel} />
-            </li>
-          ))
-        }
-      </ul>
-    </section>
-
-    {/* ------------------------------------------------- 3. Chiffres clés */}
-    <section class="relative overflow-hidden bg-navy" aria-labelledby="chiffres" data-reveal>
+    <section class="relative overflow-hidden bg-navy-profond" aria-labelledby="chiffres">
+      <span
+        aria-hidden="true"
+        class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-orange/50 to-transparent"
+      ></span>
       <span
         aria-hidden="true"
         class="pointer-events-none absolute -left-40 top-1/2 size-[32rem] -translate-y-1/2 rounded-full bg-orange/10 blur-3xl"
@@ -416,7 +385,11 @@ const schema = {
           `tabular-nums` fige la largeur des chiffres : sans lui, « 1 » et « 7 »
           n'ont pas la même chasse et le nombre tremble pendant l'animation.
         */}
-        <dl class="grid grid-cols-2 gap-x-8 gap-y-12 lg:grid-cols-4" data-chiffres>
+        <dl
+          class="grid grid-cols-2 gap-x-8 gap-y-12 lg:grid-cols-4"
+          data-chiffres
+          data-reveal-groupe
+        >
           {
             d.chiffres.items.map((item) => (
               <div>
@@ -453,6 +426,54 @@ const schema = {
     </section>
 
     {/*
+      ═══ RYTHME DE LA PAGE ═══
+
+      Aucune section voisine ne partage ni son fond ni sa mise en page :
+
+        1  Hero            navy + vidéo la corde, version longue
+        2  Socle chiffré   navy profond collé au hero, chiffres qui comptent
+        3  Services        blanc        en-tête 5/7, grille de 9 cartes
+        4  Chantiers       PHOTO        pleine largeur, parallax, respiration
+        5  Moyens d'accès  blanc        titre à gauche collant, cartes à droite
+        6  Certifications  navy plein   plaque de qualification
+        7  Méthode         gris         grille décalée
+        8  Pourquoi nous   blanc        deux colonnes de cartes
+        9  Témoignages     gris         cartes décalées, guillemet en filigrane
+       10  Zones           navy plein   colonne unique + encart
+       11  FAQ             blanc        colonne étroite
+       12  Conversion      navy profond bandeau
+       13  Contact         gris         formulaire
+
+      Les jonctions de fond portent un dégradé de 96 px (`.jonction`), et deux
+      d'entre elles un segment de corde qui traverse la ligne : avant la
+      méthode et avant les zones. Pas davantage — au troisième, l'accent
+      orange cesserait d'être un accent.
+    */}
+
+    {/* ------------------------------------------------------ 2. Services */}
+    <section
+      class="mx-auto max-w-6xl px-5 py-[var(--espace-section)] sm:px-8"
+      aria-labelledby="services"
+    >
+      <div class="grid gap-x-16 gap-y-8 lg:grid-cols-12">
+        <TitreSection texte={d.services.title} id="services" class="max-w-[14ch] lg:col-span-5" data-reveal="titre" />
+        <p class="max-w-[56ch] self-end text-corps font-light text-navy/75 text-pretty lg:col-span-7" data-reveal>
+          {d.services.intro}
+        </p>
+      </div>
+
+      <ul class="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3" data-reveal-groupe>
+        {
+          cartes.map((carte) => (
+            <li class="flex">
+              <ServiceCard service={carte} image={carte.image} linkLabel={d.services.linkLabel} />
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    {/*
       ------------------------------------------------- 4. Bande de chantiers
 
       LA RESPIRATION de la page : pleine largeur, bord à bord, sans titre ni
@@ -467,7 +488,7 @@ const schema = {
     */}
     {
       photosAccueil.length > 0 && (
-        <section class="bg-navy" aria-label="Chantiers ALPITEC" data-reveal>
+        <section class="bg-navy" aria-label="Chantiers ALPITEC">
           {/*
             Deux rangées plutôt qu'une grille unique : avec quatre photos, une
             première image à cheval sur deux colonnes laissait la quatrième
@@ -475,7 +496,13 @@ const schema = {
             Ici la grande photo occupe sa propre rangée pleine largeur, et les
             suivantes forment un triptyque en dessous.
           */}
-          <div class="photo aspect-[4/3] w-full sm:aspect-[16/9] sm:max-h-[68vh]">
+          {/*
+            La seule photo du site à porter un parallax : elle est pleine
+            largeur, c'est là que le décalage se lit comme de la profondeur
+            plutôt que comme un effet. L'image est tirée à 115 % par la classe
+            `.parallax` que le script ajoute, donc aucun bord n'apparaît.
+          */}
+          <div class="photo aspect-[4/3] w-full sm:aspect-[16/9] sm:max-h-[68vh]" data-parallax>
             <Image
               src={photosAccueil[0].src}
               alt={photosAccueil[0].alt}
@@ -537,19 +564,18 @@ const schema = {
     <section
       class="mx-auto max-w-6xl px-5 py-[var(--espace-section)] sm:px-8"
       aria-labelledby="moyens"
-      data-reveal
     >
       <div class="grid gap-x-16 gap-y-10 lg:grid-cols-12">
         <div class="lg:col-span-5">
           <div class="lg:sticky lg:top-28">
-            <TitreSection texte={d.moyensAcces.title} id="moyens" class="max-w-[14ch]" />
+            <TitreSection texte={d.moyensAcces.title} id="moyens" class="max-w-[14ch]" data-reveal="titre" />
             <p class="mt-6 max-w-[44ch] text-corps font-light text-navy/75 text-pretty">
               {d.moyensAcces.intro}
             </p>
           </div>
         </div>
 
-        <ul class="grid gap-4 lg:col-span-7">
+        <ul class="grid gap-4 lg:col-span-7" data-reveal-groupe>
           {
             d.moyensAcces.items.map((item, i) => (
               <li class="eleve flex gap-5 rounded-carte bg-blanc p-6 sm:p-7">
@@ -576,7 +602,7 @@ const schema = {
       Acronymes en très gros sur navy éclairci, chiffre de rang, intro en
       vis-à-vis du titre plutôt qu'au-dessus.
     */}
-    <section class="bg-navy text-blanc" aria-labelledby="certifications" data-reveal>
+    <section class="bg-navy text-blanc" aria-labelledby="certifications">
       <div class="mx-auto max-w-6xl px-5 py-[var(--espace-section)] sm:px-8">
         <div class="grid gap-x-16 gap-y-8 lg:grid-cols-12">
           <TitreSection
@@ -585,12 +611,12 @@ const schema = {
             ton="clair"
             class="max-w-[14ch] lg:col-span-5"
           />
-          <p class="max-w-[56ch] self-end text-corps font-light text-blanc/80 text-pretty lg:col-span-7">
+          <p class="max-w-[56ch] self-end text-corps font-light text-blanc/80 text-pretty lg:col-span-7" data-reveal>
             {d.certifications.intro}
           </p>
         </div>
 
-        <dl class="mt-16 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <dl class="mt-16 grid gap-3 sm:grid-cols-2 lg:grid-cols-4" data-reveal-groupe>
           {
             d.certifications.items.map((item, i) => (
               <div class="rounded-carte bg-navy-clair p-6">
@@ -618,16 +644,24 @@ const schema = {
     {/* --------------------------------------------- 7. Comment ça marche */}
     {/* Grille décalée : une étape sur deux descend d'un demi-pas sur écran
         large, la lecture cesse d'être une rangée de cases alignées. */}
-    <section class="bg-gris" aria-labelledby="methode" data-reveal>
+    <section
+      class="jonction relative bg-gris"
+      style="--jonction-de: var(--color-blanc)"
+      aria-labelledby="methode"
+    >
+      {/* La corde traverse la jonction : elle file d'une section à l'autre
+          au lieu de s'arrêter au bord. Deux par page, pas davantage. */}
+      <span aria-hidden="true" class="corde-jonction"></span>
+
       <div class="mx-auto max-w-6xl px-5 py-[var(--espace-section)] sm:px-8">
         <div class="grid gap-x-16 gap-y-8 lg:grid-cols-12">
-          <TitreSection texte={d.process.title} id="methode" class="max-w-[14ch] lg:col-span-5" />
-          <p class="max-w-[56ch] self-end text-corps font-light text-navy/75 text-pretty lg:col-span-7">
+          <TitreSection texte={d.process.title} id="methode" class="max-w-[14ch] lg:col-span-5" data-reveal="titre" />
+          <p class="max-w-[56ch] self-end text-corps font-light text-navy/75 text-pretty lg:col-span-7" data-reveal>
             {d.process.intro}
           </p>
         </div>
 
-        <ol class="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <ol class="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4" data-reveal-groupe>
           {
             d.process.steps.map((step, i) => (
               <li class:list={['eleve rounded-carte bg-blanc p-6', i % 2 === 1 && 'lg:mt-12']}>
@@ -648,16 +682,15 @@ const schema = {
     <section
       class="mx-auto max-w-6xl px-5 py-[var(--espace-section)] sm:px-8"
       aria-labelledby="pourquoi"
-      data-reveal
     >
       <div class="grid gap-x-16 gap-y-8 lg:grid-cols-12">
-        <TitreSection texte={d.why.title} id="pourquoi" class="max-w-[14ch] lg:col-span-5" />
-        <p class="max-w-[56ch] self-end text-corps font-light text-navy/75 text-pretty lg:col-span-7">
+        <TitreSection texte={d.why.title} id="pourquoi" class="max-w-[14ch] lg:col-span-5" data-reveal="titre" />
+        <p class="max-w-[56ch] self-end text-corps font-light text-navy/75 text-pretty lg:col-span-7" data-reveal>
           {d.why.intro}
         </p>
       </div>
 
-      <ul class="mt-16 grid gap-6 sm:grid-cols-2">
+      <ul class="mt-16 grid gap-6 sm:grid-cols-2" data-reveal-groupe>
         {
           d.why.items.map((item) => (
             <li class="eleve rounded-carte bg-blanc p-7 sm:p-8">
@@ -680,23 +713,47 @@ const schema = {
       ajouté sans accord reste donc invisible sans que personne ait à y penser.
     */}
     {avisPublies.length > 0 && (
-      <section class="bg-gris" aria-labelledby="temoignages" data-reveal>
+      <section
+        class="jonction bg-gris"
+        style="--jonction-de: var(--color-blanc)"
+        aria-labelledby="temoignages"
+      >
         <div class="mx-auto max-w-6xl px-5 py-[var(--espace-section)] sm:px-8">
           <div class="grid gap-x-16 gap-y-8 lg:grid-cols-12">
             <TitreSection
               texte={d.testimonials.title}
               id="temoignages"
               class="max-w-[14ch] lg:col-span-5"
+              data-reveal="titre"
             />
-            <p class="max-w-[56ch] self-end text-corps font-light text-navy/75 text-pretty lg:col-span-7">
+            <p class="max-w-[56ch] self-end text-corps font-light text-navy/75 text-pretty lg:col-span-7" data-reveal>
               {d.testimonials.intro}
             </p>
           </div>
 
-          <ul class="mt-16 grid gap-6 lg:grid-cols-3">
-            {avisPublies.map((avis) => (
-              <li class="flex">
-                <figure class="flex h-full flex-col rounded-carte bg-blanc p-7 shadow-repos">
+          {/*
+            Les trois cartes entrent en cascade, et celle du milieu descend de
+            24 px À PARTIR DE `lg` seulement : en dessous elles sont empilées,
+            un décalage vertical n'y voudrait plus rien dire. C'est ce léger
+            désalignement qui empêche le bloc de se lire comme un tableau.
+          */}
+          <ul class="mt-16 grid gap-6 lg:grid-cols-3" data-reveal-groupe>
+            {avisPublies.map((avis, i) => (
+              <li class:list={['flex', i === 1 && 'lg:mt-6']}>
+                <figure class="eleve relative isolate flex h-full flex-col overflow-hidden rounded-carte bg-blanc p-7">
+                  {/*
+                    Guillemet ouvrante en filigrane. Technor la dessine avec
+                    ses terminaisons carrées, donc elle appartient au système
+                    plutôt qu'à une police décorative. `-z-10` la range derrière
+                    le texte, `isolate` empêche qu'elle passe derrière la carte.
+                  */}
+                  <span
+                    aria-hidden="true"
+                    class="pointer-events-none absolute -right-2 -top-10 -z-10 select-none font-display text-[11rem] font-black leading-none text-orange/8"
+                  >
+                    &ldquo;
+                  </span>
+
                   <span
                     aria-hidden="true"
                     class="mb-5 block h-0.5 w-9 rounded-full bg-orange"
@@ -728,16 +785,30 @@ const schema = {
     )}
 
     {/* ------------------------------------------------------ 10. Zones */}
-    <section class="relative overflow-hidden bg-navy" aria-labelledby="zones" data-reveal>
-      <span
-        aria-hidden="true"
-        class="pointer-events-none absolute -right-32 top-1/2 size-[30rem] -translate-y-1/2 rounded-full bg-orange/10 blur-3xl"
-      ></span>
+    <section
+      class="jonction relative bg-navy"
+      style="--jonction-de: var(--color-blanc)"
+      aria-labelledby="zones"
+    >
+      {/* La corde traverse la jonction : elle file d'une section à l'autre
+          au lieu de s'arrêter au bord. Deux par page, pas davantage. */}
+      <span aria-hidden="true" class="corde-jonction"></span>
+
+      {/*
+        La lueur est enfermée dans son propre cadre à débordement masqué, et
+        non par un `overflow-hidden` posé sur la section : celui-ci
+        rognerait la corde, qui doit justement dépasser en haut.
+      */}
+      <div aria-hidden="true" class="pointer-events-none absolute inset-0 overflow-hidden">
+        <span
+          class="absolute -right-32 top-1/2 size-[30rem] -translate-y-1/2 rounded-full bg-orange/10 blur-3xl"
+        ></span>
+      </div>
 
       <div class="relative mx-auto max-w-6xl px-5 py-[var(--espace-section)] sm:px-8">
         <div class="grid gap-x-16 gap-y-10 lg:grid-cols-12">
           <div class="min-w-0 lg:col-span-7">
-            <TitreSection texte={d.zones.title} id="zones" ton="clair" class="max-w-[16ch]" />
+            <TitreSection texte={d.zones.title} id="zones" ton="clair" class="max-w-[16ch]" data-reveal="titre" />
             {
               d.zones.paragraphs.map((paragraphe) => (
                 <p class="mt-6 max-w-[60ch] text-corps-large font-light text-blanc/80 text-pretty">

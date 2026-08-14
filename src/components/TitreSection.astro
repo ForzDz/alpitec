@@ -23,6 +23,9 @@ const {
   taille = 'titre',
   id,
   class: className = '',
+  // Laisse passer `data-reveal="titre"` et les autres attributs de données
+  // sans que le composant ait à les connaître.
+  ...rest
 } = Astro.props;
 
 // Découpe sur la dernière espace. Un titre d'un seul mot passe entièrement en
@@ -46,6 +49,7 @@ const tailles = {
 <Balise
   id={id}
   class={`${tailles[taille]} ${couleurs.base} text-balance ${className}`}
+  {...rest}
 >
   {debut && <>{debut} </>}<span class={couleurs.accent}>{accent}</span>
 </Balise>

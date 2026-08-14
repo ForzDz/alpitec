@@ -26,9 +26,9 @@ const colonnes = autres.length % 4 === 0 ? 'lg:grid-cols-4' : 'lg:grid-cols-3';
   aria-labelledby="autres-services"
   data-reveal
 >
-  <TitreSection texte={title} id="autres-services" taille="sous" class="max-w-[24ch]" />
+  <TitreSection texte={title} id="autres-services" taille="sous" class="max-w-[24ch]" data-reveal="titre" />
 
-  <ul class:list={['mt-10 grid gap-3 sm:grid-cols-2', colonnes]}>
+  <ul class:list={['mt-10 grid gap-3 sm:grid-cols-2', colonnes]} data-reveal-groupe>
     {
       autres.map((service) => (
         <li class="flex">
