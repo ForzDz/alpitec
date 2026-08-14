@@ -118,11 +118,31 @@ multiply — et `.photo-zoom` le zoom lent au survol d'une carte. Une photo plei
 largeur par page comme respiration. Une entreprise de cordistes doit montrer ses
 chantiers : les images sont grandes, jamais des vignettes.
 
+## Témoignages — nominatifs sur accord écrit
+
+_Règle modifiée le 14 août 2026. Elle remplace l'anonymisation systématique
+qui prévalait jusque-là._
+
+Un témoignage peut citer le nom du signataire et son entreprise **à la seule
+condition qu'un accord écrit soit au dossier**. Format : « citation » — Nom,
+Entreprise, la fonction s'intercalant si le client l'a fournie.
+
+Le champ `valide` du contenu est le verrou : tant qu'il est à `false`, l'avis
+n'est pas rendu, et la section entière disparaît si aucun avis n'est validé.
+**Ne jamais le passer à `true` sans que l'accord existe** — c'est le seul
+garde-fou entre un brouillon et une publication nominative.
+
+Trois avis sont publiés depuis le 14 août 2026 (Bouygues, Vinci, Silosun),
+sur déclaration du client qu'il détient les accords des trois signataires.
+
+**Deux autorisations, pas une.** L'accord de la personne couvre son nom et ses
+propos. Il ne couvre PAS l'usage du nom de son employeur comme référence
+commerciale : les grands groupes encadrent cet usage par une autorisation
+distincte, et beaucoup de contrats-cadres contiennent une clause de
+communication. Avant d'ajouter un nouveau nom d'entreprise, vérifier que les
+deux accords existent.
+
 ## Interdits
-- Les témoignages clients sont ANONYMISÉS : jamais de nom de personne,
-  jamais de nom d'entreprise cliente (VINCI, Bouygues, etc.).
-  Format : « citation » — Fonction, type d'entreprise.
-  Exemple : « ... » — Responsable travaux, groupe de BTP national.
 - Ne pas afficher de logos de clients tant que je ne l'ai pas validé.
 - Ne pas inventer de contenu : tous les textes viennent des .docx.
 - Ne pas copier le code ou le CSS de cordistes-responsables.com

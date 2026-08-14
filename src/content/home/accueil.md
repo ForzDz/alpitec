@@ -193,19 +193,23 @@ zones:
 testimonials:
   title: "Une réputation bâtie chantier après chantier"
   intro: "Syndics, majors du BTP, sites industriels : tous nous choisissent pour la même raison — la fiabilité."
+  # Avis nominatifs depuis le 14 août 2026. Le client déclare détenir l'accord
+  # écrit des trois signataires. `valide: true` engage la publication du nom et
+  # de l'entreprise : ne le repasser à true sur un nouvel avis qu'une fois
+  # l'accord au dossier — voir la règle « Témoignages » de CLAUDE.md.
   items:
     - quote: "Intervention d'ALPITEC sur notre data center de Clichy : préparation sérieuse, consignes de sécurité respectées à la lettre et aucune perturbation de l'exploitation du site. Une équipe fiable, que nous solliciterons de nouveau."
-      role: "Fonction à confirmer par le client"
-      company: "groupe de BTP national"
-      valide: false
+      nom: "El Mahi Lhimer"
+      company: "Bouygues"
+      valide: true
     - quote: "Dans le cadre d'un ravalement de façade, ALPITEC a réalisé la pose de filets de sécurité anti-chute pour protéger nos compagnons. Installation rapide, conforme et parfaitement adaptée aux contraintes du chantier. Très satisfait de la prestation."
-      role: "Fonction à confirmer par le client"
-      company: "groupe de BTP national"
-      valide: false
+      nom: "Antoine Drieux"
+      company: "Vinci"
+      valide: true
     - quote: "Nous avons confié à ALPITEC un chantier de couverture avec désamiantage. Le travail a été mené avec rigueur, dans le respect des délais et des protocoles. Un partenaire de confiance pour les interventions délicates."
-      role: "Fonction à confirmer par le client"
-      company: "Type d'entreprise à confirmer par le client"
-      valide: false
+      nom: "Pierre-Xavier Jean"
+      company: "Silosun"
+      valide: true
 
 faq:
   title: "Vous hésitez ? Voici les réponses"

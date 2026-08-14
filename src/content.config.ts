@@ -298,8 +298,19 @@ const home = defineCollection({
       items: z.array(
         z.object({
           quote: z.string(),
-          role: z.string(),
+          /**
+           * Nom du signataire. Ne se remplit que sur accord écrit de la
+           * personne ET de son employeur — voir la règle dans CLAUDE.md.
+           */
+          nom: z.string(),
+          /** Entreprise citée. Même condition que `nom`. */
           company: z.string(),
+          /** Fonction, si le client l'a fournie. */
+          role: z.string().optional(),
+          /**
+           * Verrou de publication : tant qu'il est faux, l'avis n'est pas
+           * rendu. Il ne passe à vrai qu'une fois l'accord écrit au dossier.
+           */
           valide: z.boolean().default(false),
         }),
       ),
