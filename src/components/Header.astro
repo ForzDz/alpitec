@@ -3,7 +3,7 @@ import { Image } from 'astro:assets';
 import logo from '../assets/logo-complet.jpeg';
 import logoDetoure from '../assets/logo-detoure.png';
 import Button from './Button.astro';
-import { getSite, getServices, serviceHref, whatsappHref } from '../lib/content.js';
+import { getSite, getServices, serviceHref } from '../lib/content.js';
 
 /**
  * En-tête + barre d'action mobile.
@@ -29,7 +29,8 @@ const services = await getServices();
 const { pathname } = Astro.url;
 
 const telHref = `tel:${site.telephone.lien}`;
-const waHref = whatsappHref(site);
+// Plus de WhatsApp dans l'en-tête depuis que la barre mobile est passée à
+// deux boutons : le lien vit désormais dans le pied de page et sur /contact.
 
 const liens = [
   { label: 'Accueil', href: '/' },
@@ -278,39 +279,43 @@ const estActif = (href) => {
   </div>
 </header>
 
-<!-- Barre d'action fixe mobile : Appeler · WhatsApp · Devis -->
+<!-- Barre d'action fixe mobile : Appeler (35 %) · Devis gratuit (65 %) -->
 <div
-  class="fixed inset-x-0 bottom-0 z-50 bg-navy pb-[env(safe-area-inset-bottom)] shadow-[0_-1px_0_0_rgb(255_255_255_/_0.14),0_-14px_32px_-10px_rgb(35_43_74_/_0.65)] lg:hidden"
+  class="fixed inset-x-0 bottom-0 z-50 bg-navy pb-[env(safe-area-inset-bottom)] shadow-eleve lg:hidden"
   data-action-bar
 >
   {/*
-    Hiérarchie assumée : le devis occupe 60 % de la largeur en orange plein,
-    les deux accès directs restent compacts en navy. Fonds opaques, aucune
-    transparence — la barre doit se détacher franchement du contenu.
+    Deux boutons, plus trois. WhatsApp a quitté la barre : à trois entrées, le
+    devis n'occupait plus que 60 % d'une largeur déjà partagée, et deux canaux
+    de contact secondaires se disputaient l'attention d'un pouce. Le lien
+    WhatsApp reste accessible dans le pied de page et sur /contact, où il est
+    lu au calme plutôt qu'en réflexe.
+
+    « Appeler » perd son libellé : à 35 % de 320 px il reste 112 px, et un
+    pictogramme de téléphone n'a besoin de personne pour se faire comprendre.
+    Le nom part dans `aria-label`, donc rien n'est perdu pour un lecteur
+    d'écran — au contraire, il annonce le numéro.
   */}
-  <div class="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,3fr)]">
+  <div class="grid grid-cols-[35%_65%] gap-px bg-blanc/15">
     <a
       href={telHref}
-      class="flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 px-0.5 py-2.5 text-blanc transition-colors duration-150 active:bg-blanc/15 sm:px-1"
+      class="flex min-h-14 items-center justify-center bg-navy text-blanc transition-colors duration-200 active:bg-navy-clair"
+      aria-label={`Appeler ALPITEC au ${site.telephone.affichage}`}
       data-cta="tel-barre"
     >
-      <svg aria-hidden="true" viewBox="0 0 20 20" class="h-[1.375rem] w-[1.375rem] text-orange" fill="none" stroke="currentColor" stroke-width="1.9">
-        <path d="M4 3h3l1.5 4L6.5 8.5a11 11 0 005 5L13 11.5l4 1.5v3a1 1 0 01-1 1A13 13 0 013 4a1 1 0 011-1z" />
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 20 20"
+        class="size-6 text-orange"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.9"
+      >
+        <path
+          d="M4 3h3l1.5 4L6.5 8.5a11 11 0 005 5L13 11.5l4 1.5v3a1 1 0 01-1 1A13 13 0 013 4a1 1 0 011-1z"
+          stroke-linejoin="round"
+        />
       </svg>
-      <span class="text-[0.625rem] font-bold uppercase tracking-[0.03em] sm:text-[0.6875rem] sm:tracking-[0.08em]">Appeler</span>
-    </a>
-
-    <a
-      href={waHref}
-      target="_blank"
-      rel="noopener noreferrer"
-      class="flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 border-x border-blanc/15 px-0.5 py-2.5 text-blanc transition-colors duration-150 active:bg-blanc/15 sm:px-1"
-      data-cta="whatsapp-barre"
-    >
-      <svg aria-hidden="true" viewBox="0 0 24 24" class="h-[1.375rem] w-[1.375rem] text-orange" fill="currentColor">
-        <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 004.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0012.04 2zm0 18.15h-.01a8.23 8.23 0 01-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 01-1.26-4.38c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 015.83 2.42 8.19 8.19 0 012.41 5.83c0 4.54-3.69 8.23-8.24 8.23zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.15.16-.29.18-.54.06-.25-.13-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.01-.38.11-.5.11-.11.25-.29.37-.44.13-.15.17-.25.25-.42.08-.16.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.47c-.16 0-.43.06-.65.31-.22.25-.85.83-.85 2.03s.87 2.35.99 2.51c.12.16 1.71 2.61 4.15 3.66.58.25 1.03.4 1.39.51.58.19 1.11.16 1.53.1.47-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.11-.22-.17-.47-.29z"/>
-      </svg>
-      <span class="text-[0.625rem] font-bold uppercase tracking-[0.03em] sm:text-[0.6875rem] sm:tracking-[0.08em]">WhatsApp</span>
     </a>
 
     <a
@@ -318,16 +323,18 @@ const estActif = (href) => {
       class="group/devis flex min-h-14 items-center justify-center gap-2.5 bg-orange px-3 text-navy transition-colors duration-200 active:bg-navy active:text-blanc"
       data-cta="devis-barre"
     >
-      <span class="text-[0.9375rem] font-bold leading-none tracking-tight">Devis gratuit</span>
+      <span class="font-display text-base font-bold leading-none tracking-tight">
+        Devis gratuit
+      </span>
       <svg
         aria-hidden="true"
         viewBox="0 0 16 16"
-        class="h-4 w-4 shrink-0 transition-transform duration-150 group-active/devis:translate-x-1"
+        class="h-4 w-4 shrink-0 transition-transform duration-200 group-active/devis:translate-x-1"
         fill="none"
         stroke="currentColor"
-        stroke-width="2.2"
+        stroke-width="2.4"
       >
-        <path d="M2 8h11M9 4l4 4-4 4" stroke-linecap="square" />
+        <path d="M2 8h11M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round" />
       </svg>
     </a>
   </div>

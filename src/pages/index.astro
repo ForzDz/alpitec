@@ -396,13 +396,37 @@ const schema = {
       <div class="relative mx-auto max-w-6xl px-5 py-[var(--espace-section-serre)] sm:px-8">
         <h2 id="chiffres" class="sr-only">{d.chiffres.title}</h2>
 
-        <dl class="grid grid-cols-2 gap-x-8 gap-y-12 lg:grid-cols-4">
+        {/*
+          Les chiffres s'incrémentent quand la section entre à l'écran.
+
+          La valeur définitive est écrite dans le HTML, jamais calculée : sans
+          JavaScript, ou avec `prefers-reduced-motion`, elle s'affiche
+          directement. Le script ne fait que remplacer temporairement le texte
+          pendant le comptage, puis restitue la chaîne d'origine au caractère
+          près — c'est elle qui porte l'espace de milliers et le « + ».
+
+          `tabular-nums` fige la largeur des chiffres : sans lui, « 1 » et « 7 »
+          n'ont pas la même chasse et le nombre tremble pendant l'animation.
+        */}
+        <dl class="grid grid-cols-2 gap-x-8 gap-y-12 lg:grid-cols-4" data-chiffres>
           {
             d.chiffres.items.map((item) => (
               <div>
                 <dt class="sr-only">{item.label}</dt>
                 <dd>
-                  <span class="block font-display text-[clamp(2.5rem,7vw,3.75rem)] font-extrabold leading-[0.9] tracking-[-0.04em] text-blanc">
+                  {/*
+                    La valeur est écrite deux fois : une version lue par les
+                    lecteurs d'écran, toujours exacte, et la version affichée
+                    qui, elle, peut être en train de compter. Sans ça, un
+                    lecteur d'écran arrivant au milieu de l'animation
+                    annoncerait un nombre intermédiaire.
+                  */}
+                  <span class="sr-only">{item.valeur}</span>
+                  <span
+                    aria-hidden="true"
+                    class="block font-display text-[clamp(2.5rem,7vw,3.75rem)] font-extrabold leading-[0.9] tracking-[-0.04em] tabular-nums text-blanc"
+                    data-chiffre
+                  >
                     {item.valeur}
                   </span>
                   <span
@@ -766,6 +790,91 @@ const schema = {
    * au LCP. Injectée après le premier rendu, la vidéo se superpose au poster
    * dans le même conteneur absolu — aucun décalage de mise en page.
    */
+  /**
+   * Comptage des chiffres clés à l'entrée de la section.
+   *
+   * Amélioration progressive stricte : la valeur définitive est déjà dans le
+   * HTML. Ce script ne fait que la remplacer le temps du comptage, puis
+   * restitue la chaîne d'origine au caractère près — l'espace de milliers et
+   * le « + » de « 7 000+ » viennent du contenu, jamais d'un reformatage.
+   *
+   * Se déclenche UNE fois, puis cesse d'observer. Ne se déclenche pas du tout
+   * si le visiteur a demandé moins de mouvement : dans ce cas les chiffres
+   * sont simplement là, ce qui est leur état final de toute façon.
+   */
+  const grilleChiffres = document.querySelector('[data-chiffres]');
+
+  if (grilleChiffres && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const compteurs = [...grilleChiffres.querySelectorAll('[data-chiffre]')]
+      .map((el) => {
+        const brut = el.textContent.trim();
+        const premier = brut.search(/\d/);
+        const dernier = brut.search(/\d(?!.*\d)/);
+        if (premier === -1) return null;
+
+        // Séparateur de milliers réellement employé dans le contenu, s'il y en
+        // a un : « 7 000+ » donne l'espace, « 2009 » ne donne rien. On ne
+        // décide pas du format, on le relit.
+        const separateur = (brut.match(/\d(\D)\d{3}(?!\d)/) || [])[1] ?? '';
+
+        return {
+          el,
+          brut,
+          cible: Number(brut.slice(premier, dernier + 1).replace(/\D/g, '')),
+          avant: brut.slice(0, premier),
+          apres: brut.slice(dernier + 1),
+          separateur,
+        };
+      })
+      .filter(Boolean);
+
+    if (compteurs.length > 0 && 'IntersectionObserver' in window) {
+      const formater = (n, separateur) => {
+        const s = String(n);
+        return separateur ? s.replace(/\B(?=(\d{3})+(?!\d))/g, separateur) : s;
+      };
+
+      const compter = () => {
+        const duree = 1100;
+        const debut = performance.now();
+
+        const image = (maintenant) => {
+          const t = Math.min((maintenant - debut) / duree, 1);
+          // easeOutCubic : rapide au départ, s'installe sur la fin.
+          const progression = 1 - Math.pow(1 - t, 3);
+
+          for (const c of compteurs) {
+            if (t < 1) {
+              c.el.textContent =
+                c.avant + formater(Math.round(c.cible * progression), c.separateur) + c.apres;
+            } else {
+              // Dernière image : on repose la chaîne du contenu, telle quelle.
+              c.el.textContent = c.brut;
+            }
+          }
+
+          if (t < 1) requestAnimationFrame(image);
+        };
+
+        requestAnimationFrame(image);
+      };
+
+      const observateur = new IntersectionObserver(
+        (entrees) => {
+          for (const entree of entrees) {
+            if (entree.isIntersecting) {
+              observateur.disconnect();
+              compter();
+            }
+          }
+        },
+        { threshold: 0.35 },
+      );
+
+      observateur.observe(grilleChiffres);
+    }
+  }
+
   const fond = document.querySelector('[data-hero-fond]');
 
   if (fond) {

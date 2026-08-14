@@ -1,5 +1,5 @@
 ﻿---
-import { getSite, getServices, serviceHref } from '../lib/content.js';
+import { getSite, getServices, serviceHref, whatsappHref } from '../lib/content.js';
 
 /**
  * Pied de page — coordonnées, les 9 services, certifications, mentions.
@@ -52,6 +52,22 @@ const adresseComplete = [site.adresse.rue, `${site.adresse.codePostal} ${site.ad
           >
             <span aria-hidden="true" class="h-4 w-0.5 bg-orange"></span>
             {site.telephone.affichage}
+          </a>
+
+          {/*
+            WhatsApp a quitté la barre d'action mobile, passée à deux boutons.
+            Il reprend sa place ici et sur /contact : c'est un canal de second
+            recours, pas un réflexe de pouce.
+          */}
+          <a
+            href={whatsappHref(site)}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="-my-2.5 flex min-h-11 items-center gap-2.5 py-2.5 text-blanc/75 transition-colors duration-150 hover:text-orange focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orange"
+            data-cta="whatsapp-footer"
+          >
+            <span aria-hidden="true" class="h-4 w-0.5 bg-orange/45"></span>
+            WhatsApp
           </a>
 
           <a
