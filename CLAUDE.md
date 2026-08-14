@@ -23,10 +23,100 @@ _sources/videos/   vidéo de chantier
 - Un seul template pour les 9 pages services : src/pages/services/[slug].astro
 - Composant OtherServices : calcule automatiquement les 8 autres services.
   Aucune liste manuelle.
-- Couleurs : orange #F96500, navy #232B4A, gris clair #F5F6F8. Police Inter.
+- Direction artistique : voir « Acier & altitude » plus bas. Aucune couleur,
+  ombre, rayon ou taille de texte en dur dans un composant — tout vient des
+  tokens de `src/styles/global.css`.
 - Chaque page : title, meta description, canonical, schema.org.
 - Images : composant <Image> d'Astro, lazy loading, alt descriptif obligatoire.
 - Mobile-first. Le trafic BTP local est majoritairement mobile.
+
+## Direction artistique — « Acier & altitude »
+
+_Validée le 13 août 2026. Source unique : `src/styles/global.css`.
+Recette visible en `npm run dev` sur `/specimen` (hors production)._
+
+Le ton est industriel-éditorial : le site se lit comme un dossier technique
+adressé à un grand compte, pas comme une plaquette. Masses pleines, photos en
+grand, typographie lourde, ornement quasi nul. Ce qui doit rester en tête après
+la visite : la corde orange qui descend le long de la page, et des chantiers
+qu'on a vraiment vus.
+
+### Couleurs
+| Token | Valeur | Emploi |
+|---|---|---|
+| `orange` | `#F96500` | Marque (logo). CTA, corde, accents. Aplat, ou texte ≥ 24 px sur navy. |
+| `orange-texte` | `#D95A00` | Le SEUL orange autorisé en texte sur fond clair, et seulement ≥ 24 px. |
+| `alerte` | `#B03A00` | Erreurs de formulaire. Seule couleur d'alerte du site. |
+| `navy` | `#232B4A` | Marque (logo). Texte, aplats de section, tuiles d'icône. |
+| `navy-profond` | `#1A2039` | Bandeaux de conversion, pied de page. |
+| `navy-clair` | `#2F3960` | Surfaces posées SUR du navy, où une ombre ne se voit pas. |
+| `gris` | `#F5F6F8` | Un temps sur quatre du cycle de fonds. |
+| `gris-bord` | `#E4E7EE` | Séparateurs et contours de champ. |
+
+**Règle de contraste, non négociable.** L'orange de marque ne donne que 3,0:1
+sur blanc et 2,8:1 sur gris : il n'est JAMAIS employé en texte sur fond clair.
+En texte il ne sert qu'à partir de 24 px, en `orange-texte` sur fond clair et en
+orange de marque sur navy. Sous 24 px, un lien actif se signale par un
+soulignement orange, jamais par la couleur. Aucun texte en dessous de
+`navy/70` ni de `blanc/70`.
+
+**Le bouton primaire porte du texte navy sur l'aplat orange**, pas du blanc :
+blanc sur orange plafonne à 3,0:1, navy monte à 4,5:1 — et c'est le contraste de
+la signalétique de chantier.
+
+### Typographie
+**Technor** (titres) + **Switzer** (corps), Fontshare, licence FFL, auto-hébergées
+en woff2 variable, sous-ensemble latin — 17 Ko + 28 Ko. Technor seule est
+préchargée : elle porte le H1, donc le LCP.
+
+Technor est un sans à terminaisons carrées et courbes aplaties, un dessin
+d'instrumentation : de la personnalité sans folklore, crédible pour du BTP.
+Switzer est un neutre suisse qui s'efface derrière lui.
+
+L'échelle vit dans `@theme` : `text-affiche`, `text-titre`, `text-sous-titre`,
+`text-carte`, `text-corps`, `text-corps-large`, `text-petit`, `text-etiquette`.
+Chaque taille porte son interlignage et son tracking — on ne les redéfinit pas
+au cas par cas. Titres 800/900 et tracking −0,03em ; corps 300/400 et
+interlignage 1,7. C'est l'écart entre les deux qui fait la hiérarchie.
+
+Pour régénérer une police : télécharger le zip Fontshare, `npm i subset-font
+--no-save`, sous-ensembler sur les plages latin listées dans `global.css`.
+
+### Formes et profondeur
+Trois rayons, pas un de plus : `rounded-tuile` (8 px) pour tout ce qui est petit
+— icônes, badges, champs, boutons — `rounded-carte` (12 px) au-dessus,
+`rounded-bloc` (16 px) sur les grandes surfaces photo.
+
+Trois ombres, teintées navy et jamais noires : `shadow-repos` (surface posée),
+`shadow-flottant` (survol, panneau ouvert), `shadow-eleve` (ce qui passe
+au-dessus du contenu). Pas de bordure sèche pour délimiter une carte — c'est
+l'ombre qui la décolle. La classe `.eleve` donne l'élévation au survol : ombre
+élargie + 3 px vers le haut, 200 ms, désactivée au doigt.
+
+Aucune icône n'est posée nue : elle vit dans une `<TuileIcone>` navy arrondie.
+
+### Rythme
+Le fond suit un cycle de quatre temps — blanc, gris, navy plein, photo pleine
+largeur — et deux sections voisines n'ont jamais la même mise en page. On
+alterne deux colonnes asymétriques (5/7), pleine largeur, grille décalée.
+L'espacement inter-sections est `--espace-section` (80 → 160 px) ; c'est le
+principal outil de hiérarchie de cette direction, il ne se réduit pas.
+
+Chaque titre de section porte son dernier mot en orange, via `<TitreSection>`
+qui le calcule. Les fichiers de contenu gardent des titres en texte brut.
+
+### La corde
+Le fil orange ne coiffe plus chaque titre à l'identique. C'est UNE verticale
+continue (`.corde`) qui descend le long du contenu et marque ses points
+d'accroche par un nœud (`.corde-noeud`). Une par page, deux au maximum : répétée,
+elle redevient un ornement.
+
+### Photos
+Deux ratios seulement, 16/9 et 4/3. La classe `.photo` applique le traitement
+qui unifie la série — contraste +8 %, saturation −5 %, voile navy 6 % en
+multiply — et `.photo-zoom` le zoom lent au survol d'une carte. Une photo pleine
+largeur par page comme respiration. Une entreprise de cordistes doit montrer ses
+chantiers : les images sont grandes, jamais des vignettes.
 
 ## Interdits
 - Les témoignages clients sont ANONYMISÉS : jamais de nom de personne,

@@ -152,7 +152,13 @@ export function getServicePhotos(slug, legendes = [], max = 4) {
     .map(([chemin, module]) => {
       const fichier = chemin.slice(prefixe.length);
       const legende = legendes.find((l) => l.fichier === fichier);
-      return { src: module.default, fichier, alt: legende?.alt, caption: legende?.caption };
+      return {
+        src: module.default,
+        fichier,
+        alt: legende?.alt,
+        caption: legende?.caption,
+        miseEnAvant: legende?.miseEnAvant === true,
+      };
     });
 
   /*

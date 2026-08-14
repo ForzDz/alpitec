@@ -16,7 +16,7 @@ const blogVide =
   readdirSync('./src/content/blog').filter((f) => f.endsWith('.md')).length === 0;
 
 /** Pages exclues du sitemap : outils internes et pages sans valeur de recherche. */
-const horsSitemap = ['/design-system', '/merci', ...(blogVide ? ['/blog'] : [])];
+const horsSitemap = ['/specimen', '/merci', ...(blogVide ? ['/blog'] : [])];
 
 // Note : pas de plugin remark/rehype ici. Astro 7 utilise Sätteri comme
 // processeur Markdown par défaut ; brancher un plugin unified imposerait

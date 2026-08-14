@@ -7,11 +7,22 @@ metaDescription: "Entreprise de travaux en hauteur sur cordes à Paris et en Îl
 
 # Bande de chantiers : photos de src/assets/photos/accueil/, appariées par nom
 # de fichier. Une photo sans alt écrit ici n'est pas affichée.
+#
+# chantier-001 (« compagnon harnaché DEPUIS UNE NACELLE ») a été retirée du site
+# le 13 août 2026 : elle contredisait le « sans échafaudage ni nacelle » que les
+# neuf pages services revendiquent. Elle reste dans l'historique Git.
+# Remplacée par chantier-025, reprise du dossier nettoyage-vitres — deux
+# cordistes sur cordes, c'est le métier tel qu'il se vend.
 photosAccueil:
-  - fichier: "chantier-001.jpeg"
-    alt: "Compagnon harnaché, depuis une nacelle, fixant un filet de sécurité sous une dalle béton sur un chantier de construction"
+  - fichier: "chantier-025.jpeg"
+    alt: "Deux cordistes suspendus à leurs cordes le long d'une façade d'immeuble de bureaux, nettoyant les grandes baies vitrées"
   - fichier: "chantier-011.jpeg"
     alt: "Cordiste casqué, en suspension sur ses cordes, nettoyant à l'éponge un luminaire en inox fixé sur une façade en brique"
+    # Photo de tête de la bande de chantiers, en pleine largeur. Choisie parce
+    # qu'elle montre un cordiste sur cordes : chantier-001, première par ordre
+    # de nom de fichier, montre une nacelle — l'exact contraire du « sans
+    # échafaudage ni nacelle » que le site revendique sur ses 9 pages services.
+    miseEnAvant: true
   - fichier: "chantier-012.jpeg"
     alt: "Cordiste suspendu à l'angle d'un immeuble de bureaux, intervenant sur les lettres de l'enseigne en façade"
   - fichier: "chantier-024.jpeg"
@@ -21,10 +32,12 @@ hero:
   surtitre: "Cordistes certifiés · Paris & Île-de-France"
   h1: "Les spécialistes des travaux en hauteur à Paris et en Île-de-France"
   intro: "Ravalement, couverture, nettoyage, sécurisation : ALPITEC, entreprise de travaux en hauteur, fait intervenir ses cordistes sur tous types de bâtiments à Paris et en Île-de-France — copropriétés, sites industriels, chantiers du BTP. Sans échafaudage coûteux, sans immobiliser votre immeuble."
-  # Dernière phrase de `intro`, reprise mot pour mot. Affichée à la place de
-  # l'accroche complète sur mobile, où celle-ci fait huit lignes et repousse le
-  # bouton de devis hors de l'écran.
-  introCourte: "Sans échafaudage coûteux, sans immobiliser votre immeuble."
+  # Dernière phrase de `intro`, précédée de la requête cible « travaux en
+  # hauteur à Paris » : sur mobile, c'est le seul sous-titre affiché, et
+  # l'accroche complète qui porte la requête y est masquée. Affichée à la place
+  # de cette accroche, qui fait huit lignes et repousse le bouton de devis hors
+  # de l'écran.
+  introCourte: "Travaux en hauteur à Paris : sans échafaudage coûteux, sans immobiliser votre immeuble."
   buttons:
     - { label: "Demander un devis gratuit", action: "devis" }
   badges:

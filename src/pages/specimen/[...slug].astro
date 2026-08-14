@@ -1,0 +1,352 @@
+---
+import { Image } from 'astro:assets';
+import { getEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Button from '../../components/Button.astro';
+import ServiceCard from '../../components/ServiceCard.astro';
+import TitreSection from '../../components/TitreSection.astro';
+import TuileIcone from '../../components/TuileIcone.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import InfoBox from '../../components/InfoBox.astro';
+import { getServices, getSite, getServicePhotos } from '../../lib/content.js';
+
+/**
+ * SPÉCIMEN — recette de la direction artistique « Acier & altitude ».
+ *
+ * Page de travail : disponible en `npm run dev`, absente du site déployé.
+ * `getStaticPaths` ne renvoie rien en production, donc rien n'est écrit dans
+ * dist/ ; `noindex` couvre le cas où elle serait servie malgré tout, et
+ * astro.config.mjs la tient hors du sitemap.
+ *
+ * Elle ne montre PAS le site : elle montre les décisions visuelles, avec du
+ * vrai contenu ALPITEC, pour qu'elles soient validées avant d'être propagées
+ * aux 17 pages. L'en-tête et le pied de page sont volontairement absents —
+ * ils n'ont pas encore été repris.
+ */
+export function getStaticPaths() {
+  if (import.meta.env.PROD) return [];
+  return [{ params: { slug: undefined } }];
+}
+
+const services = await getServices();
+const site = await getSite();
+const accueil = await getEntry('home', 'accueil');
+
+const ravalement = services.find((s) => s.data.slug === 'ravalement');
+const infosCles = ravalement.data.sections.find((s) => s.type === 'keyFacts');
+const processus = ravalement.data.sections.find((s) => s.type === 'process');
+
+const photos = getServicePhotos('accueil', accueil.data.photosAccueil, 4);
+const troisServices = services.slice(0, 3);
+
+// Échelle de graisses : prouve que l'axe variable a survécu au sous-ensemble.
+const graisses = [
+  { poids: 300, nom: 'Light' },
+  { poids: 400, nom: 'Regular' },
+  { poids: 600, nom: 'Semibold' },
+  { poids: 800, nom: 'Extrabold' },
+  { poids: 900, nom: 'Black' },
+];
+
+const ombres = [
+  { nom: 'repos', classe: 'shadow-repos', usage: 'Surface posée : carte au repos, encadré, champ.' },
+  {
+    nom: 'flottant',
+    classe: 'shadow-flottant',
+    usage: 'Survol d’une carte, panneau ouvert. Jamais un état permanent.',
+  },
+  {
+    nom: 'eleve',
+    classe: 'shadow-eleve',
+    usage: 'Ce qui passe au-dessus du contenu : menu mobile, barre fixe.',
+  },
+];
+---
+
+<Base
+  title="Spécimen — Acier & altitude | ALPITEC"
+  description="Recette interne de la direction artistique ALPITEC."
+  noindex={true}
+>
+  <main id="contenu">
+    {/* ---------------------------------------------- Bandeau d'avertissement */}
+    <div class="bg-navy-profond px-5 py-3 text-center sm:px-8">
+      <p class="font-display text-etiquette uppercase text-orange">
+        Page de recette — hors production
+      </p>
+    </div>
+
+    {/* ================================================= 1. FOND BLANC : typo */}
+    <section class="mx-auto max-w-6xl px-5 py-[var(--espace-section)] sm:px-8">
+      <div class="corde corde-descend">
+        <p class="font-display text-etiquette uppercase text-navy/70">
+          Direction artistique · Acier &amp; altitude
+        </p>
+
+        {/* Le vrai H1 de l'accueil, à l'échelle « affiche ». */}
+        <h1 class="mt-7 max-w-[17ch] text-affiche text-navy">
+          {accueil.data.hero.h1}
+        </h1>
+
+        <p class="mt-8 max-w-[58ch] text-corps-large font-light text-navy/75 text-pretty">
+          {accueil.data.hero.intro}
+        </p>
+      </div>
+
+      {/* Titre de section avec accent orange calculé sur le dernier mot */}
+      <div class="mt-24 grid gap-x-16 gap-y-12 lg:grid-cols-12">
+        <div class="lg:col-span-5">
+          <TitreSection texte="Deux polices, un seul système" />
+          <p class="mt-6 max-w-[46ch] text-corps font-light text-navy/75 text-pretty">
+            Technor porte les titres : terminaisons carrées, courbes aplaties, un
+            dessin d’instrumentation. Switzer porte le texte courant, où il
+            s’efface. L’écart de graisse entre les deux fait la hiérarchie — pas
+            les filets, pas les bordures.
+          </p>
+          <p class="mt-4 max-w-[46ch] text-petit font-light text-navy/70">
+            17 Ko + 28 Ko, sous-ensemble latin, axe variable conservé.
+          </p>
+        </div>
+
+        <div class="lg:col-span-7">
+          <div class="rounded-carte bg-gris p-7 shadow-repos sm:p-9">
+            <p class="font-display text-etiquette uppercase text-navy/70">
+              Technor — titres
+            </p>
+            <ul class="mt-6 space-y-4">
+              {
+                graisses.map((g) => (
+                  <li class="flex items-baseline gap-5">
+                    <span class="w-24 shrink-0 text-petit font-light text-navy/70">
+                      {g.poids} {g.nom}
+                    </span>
+                    <span
+                      class="font-display text-[1.75rem] leading-none tracking-[-0.03em] text-navy"
+                      style={`font-weight:${g.poids}`}
+                    >
+                      Travaux en hauteur
+                    </span>
+                  </li>
+                ))
+              }
+            </ul>
+
+            <p class="mt-10 font-display text-etiquette uppercase text-navy/70">
+              Switzer — corps
+            </p>
+            <p class="mt-4 max-w-[52ch] text-corps font-light text-navy/75 text-pretty">
+              Ravalement, couverture, nettoyage, sécurisation : nos cordistes
+              interviennent sur tous types de bâtiments — copropriétés, sites
+              industriels, chantiers du BTP.
+            </p>
+            <p class="mt-3 max-w-[52ch] text-petit font-light text-navy/70 text-pretty">
+              Interlignage 1,7 et graisse légère : le texte respire, et le
+              contraste avec un titre en 800 devient lisible d’un coup d’œil.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {/* ============================== 2. FOND GRIS : profondeur et formes */}
+    <section class="bg-gris">
+      <div class="mx-auto max-w-6xl px-5 py-[var(--espace-section)] sm:px-8">
+        <TitreSection texte="Trois niveaux d’ombre" class="max-w-[16ch]" />
+        <p class="mt-6 max-w-[54ch] text-corps font-light text-navy/75 text-pretty">
+          Teintées navy et jamais noires : une ombre noire sur un fond gris
+          grise l’image au lieu de la décoller. Rayons 8 et 12 px, partout les
+          mêmes.
+        </p>
+
+        <ul class="mt-12 grid gap-6 sm:grid-cols-3">
+          {
+            ombres.map((o) => (
+              <li class={`rounded-carte bg-blanc p-6 ${o.classe}`}>
+                <p class="font-display text-etiquette uppercase text-navy/70">{o.nom}</p>
+                <p class="mt-3 text-petit font-light text-navy/75 text-pretty">{o.usage}</p>
+              </li>
+            ))
+          }
+        </ul>
+
+        {/* Tuiles d'icône */}
+        <div class="mt-20 grid gap-x-16 gap-y-10 lg:grid-cols-12">
+          <div class="lg:col-span-5">
+            <TitreSection texte="Aucune icône posée nue" taille="sous" />
+            <p class="mt-5 max-w-[44ch] text-petit font-light text-navy/75 text-pretty">
+              Un trait de 20 px se perd dès qu’il y a une photo ou un aplat
+              derrière. La tuile lui donne une masse constante d’un bloc à
+              l’autre.
+            </p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-4 lg:col-span-7">
+            {
+              [
+                { v: 'navy', l: 'navy' },
+                { v: 'orange', l: 'orange' },
+                { v: 'clair', l: 'clair' },
+              ].map((t) => (
+                <div
+                  class={`flex items-center gap-4 rounded-carte p-4 shadow-repos ${t.v === 'clair' ? 'bg-navy' : 'bg-blanc'}`}
+                >
+                  <TuileIcone variant={t.v}>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path
+                        d="M12 3v18M5 8l7-5 7 5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                  </TuileIcone>
+                  <span
+                    class={`font-display text-etiquette uppercase ${t.v === 'clair' ? 'text-blanc/70' : 'text-navy/70'}`}
+                  >
+                    {t.l}
+                  </span>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+
+        {/* Encadré infos clés, contenu réel de la page ravalement */}
+        <div class="mt-20">
+          <InfoBox items={infosCles.items} title="Infos clés" />
+        </div>
+      </div>
+    </section>
+
+    {/* ====================== 3. FOND BLANC : cartes services au survol */}
+    <section class="mx-auto max-w-6xl px-5 py-[var(--espace-section)] sm:px-8">
+      <div class="flex flex-wrap items-end justify-between gap-6">
+        <TitreSection texte="La carte au survol" class="max-w-[14ch]" />
+        <p class="max-w-[38ch] text-petit font-light text-navy/70 text-pretty">
+          Survolez : l’ombre s’élargit, la carte monte de 3 px et la photo zoome
+          de 4 %. Les trois sur 200 ms, ensemble. Au doigt, rien ne se déclenche.
+        </p>
+      </div>
+
+      <ul class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          troisServices.map((service, i) => {
+            const photosService = getServicePhotos(
+              service.data.slug,
+              service.data.sections.find((s) => s.type === 'realisations')?.photos ?? [],
+              1,
+            );
+            return (
+              <li class="flex">
+                <ServiceCard
+                  service={service.data}
+                  image={photosService[0] ?? photos[i]}
+                  class="w-full"
+                />
+              </li>
+            );
+          })
+        }
+      </ul>
+
+      {/* Boutons */}
+      <div class="mt-20 grid gap-x-16 gap-y-10 lg:grid-cols-12">
+        <div class="lg:col-span-5">
+          <TitreSection texte="Le bouton de conversion" taille="sous" />
+          <p class="mt-5 max-w-[44ch] text-petit font-light text-navy/75 text-pretty">
+            Texte navy sur l’aplat orange, et non blanc : blanc sur #F96500 ne
+            donne que 3,0:1, sous le seuil AA. Le navy monte à 4,5:1 — et c’est
+            exactement le contraste de la signalétique de chantier.
+          </p>
+        </div>
+
+        <div class="flex max-w-md flex-col gap-3 lg:col-span-7">
+          <Button href="#" variant="primaire" size="lg" class="w-full">
+            Demander un devis gratuit
+            <span aria-hidden="true">→</span>
+          </Button>
+          <Button href="#" variant="secondaire" size="lg" class="w-full">
+            {site.telephone.affichageInternational}
+          </Button>
+        </div>
+      </div>
+    </section>
+
+    {/* ================================= 4. FOND NAVY PLEIN : la corde */}
+    <section class="relative overflow-hidden bg-navy">
+      <span
+        aria-hidden="true"
+        class="pointer-events-none absolute -right-24 top-1/2 size-[28rem] -translate-y-1/2 rounded-full bg-orange/10 blur-3xl"
+      ></span>
+
+      <div class="relative mx-auto max-w-6xl px-5 py-[var(--espace-section)] sm:px-8">
+        <div class="corde max-w-[60ch]">
+          <TitreSection texte="La corde, une seule verticale" ton="clair" />
+          <p class="mt-6 text-corps-large font-light text-blanc/80 text-pretty">
+            Le fil orange ne coiffe plus chaque titre à l’identique. Il descend
+            le long du contenu, d’un seul trait, et marque ses points d’accroche
+            par un nœud. C’est la corde du cordiste : elle ne se répète pas, elle
+            court.
+          </p>
+
+          <ul class="mt-10 space-y-5">
+            {
+              processus.steps.slice(0, 3).map((step) => (
+                <li class="corde-noeud">
+                  <p class="font-display text-etiquette uppercase text-orange">{step.step}</p>
+                  <p class="mt-1.5 font-display text-sous-titre text-blanc">{step.label}</p>
+                  <p class="mt-2 max-w-[48ch] text-petit font-light text-blanc/70 text-pretty">
+                    {step.text}
+                  </p>
+                </li>
+              ))
+            }
+          </ul>
+
+          <div class="mt-10 flex max-w-md flex-col gap-3 sm:max-w-none sm:flex-row">
+            <Button href="#" variant="primaire" size="lg">Demander un devis gratuit</Button>
+            <Button href="#" variant="clair" size="lg">Nous appeler</Button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {/* ======================= 5. PHOTO PLEINE LARGEUR : la respiration */}
+    {
+      photos[0] && (
+        <section aria-label="Traitement photographique">
+          <div class="photo relative aspect-[16/9] max-h-[70vh] w-full">
+            <Image
+              src={photos[0].src}
+              alt={photos[0].alt}
+              width={1920}
+              widths={[640, 1024, 1600, 1920]}
+              sizes="100vw"
+              format="webp"
+              quality={72}
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+          <div class="mx-auto max-w-6xl px-5 py-10 sm:px-8">
+            <p class="max-w-[54ch] text-petit font-light text-navy/70 text-pretty">
+              Une photo pleine largeur par page, sans texte par-dessus. Traitement
+              unifié — contraste +8 %, saturation −5 %, voile navy 6 % en multiply
+              — pour que dix chantiers photographiés dans dix conditions forment
+              une série.
+            </p>
+          </div>
+        </section>
+      )
+    }
+
+    {/* ============================================ 6. Bandeau de conversion */}
+    <CtaBand
+      title="Demandez votre devis gratuit"
+      text="Décrivez-nous votre projet : visite technique planifiée rapidement, devis gratuit, détaillé et sans engagement."
+      buttons={[
+        { label: 'Demander mon devis gratuit', action: 'devis' },
+        { label: 'Nous appeler', action: 'tel' },
+      ]}
+    />
+  </main>
+</Base>

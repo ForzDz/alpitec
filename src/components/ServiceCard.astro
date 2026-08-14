@@ -1,4 +1,4 @@
-﻿---
+---
 import { Image } from 'astro:assets';
 import { serviceHref } from '../lib/content.js';
 
@@ -8,8 +8,12 @@ import { serviceHref } from '../lib/content.js';
  * Toute la carte est cliquable via l'extension du lien du titre (::after) :
  * une seule cible pour les lecteurs d'écran, une grande zone tactile au doigt.
  *
- * `image` est facultatif : les photos de chantier ne sont pas encore triées.
- * En son absence, un aplat gris tient la place sans casser la grille.
+ * Plus de bordure : la carte tient par son ombre et son fond blanc. Au survol
+ * elle monte de 3 px, l'ombre s'élargit et la photo zoome lentement — les
+ * trois se déclenchent ensemble, sur la même durée.
+ *
+ * `image` est facultatif : les photos de chantier ne sont pas toutes triées.
+ * En son absence, une tuile navy tient la place sans casser la grille.
  */
 
 const { service, linkLabel = 'Voir le service', image, class: className = '' } = Astro.props;
@@ -24,10 +28,10 @@ const ordre = service.ordre;
 ---
 
 <article
-  class={`group relative flex h-full flex-col border border-navy/12 bg-blanc transition-colors duration-150 hover:border-navy/35 focus-within:border-navy/35 ${className}`}
+  class={`eleve group relative flex h-full flex-col overflow-hidden rounded-carte bg-blanc ${className}`}
   data-reveal
 >
-  <div class="relative aspect-[16/10] overflow-hidden bg-gris">
+  <div class="photo photo-zoom relative aspect-[4/3]">
     {
       image ? (
         <Image
@@ -40,34 +44,34 @@ const ordre = service.ordre;
           quality={68}
           loading="lazy"
           decoding="async"
-          class="h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.03]"
         />
       ) : (
         /*
           Pas encore de photo : plutôt qu'un cadre gris qui se lit comme une
-          image cassée, une tuile navy assumée — index, filet orange, nom du
-          service en capitales. Ça ressemble à une fiche technique, pas à un
-          gabarit inachevé.
+          image cassée, une tuile navy assumée — index, nom du service en
+          capitales. Ça ressemble à une fiche technique, pas à un gabarit
+          inachevé.
         */
-        <div class="flex h-full w-full flex-col justify-between bg-navy p-5" aria-hidden="true">
-          <span class="text-[0.625rem] font-bold tracking-[0.2em] text-orange">
+        <div
+          class="flex h-full w-full flex-col justify-between bg-navy p-5"
+          aria-hidden="true"
+        >
+          <span class="font-display text-etiquette text-orange">
             {String(ordre ?? 0).padStart(2, '0')}
           </span>
-          <span class="max-w-[16ch] text-[0.9375rem] font-bold uppercase leading-tight tracking-[0.08em] text-blanc/85 text-balance">
+          <span class="max-w-[16ch] font-display text-[0.9375rem] font-bold uppercase leading-tight tracking-[0.08em] text-blanc/85 text-balance">
             {shortLabel}
           </span>
         </div>
       )
     }
-    {/* Le fil orange : marque le coin haut-gauche de chaque visuel. */}
-    {image && <span aria-hidden="true" class="absolute left-0 top-0 h-12 w-0.5 bg-orange"></span>}
   </div>
 
-  <div class="flex flex-1 flex-col gap-3 p-6">
-    <h3 class="text-lg font-bold leading-tight tracking-tight text-navy text-balance">
+  <div class="flex flex-1 flex-col gap-3 p-6 sm:p-7">
+    <h3 class="text-carte text-navy text-balance">
       <a
         href={serviceHref(slug)}
-        class="after:absolute after:inset-0 after:content-[''] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orange"
+        class="rounded-[2px] after:absolute after:inset-0 after:content-[''] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orange"
       >
         {title}
       </a>
@@ -75,25 +79,25 @@ const ordre = service.ordre;
 
     {
       accroche ? (
-        <p class="flex-1 text-[0.9375rem] leading-relaxed text-navy/75 text-pretty">{accroche}</p>
+        <p class="flex-1 text-petit font-light text-navy/75 text-pretty">{accroche}</p>
       ) : (
         <div class="flex-1" />
       )
     }
 
     <span
-      class="mt-1 inline-flex items-center gap-2 text-sm font-bold tracking-tight text-navy transition-colors duration-150 group-hover:text-orange"
+      class="mt-1 inline-flex items-center gap-2 font-display text-[0.9375rem] font-bold tracking-tight text-navy transition-colors duration-200 group-hover:text-orange"
     >
       {linkLabel}
       <svg
         aria-hidden="true"
         viewBox="0 0 16 16"
-        class="h-3.5 w-3.5 transition-transform duration-150 group-hover:translate-x-1"
+        class="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-1"
         fill="none"
         stroke="currentColor"
         stroke-width="2"
       >
-        <path d="M2 8h11M9 4l4 4-4 4" stroke-linecap="square" />
+        <path d="M2 8h11M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round" />
       </svg>
     </span>
   </div>

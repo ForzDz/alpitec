@@ -1,13 +1,14 @@
 ---
 import Button from './Button.astro';
+import TitreSection from './TitreSection.astro';
 import { getSite, actionHref } from '../lib/content.js';
 
 /**
  * Bandeau de conversion réutilisable — bas de page service, bas d'accueil.
  *
- * Aplat navy pleine largeur : c'est la seule rupture de fond du site, ce qui
- * en fait un point d'arrêt visuel. Le fil orange y devient une règle horizontale
- * au-dessus du titre.
+ * Aplat navy profond pleine largeur, avec une lueur orange très diffuse dans
+ * l'angle supérieur gauche : de la profondeur sans ajouter une seule forme.
+ * C'est le point d'arrêt visuel de la page, il doit peser.
  *
  * `buttons` vient du contenu (`{ label, action }`), les URLs sont résolues ici :
  * un fichier Markdown n'a pas à connaître le numéro de téléphone.
@@ -16,47 +17,51 @@ import { getSite, actionHref } from '../lib/content.js';
 const { title, text, buttons = [], variant = 'navy', id } = Astro.props;
 const site = await getSite();
 
-const fond = variant === 'gris' ? 'bg-gris text-navy' : 'bg-navy text-blanc';
-const texte = variant === 'gris' ? 'text-navy/75' : 'text-blanc/80';
+const clair = variant !== 'gris';
+const fond = clair ? 'bg-navy-profond text-blanc' : 'bg-gris text-navy';
+const texte = clair ? 'text-blanc/80' : 'text-navy/75';
 ---
 
-<section class={`${fond}`} id={id} data-reveal>
-  <div class="mx-auto max-w-6xl px-5 py-14 sm:px-8 sm:py-20">
-    <span aria-hidden="true" class="mb-7 block h-0.5 w-14 bg-orange"></span>
+<section class={`relative overflow-hidden ${fond}`} id={id} data-reveal>
+  {
+    clair && (
+      <span
+        aria-hidden="true"
+        class="pointer-events-none absolute -left-32 -top-40 size-[34rem] rounded-full bg-orange/12 blur-3xl"
+      />
+    )
+  }
 
-    <h2 class="max-w-[22ch] text-2xl font-bold leading-[1.15] tracking-tight text-balance sm:text-4xl">
-      {title}
-    </h2>
+  <div class="relative mx-auto max-w-6xl px-5 py-[var(--espace-section)] sm:px-8">
+    <div class="corde corde-descend max-w-[52rem]">
+      <TitreSection texte={title} ton={clair ? 'clair' : 'sombre'} class="max-w-[20ch]" />
 
-    {
-      text && (
-        <p class={`mt-5 max-w-[62ch] text-base leading-relaxed text-pretty ${texte}`}>
-          {text}
-        </p>
-      )
-    }
+      {
+        text && (
+          <p class={`mt-6 max-w-[58ch] text-corps-large font-light text-pretty ${texte}`}>
+            {text}
+          </p>
+        )
+      }
 
-    <slot />
+      <slot />
 
-    {
-      buttons.length > 0 && (
-        <div class="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
-          {buttons.map((bouton, i) => (
-            <Button
-              href={actionHref(bouton.action, site)}
-              variant={i === 0 ? 'primaire' : 'secondaire'}
-              size="lg"
-              class={
-                i === 0 || variant === 'gris'
-                  ? ''
-                  : 'border-blanc/45 text-blanc hover:bg-blanc hover:text-navy'
-              }
-            >
-              {bouton.label}
-            </Button>
-          ))}
-        </div>
-      )
-    }
+      {
+        buttons.length > 0 && (
+          <div class="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+            {buttons.map((bouton, i) => (
+              <Button
+                href={actionHref(bouton.action, site)}
+                variant={i === 0 ? 'primaire' : clair ? 'clair' : 'secondaire'}
+                size="lg"
+                class="w-full sm:w-auto"
+              >
+                {bouton.label}
+              </Button>
+            ))}
+          </div>
+        )
+      }
+    </div>
   </div>
 </section>

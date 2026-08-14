@@ -11,6 +11,10 @@ telephone:
   # Affichage au format national français, plus lisible qu'un +33 pour un
   # visiteur francilien. Le lien tel:, lui, reste au format international.
   affichage: "07 88 30 08 95"
+  # Format international, affiché sur le bouton d'appel du hero : le CTA doit
+  # se lire comme un numéro joignable depuis n'importe où, pas seulement en
+  # Île-de-France.
+  affichageInternational: "+33 7 88 30 08 95"
   lien: "+33788300895"
 
 whatsapp:

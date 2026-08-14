@@ -1,5 +1,6 @@
 ---
 import Button from './Button.astro';
+import TitreSection from './TitreSection.astro';
 import { getSite, getServices, whatsappHref } from '../lib/content.js';
 import { getEntry } from 'astro:content';
 
@@ -39,29 +40,29 @@ const champs = [
   { id: 'besoin', label: 'Décrivez votre besoin', type: 'textarea', requis: true },
 ];
 
+// Le champ suit les mêmes règles de forme que les cartes : rayon 8 px, ombre
+// douce, aucune bordure sèche. Le focus reste marqué par la couleur ET par
+// l'anneau — jamais par la couleur seule.
 const classeChamp =
-  'w-full min-w-0 min-h-11 border border-navy/20 bg-blanc px-4 py-3 text-base text-navy ' +
-  'transition-colors duration-150 hover:border-navy/40 focus:border-orange focus:outline-none ' +
+  'w-full min-w-0 min-h-11 rounded-tuile border border-gris-bord bg-blanc px-4 py-3 text-base text-navy ' +
+  'shadow-repos transition-[border-color,box-shadow] duration-200 hover:border-navy/30 ' +
+  'focus:border-orange focus:shadow-flottant focus:outline-2 focus:outline-offset-2 focus:outline-orange ' +
   'aria-[invalid=true]:border-orange aria-[invalid=true]:bg-orange/5';
 ---
 
 <section id={id} class="scroll-mt-24 bg-gris" data-reveal>
-  <div class="mx-auto grid max-w-6xl gap-12 px-5 py-14 sm:px-8 sm:py-20 lg:grid-cols-12 lg:gap-16">
+  <div class="mx-auto grid max-w-6xl gap-12 px-5 py-[var(--espace-section)] sm:px-8 lg:grid-cols-12 lg:gap-16">
     <!-- Réassurance -->
     <div class="min-w-0 lg:col-span-5">
       {
         avecIntro && (
-          <>
-            <span aria-hidden="true" class="mb-6 block h-0.5 w-14 bg-orange" />
+          <div class="corde corde-descend">
+            <TitreSection texte={contact.title} class="max-w-[16ch]" />
 
-            <h2 class="max-w-[16ch] text-2xl font-bold leading-[1.15] tracking-tight text-navy text-balance sm:text-4xl">
-              {contact.title}
-            </h2>
-
-            <p class="mt-5 max-w-[52ch] text-base leading-relaxed text-navy/75 text-pretty">
+            <p class="mt-6 max-w-[52ch] text-corps font-light text-navy/75 text-pretty">
               {contact.text}
             </p>
-          </>
+          </div>
         )
       }
 
@@ -95,7 +96,7 @@ const classeChamp =
 
     <!-- Formulaire -->
     <div class="min-w-0 lg:col-span-7">
-      <div class="border border-navy/12 bg-blanc p-6 sm:p-9">
+      <div class="rounded-carte bg-blanc p-6 shadow-flottant sm:p-9">
         {
           avecIntro ? (
             <h3 class="text-xl font-bold leading-tight tracking-tight text-navy text-balance sm:text-2xl">
@@ -134,10 +135,10 @@ const classeChamp =
               <div class:list={['flex min-w-0 flex-col gap-2', champ.type === 'textarea' && 'sm:col-span-2']}>
                 <label
                   for={champ.id}
-                  class="text-xs font-bold uppercase tracking-[0.12em] text-navy/60"
+                  class="font-display text-etiquette uppercase text-navy/70"
                 >
                   {champ.label}
-                  {!champ.requis && <span class="ml-1.5 font-normal normal-case tracking-normal text-navy/40">(facultatif)</span>}
+                  {!champ.requis && <span class="ml-1.5 font-normal normal-case tracking-normal text-navy/70">(facultatif)</span>}
                 </label>
 
                 {champ.type === 'select' ? (
@@ -180,7 +181,7 @@ const classeChamp =
 
                 <p
                   id={`${champ.id}-erreur`}
-                  class="hidden text-[0.8125rem] font-bold leading-snug text-orange"
+                  class="hidden text-[0.8125rem] font-bold leading-snug text-alerte"
                   data-erreur
                 />
               </div>
@@ -190,7 +191,7 @@ const classeChamp =
           <div class="sm:col-span-2">
             {/* Récapitulatif d'erreurs, annoncé aux lecteurs d'écran à la soumission. */}
             <p
-              class="mb-5 hidden border-l-2 border-orange bg-orange/5 px-4 py-3 text-[0.9375rem] font-bold text-navy"
+              class="mb-5 hidden rounded-tuile bg-orange/10 px-4 py-3 text-[0.9375rem] font-bold text-navy"
               role="alert"
               data-resume-erreurs
             >
@@ -199,7 +200,7 @@ const classeChamp =
             <Button type="submit" variant="primaire" size="lg" class="w-full sm:w-auto" data-cta="devis-formulaire">
               {contact.form.submitLabel}
             </Button>
-            <p class="mt-4 text-[0.8125rem] text-navy/55">
+            <p class="mt-4 text-[0.8125rem] text-navy/70">
               {contact.form.legalNote}
             </p>
           </div>

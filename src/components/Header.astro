@@ -54,7 +54,7 @@ const estActif = (href) => {
 </a>
 
 <header
-  class="group sticky top-0 z-50 border-b border-navy/12 bg-blanc transition-[background-color,border-color] duration-200 ease-out data-[etat=haut]:border-transparent data-[etat=haut]:bg-transparent motion-reduce:transition-none"
+  class="group sticky top-0 z-50 bg-blanc shadow-repos transition-[background-color,box-shadow] duration-200 ease-out data-[etat=haut]:bg-transparent data-[etat=haut]:shadow-none motion-reduce:transition-none"
   data-header
   data-entete
   data-etat={transparent ? 'haut' : 'solide'}
@@ -100,7 +100,7 @@ const estActif = (href) => {
               <li class="relative" data-disclosure>
                 <button
                   type="button"
-                  class="flex items-center gap-1.5 py-2 text-sm font-bold tracking-tight text-navy transition-colors duration-150 hover:text-orange focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orange aria-expanded:text-orange group-data-[etat=haut]:text-blanc group-data-[etat=haut]:hover:text-orange"
+                  class="flex items-center gap-1.5 py-2 font-display text-sm font-bold tracking-tight text-navy underline-offset-8 decoration-orange decoration-2 transition-colors duration-200 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orange aria-expanded:underline group-data-[etat=haut]:text-blanc"
                   aria-expanded="false"
                   aria-controls="menu-services"
                   data-disclosure-trigger
@@ -120,23 +120,23 @@ const estActif = (href) => {
 
                 <div
                   id="menu-services"
-                  class="absolute left-1/2 top-full z-50 w-[42rem] max-w-[calc(100vw-2rem)] -translate-x-1/2 border border-navy/12 bg-blanc p-2 shadow-[0_16px_40px_-24px_rgb(35_43_74_/_0.5)]"
+                  class="absolute left-1/2 top-full z-50 w-[42rem] max-w-[calc(100vw-2rem)] -translate-x-1/2 rounded-carte bg-blanc p-2 shadow-eleve"
                   data-disclosure-panel
                   hidden
                 >
                   {/* 9 services en 3 colonnes : la grille tombe juste, aucune case vide. */}
-                  <ul class="grid grid-cols-3 gap-px bg-navy/10">
+                  <ul class="grid grid-cols-3 gap-1">
                     {services.map((service) => (
-                      <li class="bg-blanc">
+                      <li class="flex">
                         <a
                           href={serviceHref(service.data.slug)}
-                          class="group flex items-start gap-2.5 p-3 transition-colors duration-150 hover:bg-gris focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-orange"
+                          class="group flex w-full items-start gap-2.5 rounded-tuile p-3 transition-colors duration-200 hover:bg-gris focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-orange"
                         >
                           <span
                             aria-hidden="true"
                             class="mt-1 h-3.5 w-0.5 shrink-0 bg-orange transition-all duration-150 group-hover:h-5"
                           />
-                          <span class="text-sm font-bold leading-snug tracking-tight text-navy text-balance">
+                          <span class="font-display text-sm font-bold leading-snug tracking-tight text-navy text-balance">
                             {service.data.shortLabel}
                           </span>
                         </a>
@@ -150,7 +150,7 @@ const estActif = (href) => {
                 <a
                   href={lien.href}
                   aria-current={estActif(lien.href) ? 'page' : undefined}
-                  class="py-2 text-sm font-bold tracking-tight text-navy transition-colors duration-150 hover:text-orange focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orange aria-[current=page]:text-orange group-data-[etat=haut]:text-blanc group-data-[etat=haut]:hover:text-orange group-data-[etat=haut]:aria-[current=page]:text-orange"
+                  class="py-2 font-display text-sm font-bold tracking-tight text-navy underline-offset-8 decoration-orange decoration-2 transition-colors duration-200 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orange aria-[current=page]:underline group-data-[etat=haut]:text-blanc"
                 >
                   {lien.label}
                 </a>
@@ -179,10 +179,10 @@ const estActif = (href) => {
           <path d="M4 3h3l1.5 4L6.5 8.5a11 11 0 005 5L13 11.5l4 1.5v3a1 1 0 01-1 1A13 13 0 013 4a1 1 0 011-1z" />
         </svg>
         <span class="flex flex-col leading-none">
-          <span class="text-[0.6875rem] font-bold uppercase tracking-[0.12em] text-navy/50 transition-colors duration-200 group-data-[etat=haut]:text-blanc/75">
+          <span class="font-display text-etiquette uppercase text-navy/70 transition-colors duration-200 group-data-[etat=haut]:text-blanc/75">
             Appelez-nous
           </span>
-          <span class="mt-1 text-[0.9375rem] font-bold tracking-tight text-navy transition-colors duration-150 group-hover:text-orange group-data-[etat=haut]:text-blanc">
+          <span class="mt-1 font-display text-[0.9375rem] font-bold tracking-tight text-navy transition-colors duration-150 group-hover:text-orange group-data-[etat=haut]:text-blanc">
             {site.telephone.affichage}
           </span>
         </span>
@@ -213,21 +213,21 @@ const estActif = (href) => {
   <!-- Panneau mobile -->
   <div
     id="menu-mobile"
-    class="fixed inset-x-0 bottom-0 top-16 z-40 overflow-y-auto overscroll-contain border-t border-navy/12 bg-blanc lg:hidden"
+    class="fixed inset-x-0 bottom-0 top-16 z-40 overflow-y-auto overscroll-contain bg-blanc shadow-eleve lg:hidden"
     data-mobile-panel
     hidden
   >
     <nav class="px-5 pb-40 pt-6" aria-label="Navigation mobile">
       <a
         href={telHref}
-        class="flex items-center justify-between gap-4 border-l-2 border-orange bg-gris px-5 py-4"
+        class="flex items-center justify-between gap-4 rounded-carte bg-gris px-5 py-4 shadow-repos"
         data-cta="tel-menu"
       >
         <span class="flex flex-col leading-none">
-          <span class="text-[0.6875rem] font-bold uppercase tracking-[0.12em] text-navy/50 transition-colors duration-200 group-data-[etat=haut]:text-blanc/75">
+          <span class="font-display text-etiquette uppercase text-navy/70 transition-colors duration-200 group-data-[etat=haut]:text-blanc/75">
             Appelez-nous
           </span>
-          <span class="mt-1.5 text-lg font-bold tracking-tight text-navy">
+          <span class="mt-1.5 font-display text-lg font-bold tracking-tight text-navy">
             {site.telephone.affichage}
           </span>
         </span>
@@ -245,7 +245,7 @@ const estActif = (href) => {
                 <a
                   href={lien.href}
                   aria-current={estActif(lien.href) ? 'page' : undefined}
-                  class="block border-b border-navy/10 py-4 text-xl font-bold tracking-tight text-navy aria-[current=page]:text-orange"
+                  class="block border-b border-gris-bord py-4 font-display text-xl font-bold tracking-tight text-navy aria-[current=page]:underline aria-[current=page]:decoration-orange aria-[current=page]:decoration-2 aria-[current=page]:underline-offset-8"
                 >
                   {lien.label}
                 </a>
@@ -254,7 +254,7 @@ const estActif = (href) => {
         }
       </ul>
 
-      <h2 class="mt-9 border-l-2 border-orange pl-4 text-xs font-bold uppercase tracking-[0.14em] text-navy/55">
+      <h2 class="mt-9 font-display text-etiquette uppercase text-navy/70">
         Nos services
       </h2>
       <ul class="mt-4 space-y-1">
@@ -263,10 +263,10 @@ const estActif = (href) => {
             <li>
               <a
                 href={serviceHref(service.data.slug)}
-                class="flex items-start gap-3 border-b border-navy/10 py-3.5"
+                class="flex items-start gap-3 border-b border-gris-bord py-3.5"
               >
                 <span aria-hidden="true" class="mt-1.5 h-4 w-0.5 shrink-0 bg-orange" />
-                <span class="text-base font-bold leading-snug tracking-tight text-navy text-balance">
+                <span class="font-display text-base font-bold leading-snug tracking-tight text-navy text-balance">
                   {service.data.shortLabel}
                 </span>
               </a>
@@ -315,7 +315,7 @@ const estActif = (href) => {
 
     <a
       href="#devis"
-      class="group/devis flex min-h-14 items-center justify-center gap-2.5 bg-orange px-3 text-blanc transition-colors duration-150 active:bg-navy"
+      class="group/devis flex min-h-14 items-center justify-center gap-2.5 bg-orange px-3 text-navy transition-colors duration-200 active:bg-navy active:text-blanc"
       data-cta="devis-barre"
     >
       <span class="text-[0.9375rem] font-bold leading-none tracking-tight">Devis gratuit</span>

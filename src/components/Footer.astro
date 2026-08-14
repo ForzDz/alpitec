@@ -84,7 +84,7 @@ const adresseComplete = [site.adresse.rue, `${site.adresse.codePostal} ${site.ad
 
       <!-- Les 9 services -->
       <div class="lg:col-span-5">
-        <h2 class="text-xs font-bold uppercase tracking-[0.14em] text-blanc/50">
+        <h2 class="font-display text-etiquette uppercase text-blanc/70">
           Nos services
         </h2>
         <ul class="mt-6 grid gap-x-8 gap-y-3 sm:grid-cols-2">
@@ -109,15 +109,20 @@ const adresseComplete = [site.adresse.rue, `${site.adresse.codePostal} ${site.ad
 
       <!-- Certifications -->
       <div class="lg:col-span-3">
-        <h2 class="text-xs font-bold uppercase tracking-[0.14em] text-blanc/50">
+        <h2 class="font-display text-etiquette uppercase text-blanc/70">
           Certifications
         </h2>
-        <dl class="mt-6 space-y-4">
+        {/*
+          Sur navy, une ombre ne se voit pas : la profondeur vient de la valeur.
+          Les certifications sont posées sur du navy éclairci, comme les tuiles
+          d'icône le sont sur les fonds sombres ailleurs.
+        */}
+        <dl class="mt-6 grid gap-2.5">
           {
             site.certifications.map((certif) => (
-              <div class="border-l-2 border-orange/60 pl-4">
-                <dt class="text-sm font-bold tracking-tight">{certif.label}</dt>
-                <dd class="mt-0.5 text-[0.8125rem] leading-snug text-blanc/60">
+              <div class="rounded-tuile bg-navy-clair px-4 py-3">
+                <dt class="font-display text-sm font-bold tracking-tight">{certif.label}</dt>
+                <dd class="mt-0.5 text-[0.8125rem] font-light leading-snug text-blanc/70">
                   {certif.text}
                 </dd>
               </div>
@@ -127,7 +132,7 @@ const adresseComplete = [site.adresse.rue, `${site.adresse.codePostal} ${site.ad
 
         {
           site.legal.assurance && (
-            <p class="mt-6 border-l-2 border-orange/60 pl-4 text-sm font-bold tracking-tight">
+            <p class="mt-2.5 rounded-tuile bg-navy-clair px-4 py-3 font-display text-sm font-bold tracking-tight">
               {site.legal.assurance}
             </p>
           )
@@ -137,7 +142,7 @@ const adresseComplete = [site.adresse.rue, `${site.adresse.codePostal} ${site.ad
 
     <!-- Mentions -->
     <div
-      class="mt-14 flex flex-col gap-4 border-t border-blanc/15 pt-7 text-[0.8125rem] text-blanc/55 sm:flex-row sm:items-center sm:justify-between"
+      class="mt-14 flex flex-col gap-4 border-t border-blanc/15 pt-7 text-[0.8125rem] text-blanc/70 sm:flex-row sm:items-center sm:justify-between"
     >
       <p>
         © {annee} {site.legal.copyright}

@@ -2,34 +2,34 @@
 /**
  * Encadré « Infos clés » — zone d'intervention, devis, certifications, assurance.
  *
- * Alimenté par la section `keyFacts` des fichiers services. Le fil orange court
- * sur le bord gauche : c'est la corde, motif structurant de tout le site.
+ * Alimenté par la section `keyFacts` des fichiers services.
+ *
+ * Le filet orange du bord gauche a disparu : la corde est désormais une seule
+ * verticale continue au niveau de la page (`.corde` dans global.css), et la
+ * répéter ici la banaliserait. L'encadré se distingue par son fond gris et son
+ * ombre, comme les autres surfaces posées.
  */
 
 const { items, title, class: className = '' } = Astro.props;
 ---
 
 <aside
-  class={`relative bg-gris border-l-2 border-orange px-6 py-7 sm:px-8 sm:py-8 ${className}`}
+  class={`relative rounded-carte bg-gris px-6 py-7 shadow-repos sm:px-8 sm:py-8 ${className}`}
   aria-label={title ?? 'Informations clés'}
   data-reveal
 >
   {
     title && (
-      <h2 class="text-xs font-bold uppercase tracking-[0.14em] text-navy/55 mb-6">
-        {title}
-      </h2>
+      <h2 class="mb-6 font-display text-etiquette uppercase text-navy/70">{title}</h2>
     )
   }
 
-  <dl class="grid gap-x-10 gap-y-5 sm:grid-cols-2">
+  <dl class="grid gap-x-10 gap-y-6 sm:grid-cols-2">
     {
       items.map((item) => (
-        <div class="flex flex-col gap-1">
-          <dt class="text-xs font-bold uppercase tracking-[0.12em] text-navy/55">
-            {item.label}
-          </dt>
-          <dd class="text-[0.9375rem] font-bold leading-snug text-navy text-balance">
+        <div class="flex flex-col gap-1.5">
+          <dt class="font-display text-etiquette uppercase text-navy/70">{item.label}</dt>
+          <dd class="text-[0.9375rem] font-medium leading-snug text-navy text-balance">
             {item.text}
           </dd>
         </div>

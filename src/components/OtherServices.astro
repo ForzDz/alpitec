@@ -1,4 +1,5 @@
 ---
+import TitreSection from './TitreSection.astro';
 import { getOtherServices, serviceHref } from '../lib/content.js';
 
 /**
@@ -20,27 +21,26 @@ const autres = await getOtherServices(currentSlug);
 const colonnes = autres.length % 4 === 0 ? 'lg:grid-cols-4' : 'lg:grid-cols-3';
 ---
 
-<section class="mx-auto max-w-6xl px-5 py-14 sm:px-8 sm:py-20" aria-labelledby="autres-services" data-reveal>
-  <h2
-    id="autres-services"
-    class="border-l-2 border-orange pl-5 text-2xl font-bold leading-tight tracking-tight text-navy text-balance sm:text-3xl"
-  >
-    {title}
-  </h2>
+<section
+  class="mx-auto max-w-6xl px-5 py-[var(--espace-section-serre)] sm:px-8"
+  aria-labelledby="autres-services"
+  data-reveal
+>
+  <TitreSection texte={title} id="autres-services" taille="sous" class="max-w-[24ch]" />
 
-  <ul class:list={['mt-9 grid gap-px border border-navy/12 bg-navy/12 sm:grid-cols-2', colonnes]}>
+  <ul class:list={['mt-10 grid gap-3 sm:grid-cols-2', colonnes]}>
     {
       autres.map((service) => (
-        <li class="bg-blanc">
+        <li class="flex">
           <a
             href={serviceHref(service.data.slug)}
-            class="group flex h-full items-start gap-3 p-5 transition-colors duration-150 hover:bg-gris focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-orange"
+            class="eleve group flex h-full w-full items-center gap-3.5 rounded-carte bg-blanc p-4 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-orange"
           >
             <span
               aria-hidden="true"
-              class="mt-1.5 h-4 w-0.5 shrink-0 bg-orange transition-all duration-150 group-hover:h-6"
+              class="h-8 w-0.5 shrink-0 rounded-full bg-orange transition-all duration-200 group-hover:h-10"
             />
-            <span class="text-[0.9375rem] font-bold leading-snug tracking-tight text-navy text-balance">
+            <span class="font-display text-[0.9375rem] font-bold leading-snug tracking-tight text-navy text-balance">
               {service.data.shortLabel}
             </span>
           </a>

@@ -1,0 +1,51 @@
+---
+/**
+ * Titre de section, avec son dernier mot en orange.
+ *
+ * L'accent est calculé, jamais écrit dans le contenu : les fichiers Markdown
+ * continuent de porter des titres en texte brut, et aucun fichier n'a besoin
+ * d'être retouché si la règle change. Le dernier mot plutôt qu'un mot choisi
+ * au cas par cas — c'est la seule règle qui reste juste sur neuf pages
+ * services rédigées par le client.
+ *
+ * Sur fond clair l'accent utilise `orange-texte`, pas l'orange de marque :
+ * voir le commentaire du token dans global.css. Sur fond navy (`ton="clair"`),
+ * l'orange de marque passe le seuil AA et reste donc de mise.
+ *
+ * `as` : niveau de titre réel (h2 par défaut). La taille ne dépend pas du
+ * niveau — un h3 de section garde la même échelle si la hiérarchie l'exige.
+ */
+
+const {
+  texte,
+  as: Balise = 'h2',
+  ton = 'sombre',
+  taille = 'titre',
+  id,
+  class: className = '',
+} = Astro.props;
+
+// Découpe sur la dernière espace. Un titre d'un seul mot passe entièrement en
+// orange, ce qui reste lisible : c'est un titre court, donc grand.
+const mots = String(texte).trim().split(/\s+/);
+const accent = mots.pop();
+const debut = mots.join(' ');
+
+const couleurs =
+  ton === 'clair'
+    ? { base: 'text-blanc', accent: 'text-orange' }
+    : { base: 'text-navy', accent: 'text-orange-texte' };
+
+const tailles = {
+  titre: 'text-titre',
+  affiche: 'text-affiche',
+  sous: 'text-sous-titre',
+};
+---
+
+<Balise
+  id={id}
+  class={`${tailles[taille]} ${couleurs.base} text-balance ${className}`}
+>
+  {debut && <>{debut} </>}<span class={couleurs.accent}>{accent}</span>
+</Balise>

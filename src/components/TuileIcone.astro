@@ -1,0 +1,39 @@
+---
+/**
+ * Tuile d'icône — carré navy arrondi contenant un pictogramme.
+ *
+ * Aucune icône n'est posée nue sur le site : sans son fond, un trait fin de
+ * 20 px se perd dès qu'il y a une photo ou un aplat derrière. La tuile lui
+ * donne une masse et un alignement constants d'un bloc à l'autre.
+ *
+ * Le pictogramme arrive par le slot, en `currentColor` : la tuile décide de
+ * la couleur, jamais l'icône.
+ *
+ *   navy    fond navy, trait blanc — le cas courant, sur fond clair.
+ *   orange  fond orange, trait navy — un seul par écran, pour l'élément
+ *           qu'on veut voir en premier.
+ *   clair   fond navy éclairci, trait blanc — quand la tuile est posée sur
+ *           un fond navy, où la tuile navy disparaîtrait.
+ */
+
+const { variant = 'navy', taille = 'md', class: className = '' } = Astro.props;
+
+const variants = {
+  navy: 'bg-navy text-blanc',
+  orange: 'bg-orange text-navy',
+  clair: 'bg-navy-clair text-blanc',
+};
+
+const tailles = {
+  sm: 'size-9 [&_svg]:size-4',
+  md: 'size-11 [&_svg]:size-5',
+  lg: 'size-14 [&_svg]:size-6',
+};
+---
+
+<span
+  aria-hidden="true"
+  class={`inline-flex shrink-0 items-center justify-center rounded-tuile ${variants[variant]} ${tailles[taille]} ${className}`}
+>
+  <slot />
+</span>

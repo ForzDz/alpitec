@@ -16,7 +16,7 @@ const { items, class: className = '' } = Astro.props;
 ---
 
 <nav aria-label="Fil d'Ariane" class={className}>
-  <ol class="flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.8125rem] text-navy/55">
+  <ol class="flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.8125rem] text-navy/70">
     {
       items.map((item, i) => {
         const dernier = i === items.length - 1;

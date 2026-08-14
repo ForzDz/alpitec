@@ -175,7 +175,18 @@ const home = defineCollection({
      * écrit, pas d'affichage.
      */
     photosAccueil: z
-      .array(z.object({ fichier: z.string(), alt: z.string() }))
+      .array(
+        z.object({
+          fichier: z.string(),
+          alt: z.string(),
+          /**
+           * Photo placée en tête de la bande de chantiers, en pleine largeur.
+           * Sans ce drapeau, c'est la première par ordre de nom de fichier —
+           * ce qui n'est pas un choix éditorial. Une seule doit le porter.
+           */
+          miseEnAvant: z.boolean().optional(),
+        }),
+      )
       .default([]),
 
     hero: z.object({
@@ -326,6 +337,8 @@ const site = defineCollection({
 
     telephone: z.object({
       affichage: z.string(),
+      /** Format international espacé, affiché sur le bouton d'appel du hero */
+      affichageInternational: z.string(),
       /** Format E.164, utilisé pour href="tel:" */
       lien: z.string(),
     }),

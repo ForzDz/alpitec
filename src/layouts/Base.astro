@@ -37,10 +37,16 @@ const ogImageURL = new URL(ogImage, Astro.site);
     <link rel="canonical" href={canonicalURL} />
     {noindex && <meta name="robots" content="noindex, nofollow" />}
 
-    {/* Inter auto-hébergée : préchargée pour ne pas retarder le LCP mobile. */}
+    {/*
+      Technor seule est préchargée : elle porte le H1, donc le LCP.
+      Switzer se charge normalement — le corps de texte apparaît quelques
+      dizaines de millisecondes plus tard, ce que `font-display: swap` couvre.
+      Précharger les deux ferait entrer 45 Ko en concurrence sur le chemin
+      critique au lieu de 17.
+    */}
     <link
       rel="preload"
-      href="/fonts/inter-latin-variable.woff2"
+      href="/fonts/technor-latin-variable.woff2"
       as="font"
       type="font/woff2"
       crossorigin

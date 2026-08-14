@@ -1,43 +1,147 @@
 @import 'tailwindcss';
 
 /* ---------------------------------------------------------------------------
-   Inter — auto-hébergée (source : Google Fonts via @fontsource-variable/inter)
-   Fichiers woff2 variables copiés dans public/fonts/, sous-ensembles latin et
-   latin-ext uniquement : le site est francophone.
-   Auto-hébergement plutôt qu'un <link> vers fonts.googleapis.com — une requête
-   tierce de moins (LCP mobile) et aucune donnée visiteur envoyée à Google.
-   Pour rafraîchir : recopier depuis node_modules/@fontsource-variable/inter/files/
+   Polices — Technor (titres) + Switzer (corps), Fontshare, licence FFL
+   (libre pour usage commercial, copie dans public/fonts/LICENCE-*-FFL.txt).
+
+   Auto-hébergées comme l'était Inter : aucune requête tierce sur le LCP mobile,
+   aucune donnée visiteur envoyée à un CDN de polices.
+
+   Sous-ensemble « latin » (mêmes plages que Google Fonts, cf. unicode-range
+   ci-dessous). Les deux fichiers pèsent 45 Ko à eux deux — moins que les 47 Ko
+   d'Inter qu'ils remplacent, malgré deux familles au lieu d'une.
+
+   Pour rafraîchir, depuis un dossier de travail :
+     curl -O https://api.fontshare.com/v2/fonts/download/technor
+     npm i subset-font --no-save
+     node subset.mjs Technor-Variable.woff2 technor-latin-variable.woff2
+   (le script de sous-ensemble est décrit dans CLAUDE.md, section Typographie)
 --------------------------------------------------------------------------- */
 @font-face {
-  font-family: 'Inter';
+  font-family: 'Technor';
   font-style: normal;
-  font-weight: 100 900;
+  font-weight: 200 900;
   font-display: swap;
-  src: url('/fonts/inter-latin-variable.woff2') format('woff2-variations');
+  src: url('/fonts/technor-latin-variable.woff2') format('woff2-variations');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
     U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
     U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
-/*
-  Le sous-ensemble latin-ext a été retiré : le français n'en a aucun besoin
-  (é, à, ç, œ, î, « » sont tous dans la plage latin ci-dessus) et il n'était
-  jamais téléchargé — 83 Ko partaient sur le CDN pour rien.
-  À réintroduire si le blog publie un jour des noms polonais, tchèques ou
-  turcs : sans lui, ces glyphes retomberaient sur la police système.
-*/
+@font-face {
+  font-family: 'Switzer';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/switzer-latin-variable.woff2') format('woff2-variations');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
 
 /* ---------------------------------------------------------------------------
-   Tokens de marque ALPITEC
+   Direction artistique « Acier & altitude »
+   Voir CLAUDE.md pour le raisonnement complet. Ce fichier en est la source
+   unique : aucune valeur de couleur, d'ombre ou de rayon ne doit être écrite
+   en dur dans un composant.
 --------------------------------------------------------------------------- */
 @theme {
+  /* --- Couleurs de marque (logo, intouchables) --- */
   --color-orange: #f96500;
   --color-navy: #232b4a;
-  --color-gris: #f5f6f8;
   --color-blanc: #ffffff;
 
-  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI',
+  /* --- Déclinaisons de travail --- */
+  /* Navy plus profond : fonds de section pleins, où #232b4a paraît délavé. */
+  --color-navy-profond: #1a2039;
+  /* Navy éclairci : tuiles et cartes POSÉES SUR un fond navy, où une ombre
+     ne se voit pas. La profondeur y vient de la valeur, pas de l'ombre. */
+  --color-navy-clair: #2f3960;
+  --color-gris: #f5f6f8;
+  /* Séparateurs et contours de champ, quand une ombre ne suffit pas. */
+  --color-gris-bord: #e4e7ee;
+  /* Orange assombri, RÉSERVÉ AU TEXTE posé sur blanc ou sur gris.
+     L'orange de marque n'y donne que 3,0:1 sur blanc et 2,8:1 sur gris — sous
+     le seuil AA, même pour du grand texte. Celui-ci monte à 3,9:1 et 3,6:1,
+     conformes pour les titres de section, seul endroit où on l'emploie.
+     Sur navy, on reste sur l'orange de marque : il y atteint 4,5:1. */
+  --color-orange-texte: #d95a00;
+  /* Messages d'erreur de formulaire : 13 px, il leur faut 4,5:1 sur blanc, que
+     même `orange-texte` n'atteint pas (3,9). Celui-ci donne 6,1:1 et reste dans
+     la famille chromatique de la marque — un rouge franc jurerait. */
+  --color-alerte: #b03a00;
+
+  /* --- Familles --- */
+  --font-display: 'Technor', 'Arial Black', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Switzer', ui-sans-serif, system-ui, -apple-system, 'Segoe UI',
     Roboto, 'Helvetica Neue', Arial, sans-serif;
+
+  /* --- Échelle typographique ---
+     Titres en Technor : fluides, très gras, tracking négatif.
+     Corps en Switzer : tailles fixes, interlignage large.
+     Les paires (taille / interlignage) sont solidaires : `text-affiche` porte
+     sa propre hauteur de ligne, on ne la redéfinit pas au cas par cas. */
+  --text-affiche: clamp(2.375rem, 8.5vw, 4.5rem);
+  --text-affiche--line-height: 0.98;
+  --text-affiche--letter-spacing: -0.035em;
+  --text-affiche--font-weight: 800;
+
+  --text-titre: clamp(1.75rem, 4.2vw, 2.75rem);
+  --text-titre--line-height: 1.04;
+  --text-titre--letter-spacing: -0.03em;
+  --text-titre--font-weight: 800;
+
+  --text-sous-titre: clamp(1.25rem, 2.4vw, 1.625rem);
+  --text-sous-titre--line-height: 1.15;
+  --text-sous-titre--letter-spacing: -0.02em;
+  --text-sous-titre--font-weight: 700;
+
+  --text-carte: 1.125rem;
+  --text-carte--line-height: 1.2;
+  --text-carte--letter-spacing: -0.015em;
+  --text-carte--font-weight: 700;
+
+  /* Corps : 17 px de base. 15 px passait mal la relecture mobile. */
+  --text-corps: 1.0625rem;
+  --text-corps--line-height: 1.7;
+  --text-corps--font-weight: 400;
+
+  --text-corps-large: 1.1875rem;
+  --text-corps-large--line-height: 1.65;
+  --text-corps-large--font-weight: 400;
+
+  --text-petit: 0.9375rem;
+  --text-petit--line-height: 1.6;
+
+  /* Surtitres et étiquettes : capitales espacées, jamais en dessous de 11 px. */
+  --text-etiquette: 0.6875rem;
+  --text-etiquette--line-height: 1.4;
+  --text-etiquette--letter-spacing: 0.14em;
+  --text-etiquette--font-weight: 700;
+
+  /* --- Rayons ---
+     Trois valeurs, pas une de plus. `tuile` pour tout ce qui est petit
+     (icônes, badges, champs), `carte` au-dessus, `bloc` pour les grandes
+     surfaces photo. */
+  --radius-tuile: 0.5rem;
+  --radius-carte: 0.75rem;
+  --radius-bloc: 1rem;
+
+  /* --- Ombres ---
+     Teintées navy, jamais noires : une ombre noire sur un fond gris clair
+     grise l'image au lieu de la décoller. Trois niveaux :
+       repos     surface posée
+       flottant  survol d'une carte, état ouvert
+       eleve     élément qui passe au-dessus du contenu (menu, barre fixe) */
+  --shadow-repos: 0 1px 2px rgba(35, 43, 74, 0.05), 0 2px 8px rgba(35, 43, 74, 0.05);
+  --shadow-flottant: 0 2px 4px rgba(35, 43, 74, 0.06), 0 10px 28px rgba(35, 43, 74, 0.1);
+  --shadow-eleve: 0 4px 10px rgba(35, 43, 74, 0.08), 0 18px 44px rgba(35, 43, 74, 0.16);
+
+  /* --- Rythme vertical ---
+     L'espace entre deux sections est le principal outil de hiérarchie de cette
+     refonte. Il ne descend jamais en dessous de 5 rem. */
+  --espace-section: clamp(6rem, 9vw, 10rem);
+  --espace-section-serre: clamp(3.5rem, 6vw, 6rem);
 }
 
 /* ---------------------------------------------------------------------------
@@ -53,14 +157,26 @@
     background-color: var(--color-blanc);
     color: var(--color-navy);
     font-family: var(--font-sans);
+    font-size: var(--text-corps);
+    line-height: 1.7;
     font-synthesis-weight: none;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
   }
 
+  /* Technor sur tous les titres, sans avoir à le rappeler partout. Un titre
+     qui doit passer en Switzer le demande explicitement (`font-sans`). */
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+  }
+
   :focus-visible {
     outline: 2px solid var(--color-orange);
     outline-offset: 2px;
+    border-radius: 2px;
   }
 
   /* La barre d'action fixe mobile ne doit jamais masquer la fin du contenu. */
@@ -72,10 +188,130 @@
 }
 
 /* ---------------------------------------------------------------------------
+   La corde — signature du site.
+   Un trait orange vertical continu qui descend le long du contenu, avec un
+   nœud à chaque point d'accroche. Ce n'est plus un filet décoratif répété à
+   l'identique en tête de chaque section : c'est UNE ligne, qui court.
+
+   `.corde` sur le conteneur, `.corde-noeud` sur les éléments à marquer.
+--------------------------------------------------------------------------- */
+.corde {
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.corde::before {
+  content: '';
+  position: absolute;
+  top: 0.25rem;
+  bottom: 0.25rem;
+  left: 0;
+  width: 2px;
+  background: var(--color-orange);
+  border-radius: 1px;
+}
+
+/* Extrémité basse en fondu : la corde sort du cadre, elle ne s'arrête pas net. */
+.corde-descend::before {
+  bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    var(--color-orange) 0%,
+    var(--color-orange) 82%,
+    transparent 100%
+  );
+}
+
+.corde-noeud {
+  position: relative;
+}
+
+.corde-noeud::before {
+  content: '';
+  position: absolute;
+  top: 0.6em;
+  left: -1.5rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  transform: translateX(-0.19rem);
+  border-radius: 50%;
+  background: var(--color-orange);
+}
+
+@media (width >= 48rem) {
+  .corde {
+    padding-left: 2.25rem;
+  }
+
+  .corde-noeud::before {
+    left: -2.25rem;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Élévation au survol — cartes et tuiles cliquables.
+   Ombre plus large + 3 px vers le haut, 200 ms. Désactivé au doigt : sur
+   mobile l'état :hover reste collé après le tap.
+--------------------------------------------------------------------------- */
+.eleve {
+  box-shadow: var(--shadow-repos);
+  transition:
+    box-shadow 200ms ease-out,
+    transform 200ms ease-out;
+}
+
+@media (hover: hover) {
+  .eleve:hover {
+    box-shadow: var(--shadow-flottant);
+    transform: translateY(-3px);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Traitement photo — unifie dix chantiers photographiés dans dix conditions.
+   Contraste +8 %, saturation −5 %, et un voile navy à 6 % en multiply qui
+   ramène tous les ciels vers la même température.
+--------------------------------------------------------------------------- */
+.photo {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--color-navy);
+}
+
+.photo :is(img, video) {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: contrast(1.08) saturate(0.95);
+}
+
+.photo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: var(--color-navy);
+  opacity: 0.06;
+  mix-blend-mode: multiply;
+}
+
+/* Zoom lent au survol, uniquement sur les photos de carte cliquable. */
+@media (hover: hover) {
+  .photo-zoom :is(img, video) {
+    transition: transform 400ms ease-out;
+  }
+
+  .eleve:hover .photo-zoom :is(img, video),
+  .photo-zoom:hover :is(img, video) {
+    transform: scale(1.04);
+  }
+}
+
+/* ---------------------------------------------------------------------------
    Texte long — pages légales et articles de blog.
-   Styles écrits à la main plutôt qu'un plugin typography : on n'a besoin que
-   d'une poignée de balises, et la mise en page reste cohérente avec le reste
-   du site (fil orange sur les H2, angles vifs, navy sur blanc).
+   Repris sur la nouvelle échelle : titres Technor, corps Switzer aéré,
+   plus de filet orange sur chaque H2 (la corde le remplace au niveau page).
 --------------------------------------------------------------------------- */
 .texte-long {
   --mesure: 68ch;
@@ -88,12 +324,11 @@
 .texte-long h2 {
   margin-top: 3.5rem;
   margin-bottom: 1.25rem;
-  border-left: 2px solid var(--color-orange);
-  padding-left: 1.25rem;
-  font-size: 1.375rem;
-  font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: -0.02em;
+  font-family: var(--font-display);
+  font-size: var(--text-sous-titre);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -0.025em;
   text-wrap: balance;
 }
 
@@ -104,15 +339,16 @@
 .texte-long h3 {
   margin-top: 2.25rem;
   margin-bottom: 0.75rem;
-  font-size: 1.0625rem;
+  font-family: var(--font-display);
+  font-size: 1.125rem;
   font-weight: 700;
-  line-height: 1.35;
-  letter-spacing: -0.01em;
+  line-height: 1.3;
+  letter-spacing: -0.015em;
 }
 
 .texte-long p,
 .texte-long li {
-  font-size: 0.9375rem;
+  font-size: var(--text-corps);
   line-height: 1.75;
   color: color-mix(in srgb, var(--color-navy) 78%, transparent);
   text-wrap: pretty;
@@ -123,7 +359,7 @@
 }
 
 .texte-long strong {
-  font-weight: 700;
+  font-weight: 600;
   color: var(--color-navy);
 }
 
@@ -135,16 +371,17 @@
 .texte-long ul li {
   position: relative;
   margin-bottom: 0.625rem;
-  padding-left: 1.25rem;
+  padding-left: 1.375rem;
 }
 
 .texte-long ul li::before {
   content: '';
   position: absolute;
-  top: 0.65em;
+  top: 0.62em;
   left: 0;
-  width: 0.5rem;
-  height: 2px;
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 50%;
   background: var(--color-orange);
 }
 
@@ -152,8 +389,9 @@
   color: var(--color-navy);
   text-decoration: underline;
   text-decoration-color: var(--color-orange);
+  text-decoration-thickness: 2px;
   text-underline-offset: 3px;
-  font-weight: 700;
+  font-weight: 600;
   transition: color 150ms ease-out;
 }
 
@@ -169,14 +407,17 @@
   max-width: 100%;
   margin-bottom: 1.75rem;
   overflow-x: auto;
-  border-collapse: collapse;
-  font-size: 0.875rem;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: var(--radius-carte);
+  box-shadow: var(--shadow-repos);
+  font-size: var(--text-petit);
 }
 
 .texte-long th,
 .texte-long td {
-  border: 1px solid color-mix(in srgb, var(--color-navy) 12%, transparent);
-  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--color-gris-bord);
+  padding: 0.875rem 1.125rem;
   text-align: left;
   vertical-align: top;
 }
@@ -191,23 +432,34 @@
   color: color-mix(in srgb, var(--color-navy) 78%, transparent);
 }
 
+.texte-long tr:last-child td {
+  border-bottom: 0;
+}
+
 /* ---------------------------------------------------------------------------
    Apparition — un seul fade-up de 8 px, rien d'autre.
    L'état masqué n'est appliqué que si le script a posé data-reveal-actif sur
    <html> : sans JavaScript, tout reste visible.
 --------------------------------------------------------------------------- */
 @media (prefers-reduced-motion: no-preference) {
+  /*
+    `translate` et non `transform` : une carte porte souvent les deux à la fois
+    (`data-reveal` pour l'apparition, `.eleve` pour l'élévation au survol). Avec
+    `transform` des deux côtés, le sélecteur d'apparition — plus spécifique —
+    écrasait le survol et la carte ne montait jamais. Les deux propriétés étant
+    distinctes, elles se composent au lieu de se disputer.
+  */
   [data-reveal-actif] [data-reveal] {
     opacity: 0;
-    transform: translateY(8px);
+    translate: 0 8px;
     transition:
       opacity 400ms ease-out,
-      transform 400ms ease-out;
+      translate 400ms ease-out;
   }
 
   [data-reveal-actif] [data-reveal].est-visible {
     opacity: 1;
-    transform: none;
+    translate: 0 0;
   }
 }
 

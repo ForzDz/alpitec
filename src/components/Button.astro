@@ -1,12 +1,21 @@
 ---
 /**
- * Bouton — deux variantes seulement.
+ * Bouton — trois variantes.
  *
- *   primaire   aplat orange. Réservé à la conversion : devis, téléphone.
- *              Ne jamais l'utiliser pour un lien de navigation.
- *   secondaire contour navy 2px. Tout le reste.
+ *   primaire   aplat orange, texte navy. Réservé à la conversion : devis,
+ *              téléphone. Jamais pour un lien de navigation.
+ *   secondaire contour navy. Tout le reste, sur fond clair.
+ *   clair      contour blanc. Le même rôle que `secondaire`, mais posé sur un
+ *              fond navy ou sur une photo.
  *
- * Angles vifs, pas d'ombre : la profondeur vient du contraste, pas des effets.
+ * Texte navy sur l'orange, et non blanc : #F96500 et le blanc ne donnent que
+ * 3,0:1, sous le seuil AA pour du texte de cette taille. Le navy monte à
+ * 4,5:1 — et le contraste sombre-sur-orange est exactement celui de la
+ * signalétique de chantier. Le contraste de marque n'y perd rien, l'aplat
+ * orange reste identique.
+ *
+ * Rayon 8 px, ombre douce au repos, élévation au survol : mêmes règles que
+ * les cartes, la cohérence des formes se joue là.
  */
 
 const {
@@ -19,19 +28,25 @@ const {
 } = Astro.props;
 
 const base =
-  'inline-flex items-center justify-center gap-2.5 font-bold tracking-tight text-center ' +
-  'transition-colors duration-150 ease-out ' +
+  'inline-flex items-center justify-center gap-2.5 rounded-tuile font-display font-bold tracking-tight text-center ' +
+  'transition-[background-color,color,box-shadow,transform,border-color] duration-200 ease-out ' +
   'focus-visible:outline-2 focus-visible:outline-offset-2';
 
 const variants = {
-  primaire: 'bg-orange text-blanc hover:bg-navy focus-visible:outline-navy',
+  primaire:
+    'bg-orange text-navy shadow-repos hover:bg-navy hover:text-blanc hover:shadow-flottant ' +
+    'hover:-translate-y-0.5 focus-visible:outline-navy',
   secondaire:
-    'border-2 border-navy text-navy hover:bg-navy hover:text-blanc focus-visible:outline-orange',
+    'border-2 border-navy/15 bg-blanc text-navy shadow-repos hover:border-navy/15 hover:bg-navy ' +
+    'hover:text-blanc hover:shadow-flottant hover:-translate-y-0.5 focus-visible:outline-orange',
+  clair:
+    'border-2 border-blanc/45 text-blanc hover:border-blanc hover:bg-blanc hover:text-navy ' +
+    'hover:-translate-y-0.5 focus-visible:outline-orange',
 };
 
 const sizes = {
   // py-3 sur `sm` pour rester à 44 px de haut : cible tactile minimale.
-  sm: 'px-4 py-3 text-sm',
+  sm: 'px-4 py-3 text-[0.9375rem]',
   md: 'px-6 py-3.5 text-base',
   lg: 'px-7 py-4 text-base sm:text-lg',
 };
