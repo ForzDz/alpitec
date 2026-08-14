@@ -80,6 +80,13 @@ sections:
     photos:
       - fichier: "chantier-027.jpeg"
         alt: "Deux cordistes suspendus sous une corniche, au droit d'un chéneau en zinc et de sa descente d'eaux pluviales"
+        miseEnAvant: true
+      - fichier: "chantier-036.jpeg"
+        alt: "Chéneau en zinc vu du dessus, crapaudine engorgée de débris et eau stagnante, pieds du cordiste en bord de toiture"
+      - fichier: "chantier-037.jpeg"
+        alt: "Fond de chéneau en zinc rempli de boue noire et d'eau stagnante avant curage"
+      - fichier: "chantier-038.jpeg"
+        alt: "Crapaudine de descente d'eaux pluviales entièrement obstruée par les feuilles, l'eau ne s'évacue plus"
 
   - type: "cta"
     title: "Prêt à remettre vos évacuations en état ?"

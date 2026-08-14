@@ -22,8 +22,14 @@ const { items, class: className = '' } = Astro.props;
         const dernier = i === items.length - 1;
         return (
           <li class="flex items-center gap-2">
+            {/*
+              Séparateur en `navy/70` et non `navy/25` : il reste du texte à
+              l'écran, et la règle du site ne descend pas en dessous de 70 %
+              — /25 tombait à 1,6:1. Le poids visuel est rattrapé par la
+              graisse légère, pas par la transparence.
+            */}
             {i > 0 && (
-              <span aria-hidden="true" class="text-navy/25">
+              <span aria-hidden="true" class="font-light text-navy/70">
                 /
               </span>
             )}

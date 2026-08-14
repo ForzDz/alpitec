@@ -93,14 +93,14 @@ const schema = {
         <p class="mt-7 flex flex-wrap items-center gap-x-3 gap-y-1 text-[0.8125rem] text-navy/70">
           <span aria-hidden="true" class="h-3.5 w-0.5 bg-orange"></span>
           <span>{d.auteur}</span>
-          <span aria-hidden="true" class="text-navy/25">·</span>
+          <span aria-hidden="true" class="font-light text-navy/70">·</span>
           <time datetime={d.datePublication.toISOString().slice(0, 10)}>
             {dateFr(d.datePublication)}
           </time>
           {
             d.dateMaj && (
               <>
-                <span aria-hidden="true" class="text-navy/25">·</span>
+                <span aria-hidden="true" class="font-light text-navy/70">·</span>
                 <span>Mis à jour le {dateFr(d.dateMaj)}</span>
               </>
             )

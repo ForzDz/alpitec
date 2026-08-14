@@ -76,8 +76,15 @@ sections:
   - type: "realisations"
     title: "Nos derniers chantiers de ravalement"
     photos:
+      - fichier: "chantier-033.jpeg"
+        alt: "Cordiste au casque rouge suspendu à ses cordes devant la façade en pierre d'un édifice monumental, travaillant sous une frise de lettres dorées"
+        miseEnAvant: true
       - fichier: "chantier-023.jpeg"
         alt: "Deux cordistes suspendus côte à côte, grattant le dessous d'un bandeau en pierre sur une façade parisienne en brique"
+      - fichier: "chantier-034.jpeg"
+        alt: "Cordiste suspendu à l'angle d'un immeuble en pierre de taille, nettoyant une zone encrassée sous la corniche, sac de chantier accroché au harnais"
+      - fichier: "chantier-035.jpeg"
+        alt: "Cordiste appliquant la peinture au rouleau sur l'acrotère blanc d'un immeuble de bureaux contemporain, caisse à outils rouge suspendue au harnais"
 
   - type: "cta"
     title: "Prêt à lancer votre ravalement de façades ?"

@@ -78,8 +78,15 @@ sections:
   - type: "realisations"
     title: "Nos derniers chantiers de maçonnerie & cheminées"
     photos:
+      - fichier: "chantier-041.jpeg"
+        alt: "Cordiste au casque bleu, suspendu à ses cordes rouges, reprenant l'enduit d'une façade claire, vu en plongée"
+        miseEnAvant: true
       - fichier: "chantier-016.jpeg"
         alt: "Cordiste harnaché, agenouillé sur un toit en ardoise, reprenant l'enduit à la jonction du mur et de la couverture"
+      - fichier: "chantier-039.jpeg"
+        alt: "Angle de terrasse après reprise : enduit refait, solin en zinc neuf et descente d'eaux pluviales en attente de raccord"
+      - fichier: "chantier-040.jpeg"
+        alt: "Arase béton fissurée et délitée en bord de terrasse, avant reprise de maçonnerie"
 
   - type: "cta"
     title: "Prêt à restaurer vos corniches et cheminées ?"

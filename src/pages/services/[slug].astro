@@ -55,7 +55,7 @@ const filAriane = [
 
 // Galerie : lue sur le disque, vide tant que les photos ne sont pas triées.
 const sectionPhotos = d.sections.find((s) => s.type === 'realisations');
-const photos = getServicePhotos(d.slug, sectionPhotos?.photos ?? [], 4);
+const photos = getServicePhotos(d.slug, sectionPhotos?.photos ?? [], 8);
 
 // Sections 2 à 7, puis 9 : la FAQ s'intercale au milieu.
 const iCta = d.sections.findIndex((s) => s.type === 'cta');

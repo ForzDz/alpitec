@@ -82,6 +82,27 @@ sections:
   - type: "realisations"
     title: "Nos derniers chantiers de pose de filets"
     photos:
+      # Photo de tête : filet sous charpente bois, ciel dégagé, aucune machine
+      # dans le cadre. Les deux vues où un cordiste travaille sous une dalle
+      # (047, 048) sont plus parlantes, mais une nacelle apparaît en bord de
+      # champ : en pleine largeur elle deviendrait lisible et contredirait le
+      # « sans échafaudage ni nacelle » revendiqué plus haut sur cette page.
+      # Elles restent dans la grille, où l'engin passe inaperçu.
+      - fichier: "chantier-042.jpeg"
+        alt: "Filet de sécurité horizontal tendu sous une charpente en bois, vu en contre-plongée sur ciel bleu"
+        miseEnAvant: true
+      - fichier: "chantier-047.jpeg"
+        alt: "Cordiste suspendu sous une dalle béton, fixant un filet de protection le long du nez de dalle, seau de matériel accroché au harnais"
+      - fichier: "chantier-048.jpeg"
+        alt: "Cordiste à l'horizontale sous une dalle béton, tendant un filet de protection d'une travée à l'autre"
+      - fichier: "chantier-043.jpeg"
+        alt: "Filet de sécurité tendu sous les poutres bois d'un bâtiment en construction, murs en parpaing bruts"
+      - fichier: "chantier-044.jpeg"
+        alt: "Filet de sécurité couvrant un couloir entre deux murs en parpaing, en attente de la couverture"
+      - fichier: "chantier-045.jpeg"
+        alt: "Filet de sécurité vu depuis l'intérieur du bâtiment, ses mailles projetant leur ombre sur la dalle"
+      - fichier: "chantier-046.jpeg"
+        alt: "Filet et bâche de confinement suspendus sous la charpente métallique d'un entrepôt en activité, palettes stockées en contrebas"
       # ⚠️ Cette photo montre une reprise de maçonnerie sous un balcon, aucun
       # filet n'y est visible. À vérifier : elle irait mieux sur « Ravalement »
       # ou « Maçonnerie, corniches & cheminées ».

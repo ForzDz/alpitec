@@ -257,8 +257,16 @@ const schema = {
         class="pointer-events-none absolute inset-x-0 top-0 h-20"
       ></span>
 
-      {/* pt = hauteur du header (4rem puis 5rem) + le py d'origine, au pixel près. */}
-      <div class="mx-auto max-w-6xl px-5 pb-16 pt-[7.5rem] sm:px-8 sm:pb-24 sm:pt-[11rem] lg:pb-32 lg:pt-[13rem]">
+      {/*
+        pt = hauteur du header (4rem puis 5rem) + le py d'origine, au pixel près.
+
+        pb sur mobile : 6,5 rem, soit la barre d'action fixe (3,5 rem) plus une
+        respiration. À 4 rem, les badges arrivaient à 8 px de la barre quand on
+        atteignait le bas du hero — assez pour qu'ils paraissent collés dessous
+        sur un écran de 320 px. Au-delà de `sm` la barre n'existe plus et on
+        reprend le rythme normal.
+      */}
+      <div class="mx-auto max-w-6xl px-5 pb-[6.5rem] pt-[7.5rem] sm:px-8 sm:pb-24 sm:pt-[11rem] lg:pb-32 lg:pt-[13rem]">
         {/*
           LA CORDE, version longue — la seule de la page. Elle descend d'un
           seul trait du surtitre jusqu'aux boutons et sort du cadre en fondu.

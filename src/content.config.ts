@@ -95,6 +95,12 @@ const sectionSchema = z.discriminatedUnion('type', [
           fichier: z.string(),
           alt: z.string(),
           caption: z.string().optional(),
+          /**
+           * Photo de tête de la galerie, affichée en pleine largeur.
+           * Sans ce drapeau c'est la première par ordre de nom de fichier, ce
+           * qui n'est le choix de personne. Une seule par service.
+           */
+          miseEnAvant: z.boolean().optional(),
         }),
       )
       .default([]),
