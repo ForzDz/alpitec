@@ -199,11 +199,13 @@
     border-radius: 2px;
   }
 
-  /* La barre d'action fixe mobile ne doit jamais masquer la fin du contenu. */
-  @media (width < 64rem) {
-    body {
-      padding-bottom: calc(4.25rem + env(safe-area-inset-bottom));
-    }
+  html {
+    background-color: var(--color-navy-profond);
+  }
+
+  body {
+    background-color: var(--color-blanc);
+    min-height: 100vh;
   }
 }
 
