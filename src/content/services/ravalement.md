@@ -5,7 +5,7 @@ ordre: 1
 shortLabel: "Ravalement de façades"
 
 metaTitle: "Ravalement de façades Paris & Île-de-France — Cordistes | ALPITEC"
-metaDescription: "Ravalement de façade par compagnons cordistes certifiés à Paris et en Île-de-France. Spécialistes du bâti haussmannien. Sans échafaudage : moins cher, plus rapide. Devis gratuit."
+metaDescription: "Ravalement de façade par cordistes à Paris et en Île-de-France. Spécialistes du bâti haussmannien. Sans échafaudage : moins cher, plus rapide. Devis gratuit."
 
 surtitre: "Nos services · Ravalement de façades"
 h1: "Ravalement de façades à Paris et en Île-de-France"

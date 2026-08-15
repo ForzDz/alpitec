@@ -4,8 +4,8 @@ slug: "devegetalisation"
 ordre: 8
 shortLabel: "Dévégétalisation de façades"
 
-metaTitle: "Dévégétalisation de façades Paris & Île-de-France — Cordistes | ALPITEC"
-metaDescription: "Dévégétalisation de façade par cordistes à Paris et en Île-de-France : retrait de lierre, démoussage, traitement anti-mousse et préventif. Sans échafaudage. Devis gratuit."
+metaTitle: "Dévégétalisation de façade à Paris | Cordistes ALPITEC"
+metaDescription: "Dévégétalisation de façade par cordistes à Paris et en Île-de-France : retrait de lierre, démoussage, traitement anti-mousse. Sans échafaudage. Devis gratuit."
 
 surtitre: "Nos services · Dévégétalisation de façades"
 h1: "Dévégétalisation de façades à Paris et en Île-de-France"

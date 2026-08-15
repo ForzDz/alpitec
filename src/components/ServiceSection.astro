@@ -163,11 +163,11 @@ const { section, photos = [], shortLabel, ordre } = Astro.props;
   align-items: center;
   gap: 0.5rem;
   font-family: var(--font-display);
-  font-size: 0.6875rem;
+  font-size: var(--text-etiquette);
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: var(--text-etiquette--letter-spacing);
   text-transform: uppercase;
-  color: var(--color-orange-texte);
+  color: var(--color-navy);
   margin-bottom: 1rem;
 }
 
@@ -181,7 +181,7 @@ const { section, photos = [], shortLabel, ordre } = Astro.props;
 }
 
 .ss-section-eyebrow--light {
-  color: var(--color-orange);
+  color: var(--color-blanc);
 }
 
 .ss-section-eyebrow--light::before {
@@ -191,7 +191,7 @@ const { section, photos = [], shortLabel, ordre } = Astro.props;
 /* ── EXPERTISE ──────────────────────────────────────────────────────────────── */
 .ss-expertise {
   padding: var(--espace-section) 0;
-  background: #ffffff;
+  background: var(--color-blanc);
 }
 
 .ss-expertise__inner {
@@ -225,10 +225,10 @@ const { section, photos = [], shortLabel, ordre } = Astro.props;
 .ss-expertise__intro {
   margin-top: 1.25rem;
   font-family: var(--font-sans);
-  font-size: 1.0625rem;
+  font-size: var(--text-corps);
   font-weight: 300;
   line-height: 1.7;
-  color: oklch(26% 0.07 260 / 0.65);
+  color: color-mix(in srgb, var(--color-navy) 70%, transparent);
   max-width: 42ch;
   text-wrap: pretty;
 }
@@ -276,32 +276,32 @@ const { section, photos = [], shortLabel, ordre } = Astro.props;
 
 .ss-expertise__card {
   position: relative;
-  background: #ffffff;
-  border: 1px solid oklch(26% 0.07 260 / 0.08);
-  border-radius: 16px;
+  background: var(--color-blanc);
+  border: 1px solid color-mix(in srgb, var(--color-navy) 8%, transparent);
+  border-radius: var(--radius-bloc);
   padding: 1.5rem 1.75rem 1.75rem;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
   overflow: hidden;
 }
 
 .ss-expertise__card:hover {
-  border-color: oklch(26% 0.07 260 / 0.16);
-  box-shadow: 0 8px 32px oklch(26% 0.07 260 / 0.08);
+  border-color: color-mix(in srgb, var(--color-navy) 16%, transparent);
+  box-shadow: 0 8px 32px color-mix(in srgb, var(--color-navy) 8%, transparent);
   transform: translateY(-2px);
 }
 
 .ss-expertise__card-index {
   font-family: var(--font-display);
-  font-size: 0.6875rem;
+  font-size: var(--text-etiquette);
   font-weight: 700;
-  letter-spacing: 0.08em;
-  color: oklch(26% 0.07 260 / 0.3);
+  letter-spacing: var(--text-etiquette--letter-spacing);
+  color: color-mix(in srgb, var(--color-navy) 70%, transparent);
   margin-bottom: 0.75rem;
 }
 
 .ss-expertise__card-title {
   font-family: var(--font-display);
-  font-size: 1.0625rem;
+  font-size: var(--text-corps);
   font-weight: 700;
   letter-spacing: -0.01em;
   color: var(--color-navy);
@@ -312,10 +312,10 @@ const { section, photos = [], shortLabel, ordre } = Astro.props;
 
 .ss-expertise__card-text {
   font-family: var(--font-sans);
-  font-size: 0.9375rem;
+  font-size: var(--text-petit);
   font-weight: 300;
   line-height: 1.65;
-  color: oklch(26% 0.07 260 / 0.65);
+  color: color-mix(in srgb, var(--color-navy) 70%, transparent);
   text-wrap: pretty;
 }
 
@@ -383,8 +383,8 @@ const { section, photos = [], shortLabel, ordre } = Astro.props;
   background: linear-gradient(
     to right,
     transparent 0%,
-    oklch(100% 0 0 / 0.15) 10%,
-    oklch(100% 0 0 / 0.15) 90%,
+    color-mix(in srgb, var(--color-blanc) 15%, transparent) 10%,
+    color-mix(in srgb, var(--color-blanc) 15%, transparent) 90%,
     transparent 100%
   );
 }
@@ -415,54 +415,54 @@ const { section, photos = [], shortLabel, ordre } = Astro.props;
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
-  background: oklch(100% 0 0 / 0.04);
-  border: 1px solid oklch(100% 0 0 / 0.08);
-  border-radius: 16px;
+  background: color-mix(in srgb, var(--color-blanc) 4%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-blanc) 8%, transparent);
+  border-radius: var(--radius-bloc);
   padding: 1.5rem;
   transition: background 0.2s ease, border-color 0.2s ease;
 }
 
 .ss-process__step:hover {
-  background: oklch(100% 0 0 / 0.07);
-  border-color: oklch(100% 0 0 / 0.14);
+  background: color-mix(in srgb, var(--color-blanc) 7%, transparent);
+  border-color: color-mix(in srgb, var(--color-blanc) 14%, transparent);
 }
 
 .ss-process__step-badge {
   width: 44px;
   height: 44px;
-  border-radius: 12px;
-  background: #f96500;
+  border-radius: var(--radius-carte);
+  background: var(--color-orange);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 4px 14px oklch(55% 0.22 40 / 0.4);
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--color-orange) 40%, transparent);
 }
 
 .ss-process__step-num {
   font-family: var(--font-display);
-  font-size: 0.8125rem;
+  font-size: var(--text-petit);
   font-weight: 800;
-  color: #1a2039;
+  color: var(--color-navy-profond);
   letter-spacing: -0.01em;
 }
 
 .ss-process__step-label {
   font-family: var(--font-display);
-  font-size: 0.6875rem;
+  font-size: var(--text-etiquette);
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--text-etiquette--letter-spacing);
   text-transform: uppercase;
-  color: oklch(100% 0 0 / 0.4);
+  color: color-mix(in srgb, var(--color-blanc) 70%, transparent);
   margin-bottom: 0.25rem;
 }
 
 .ss-process__step-title {
   font-family: var(--font-display);
-  font-size: 1rem;
+  font-size: var(--text-corps);
   font-weight: 700;
   letter-spacing: -0.01em;
-  color: #ffffff;
+  color: var(--color-blanc);
   line-height: 1.25;
   margin-bottom: 0.5rem;
   text-wrap: balance;
@@ -470,10 +470,10 @@ const { section, photos = [], shortLabel, ordre } = Astro.props;
 
 .ss-process__step-text {
   font-family: var(--font-sans);
-  font-size: 0.875rem;
+  font-size: var(--text-petit);
   font-weight: 300;
   line-height: 1.65;
-  color: oklch(100% 0 0 / 0.55);
+  color: color-mix(in srgb, var(--color-blanc) 70%, transparent);
   text-wrap: pretty;
 }
 
@@ -525,8 +525,8 @@ const { section, photos = [], shortLabel, ordre } = Astro.props;
 
 .ss-audiences__card {
   position: relative;
-  background: #ffffff;
-  border-radius: 16px;
+  background: var(--color-blanc);
+  border-radius: var(--radius-bloc);
   padding: 1.75rem;
   overflow: hidden;
   border: 1px solid transparent;
@@ -534,8 +534,8 @@ const { section, photos = [], shortLabel, ordre } = Astro.props;
 }
 
 .ss-audiences__card:hover {
-  border-color: oklch(26% 0.07 260 / 0.1);
-  box-shadow: 0 8px 32px oklch(26% 0.07 260 / 0.08);
+  border-color: color-mix(in srgb, var(--color-navy) 10%, transparent);
+  box-shadow: 0 8px 32px color-mix(in srgb, var(--color-navy) 8%, transparent);
   transform: translateY(-2px);
 }
 
@@ -544,11 +544,11 @@ const { section, photos = [], shortLabel, ordre } = Astro.props;
 }
 
 .ss-audiences__card--featured .ss-audiences__card-title {
-  color: #ffffff;
+  color: var(--color-blanc);
 }
 
 .ss-audiences__card--featured .ss-audiences__card-text {
-  color: oklch(100% 0 0 / 0.6);
+  color: color-mix(in srgb, var(--color-blanc) 70%, transparent);
 }
 
 .ss-audiences__card-accent {
@@ -558,7 +558,7 @@ const { section, photos = [], shortLabel, ordre } = Astro.props;
   right: 0;
   height: 3px;
   background: linear-gradient(to right, var(--color-orange), transparent);
-  border-radius: 16px 16px 0 0;
+  border-radius: var(--radius-bloc) var(--radius-bloc) 0 0;
   opacity: 0;
   transition: opacity 0.2s ease;
 }
@@ -570,7 +570,7 @@ const { section, photos = [], shortLabel, ordre } = Astro.props;
 
 .ss-audiences__card-title {
   font-family: var(--font-display);
-  font-size: 1.0625rem;
+  font-size: var(--text-corps);
   font-weight: 700;
   letter-spacing: -0.01em;
   color: var(--color-navy);
@@ -581,10 +581,10 @@ const { section, photos = [], shortLabel, ordre } = Astro.props;
 
 .ss-audiences__card-text {
   font-family: var(--font-sans);
-  font-size: 0.9375rem;
+  font-size: var(--text-petit);
   font-weight: 300;
   line-height: 1.65;
-  color: oklch(26% 0.07 260 / 0.65);
+  color: color-mix(in srgb, var(--color-navy) 70%, transparent);
   text-wrap: pretty;
 }
 
@@ -609,7 +609,7 @@ const { section, photos = [], shortLabel, ordre } = Astro.props;
   width: 500px;
   height: 500px;
   border-radius: 50%;
-  background: radial-gradient(circle, oklch(55% 0.22 40 / 0.1) 0%, transparent 70%);
+  background: radial-gradient(circle, color-mix(in srgb, var(--color-orange) 10%, transparent) 0%, transparent 70%);
   filter: blur(60px);
 }
 
@@ -617,8 +617,8 @@ const { section, photos = [], shortLabel, ordre } = Astro.props;
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(oklch(100% 0 0 / 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, oklch(100% 0 0 / 0.03) 1px, transparent 1px);
+    linear-gradient(color-mix(in srgb, var(--color-blanc) 3%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--color-blanc) 3%, transparent) 1px, transparent 1px);
   background-size: 60px 60px;
   mask-image: radial-gradient(ellipse 60% 80% at 80% 50%, black 40%, transparent 100%);
 }
@@ -652,10 +652,10 @@ const { section, photos = [], shortLabel, ordre } = Astro.props;
 
 .ss-zones__para {
   font-family: var(--font-sans);
-  font-size: 1.0625rem;
+  font-size: var(--text-corps);
   font-weight: 300;
   line-height: 1.7;
-  color: oklch(100% 0 0 / 0.7);
+  color: color-mix(in srgb, var(--color-blanc) 70%, transparent);
   text-wrap: pretty;
 }
 
@@ -670,12 +670,12 @@ const { section, photos = [], shortLabel, ordre } = Astro.props;
   align-items: center;
   padding: 0.375rem 0.875rem;
   border-radius: 9999px;
-  background: oklch(100% 0 0 / 0.06);
-  border: 1px solid oklch(100% 0 0 / 0.1);
+  background: color-mix(in srgb, var(--color-blanc) 6%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-blanc) 10%, transparent);
   font-family: var(--font-display);
-  font-size: 0.75rem;
+  font-size: var(--text-etiquette);
   font-weight: 600;
-  color: oklch(100% 0 0 / 0.6);
+  color: color-mix(in srgb, var(--color-blanc) 70%, transparent);
   letter-spacing: 0.02em;
 }
 </style>

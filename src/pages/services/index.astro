@@ -15,7 +15,7 @@ const cartesAccueil = accueil.data.services;
 
 const titre = 'Nos 9 services cordistes — Paris & Île-de-France | ALPITEC';
 const description =
-  "Ravalement, couverture, nettoyage de vitres, maçonnerie, filets, anti-pigeons, chéneaux, dévégétalisation, points d'ancrage : les 9 prestations cordistes d'ALPITEC. Devis gratuit.";
+  "Ravalement, couverture, nettoyage de vitres, maçonnerie, filets, anti-pigeons, chéneaux, dévégétalisation, points d'ancrage : les 9 prestations cordistes d'ALPITEC.";
 
 const filAriane = [
   { label: 'Accueil', href: '/' },
@@ -202,7 +202,7 @@ const schema = {
 .si-hero {
   position: relative;
   overflow: hidden;
-  background: #1a2039;
+  background: var(--color-navy-profond);
   padding-bottom: 5rem;
 }
 
@@ -223,7 +223,7 @@ const schema = {
   height: 700px;
   right: -200px;
   top: -200px;
-  background: radial-gradient(circle, oklch(55% 0.22 40 / 0.1) 0%, transparent 70%);
+  background: radial-gradient(circle, color-mix(in srgb, var(--color-orange) 10%, transparent) 0%, transparent 70%);
 }
 
 .si-hero__blob--2 {
@@ -231,15 +231,15 @@ const schema = {
   height: 400px;
   left: -100px;
   bottom: -100px;
-  background: radial-gradient(circle, oklch(40% 0.12 260 / 0.15) 0%, transparent 70%);
+  background: radial-gradient(circle, color-mix(in srgb, var(--color-navy-clair) 15%, transparent) 0%, transparent 70%);
 }
 
 .si-hero__grid {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(oklch(100% 0 0 / 0.025) 1px, transparent 1px),
-    linear-gradient(90deg, oklch(100% 0 0 / 0.025) 1px, transparent 1px);
+    linear-gradient(color-mix(in srgb, var(--color-blanc) 2.5%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--color-blanc) 2.5%, transparent) 1px, transparent 1px);
   background-size: 60px 60px;
 }
 
@@ -262,14 +262,14 @@ const schema = {
   gap: 0.5rem;
   padding: 0.375rem 0.875rem;
   border-radius: 9999px;
-  background: oklch(100% 0 0 / 0.06);
-  border: 1px solid oklch(100% 0 0 / 0.12);
+  background: color-mix(in srgb, var(--color-blanc) 6%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-blanc) 12%, transparent);
   font-family: var(--font-display);
-  font-size: 0.75rem;
+  font-size: var(--text-etiquette);
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--text-etiquette--letter-spacing);
   text-transform: uppercase;
-  color: oklch(100% 0 0 / 0.6);
+  color: color-mix(in srgb, var(--color-blanc) 70%, transparent);
   margin-bottom: 1.5rem;
 }
 
@@ -278,8 +278,8 @@ const schema = {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #f96500;
-  box-shadow: 0 0 6px #f96500;
+  background: var(--color-orange);
+  box-shadow: 0 0 6px var(--color-orange);
   animation: pulse-dot 2.4s ease-in-out infinite;
 }
 
@@ -294,7 +294,7 @@ const schema = {
   font-weight: 800;
   letter-spacing: -0.025em;
   line-height: 1.0;
-  color: #ffffff;
+  color: var(--color-blanc);
   max-width: 18ch;
   text-wrap: balance;
   margin-bottom: 1.5rem;
@@ -302,10 +302,10 @@ const schema = {
 
 .si-hero__intro {
   font-family: var(--font-sans);
-  font-size: 1.125rem;
+  font-size: var(--text-corps-large);
   font-weight: 300;
   line-height: 1.7;
-  color: oklch(100% 0 0 / 0.65);
+  color: color-mix(in srgb, var(--color-blanc) 70%, transparent);
   max-width: 58ch;
   text-wrap: pretty;
   margin-bottom: 3rem;
@@ -316,7 +316,7 @@ const schema = {
   display: flex;
   flex-wrap: wrap;
   gap: 0;
-  border-top: 1px solid oklch(100% 0 0 / 0.08);
+  border-top: 1px solid color-mix(in srgb, var(--color-blanc) 8%, transparent);
   padding-top: 2rem;
 }
 
@@ -325,7 +325,7 @@ const schema = {
   flex-direction: column;
   gap: 0.25rem;
   padding: 0 2rem 1rem 0;
-  border-right: 1px solid oklch(100% 0 0 / 0.08);
+  border-right: 1px solid color-mix(in srgb, var(--color-blanc) 8%, transparent);
   margin-right: 2rem;
 }
 
@@ -335,25 +335,25 @@ const schema = {
 
 .si-hero__stat-val {
   font-family: var(--font-display);
-  font-size: 1.75rem;
+  font-size: var(--text-sous-titre);
   font-weight: 800;
   letter-spacing: -0.03em;
-  color: #f96500;
+  color: var(--color-orange);
   line-height: 1;
 }
 
 .si-hero__stat-lbl {
   font-family: var(--font-sans);
-  font-size: 0.75rem;
+  font-size: var(--text-etiquette);
   font-weight: 400;
-  color: oklch(100% 0 0 / 0.45);
+  color: color-mix(in srgb, var(--color-blanc) 70%, transparent);
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
 
 /* ─── GRID SECTION ──────────────────────────────────────────────────────────── */
 .si-grid-section {
-  background: #f5f6f8;
+  background: var(--color-gris);
   padding: 5rem 0;
 }
 
@@ -374,11 +374,11 @@ const schema = {
   align-items: center;
   gap: 0.5rem;
   font-family: var(--font-display);
-  font-size: 0.6875rem;
+  font-size: var(--text-etiquette);
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: var(--text-etiquette--letter-spacing);
   text-transform: uppercase;
-  color: var(--color-orange-texte);
+  color: var(--color-navy);
   margin-bottom: 2.5rem;
 }
 
@@ -424,7 +424,7 @@ const schema = {
 
 /* ─── WHY SECTION ───────────────────────────────────────────────────────────── */
 .si-why {
-  background: #ffffff;
+  background: var(--color-blanc);
   padding: 5rem 0;
 }
 
@@ -445,11 +445,11 @@ const schema = {
   align-items: center;
   gap: 0.5rem;
   font-family: var(--font-display);
-  font-size: 0.6875rem;
+  font-size: var(--text-etiquette);
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: var(--text-etiquette--letter-spacing);
   text-transform: uppercase;
-  color: var(--color-orange-texte);
+  color: var(--color-navy);
   margin-bottom: 1rem;
 }
 
@@ -495,28 +495,28 @@ const schema = {
 }
 
 .si-why__card {
-  background: #f5f6f8;
-  border-radius: 16px;
+  background: var(--color-gris);
+  border-radius: var(--radius-bloc);
   padding: 1.75rem;
   border: 1px solid transparent;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .si-why__card:hover {
-  border-color: oklch(26% 0.07 260 / 0.1);
-  box-shadow: 0 8px 32px oklch(26% 0.07 260 / 0.08);
+  border-color: color-mix(in srgb, var(--color-navy) 10%, transparent);
+  box-shadow: 0 8px 32px color-mix(in srgb, var(--color-navy) 8%, transparent);
   transform: translateY(-2px);
 }
 
 .si-why__card-icon {
-  font-size: 1.75rem;
+  font-size: var(--text-sous-titre);
   margin-bottom: 1rem;
   line-height: 1;
 }
 
 .si-why__card-title {
   font-family: var(--font-display);
-  font-size: 1rem;
+  font-size: var(--text-corps);
   font-weight: 700;
   letter-spacing: -0.01em;
   color: var(--color-navy);
@@ -526,10 +526,10 @@ const schema = {
 
 .si-why__card-text {
   font-family: var(--font-sans);
-  font-size: 0.875rem;
+  font-size: var(--text-petit);
   font-weight: 300;
   line-height: 1.65;
-  color: oklch(26% 0.07 260 / 0.65);
+  color: color-mix(in srgb, var(--color-navy) 70%, transparent);
   text-wrap: pretty;
 }
 </style>

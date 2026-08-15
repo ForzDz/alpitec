@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
@@ -149,11 +150,22 @@ const schema = {
       <div class="service-hero__bg" aria-hidden="true">
         {heroPhoto ? (
           <>
-            {/* Photo du service en fond, droite, avec overlay navy à gauche */}
-            <div
+            {/* Photo du service en fond, droite, avec overlay navy à gauche.
+                Elle passe par <Image> et non par `background-image` : c'est
+                l'élément LCP de la page, et le JPEG d'origine pèse de 380 à
+                577 Ko contre ~60 Ko en WebP. */}
+            <Image
+              src={heroPhoto.src}
+              alt=""
+              widths={[640, 960, 1440, 1920]}
+              sizes="100vw"
+              format="webp"
+              quality={72}
+              loading="eager"
+              fetchpriority="high"
+              decoding="async"
               class="service-hero__photo-bg"
-              style={`background-image: url('${heroPhoto.src.src}')`}
-            ></div>
+            />
             <div class="service-hero__photo-overlay"></div>
           </>
         ) : (
@@ -318,9 +330,10 @@ const schema = {
 .service-hero__photo-bg {
   position: absolute;
   inset: 0;
-  background-size: cover;
-  background-position: center 30%;
-  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
   /* La photo occupe toute la section, mais sera masquée à gauche par l'overlay */
   transform: scale(1.04);
   transition: transform 8s ease-out;
@@ -336,13 +349,13 @@ const schema = {
   /* Overlay en dégradé horizontal : navy plein à gauche, semi-transparent à droite */
   background: linear-gradient(
     to right,
-    #1a2039 0%,
-    #1a2039 28%,
-    oklch(14% 0.07 260 / 0.95) 38%,
-    oklch(14% 0.07 260 / 0.82) 50%,
-    oklch(14% 0.07 260 / 0.55) 62%,
-    oklch(14% 0.07 260 / 0.28) 75%,
-    oklch(14% 0.07 260 / 0.12) 88%,
+    var(--color-navy-profond) 0%,
+    var(--color-navy-profond) 28%,
+    color-mix(in srgb, var(--color-navy-profond) 95%, transparent) 38%,
+    color-mix(in srgb, var(--color-navy-profond) 82%, transparent) 50%,
+    color-mix(in srgb, var(--color-navy-profond) 55%, transparent) 62%,
+    color-mix(in srgb, var(--color-navy-profond) 28%, transparent) 75%,
+    color-mix(in srgb, var(--color-navy-profond) 12%, transparent) 88%,
     transparent 100%
   );
 }
@@ -352,10 +365,10 @@ const schema = {
   .service-hero__photo-overlay {
     background: linear-gradient(
       to bottom,
-      oklch(14% 0.07 260 / 0.92) 0%,
-      oklch(14% 0.07 260 / 0.88) 50%,
-      oklch(14% 0.07 260 / 0.75) 75%,
-      oklch(14% 0.07 260 / 0.6) 100%
+      color-mix(in srgb, var(--color-navy-profond) 92%, transparent) 0%,
+      color-mix(in srgb, var(--color-navy-profond) 88%, transparent) 50%,
+      color-mix(in srgb, var(--color-navy-profond) 75%, transparent) 75%,
+      color-mix(in srgb, var(--color-navy-profond) 60%, transparent) 100%
     );
   }
 }
@@ -371,7 +384,7 @@ const schema = {
   height: 600px;
   right: -120px;
   top: -160px;
-  background: radial-gradient(circle, oklch(60% 0.22 40 / 0.12) 0%, transparent 70%);
+  background: radial-gradient(circle, color-mix(in srgb, var(--color-orange) 12%, transparent) 0%, transparent 70%);
 }
 
 .service-hero__blob--2 {
@@ -379,7 +392,7 @@ const schema = {
   height: 400px;
   left: -80px;
   bottom: -80px;
-  background: radial-gradient(circle, oklch(40% 0.14 260 / 0.18) 0%, transparent 70%);
+  background: radial-gradient(circle, color-mix(in srgb, var(--color-navy-clair) 18%, transparent) 0%, transparent 70%);
 }
 
 .service-hero__noise {
@@ -414,14 +427,14 @@ const schema = {
   gap: 0.5rem;
   padding: 0.375rem 0.875rem;
   border-radius: 9999px;
-  background: oklch(100% 0 0 / 0.06);
-  border: 1px solid oklch(100% 0 0 / 0.12);
+  background: color-mix(in srgb, var(--color-blanc) 6%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-blanc) 12%, transparent);
   font-family: var(--font-display);
-  font-size: 0.75rem;
+  font-size: var(--text-etiquette);
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--text-etiquette--letter-spacing);
   text-transform: uppercase;
-  color: oklch(100% 0 0 / 0.65);
+  color: color-mix(in srgb, var(--color-blanc) 70%, transparent);
   margin-bottom: 1.5rem;
 }
 
@@ -429,8 +442,8 @@ const schema = {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #f96500;
-  box-shadow: 0 0 6px #f96500;
+  background: var(--color-orange);
+  box-shadow: 0 0 6px var(--color-orange);
   animation: pulse-dot 2.4s ease-in-out infinite;
 }
 
@@ -446,7 +459,7 @@ const schema = {
   font-weight: 800;
   line-height: 1.0;
   letter-spacing: -0.025em;
-  color: #ffffff;
+  color: var(--color-blanc);
   max-width: 18ch;
   text-wrap: balance;
   margin-bottom: 1.75rem;
@@ -455,10 +468,10 @@ const schema = {
 /* Intro */
 .service-hero__intro {
   font-family: var(--font-sans);
-  font-size: 1.125rem;
+  font-size: var(--text-corps-large);
   font-weight: 300;
   line-height: 1.7;
-  color: oklch(100% 0 0 / 0.72);
+  color: color-mix(in srgb, var(--color-blanc) 72%, transparent);
   max-width: 54ch;
   text-wrap: pretty;
   margin-bottom: 2.25rem;
@@ -478,26 +491,26 @@ const schema = {
   gap: 0.5rem;
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 0.9375rem;
+  font-size: var(--text-petit);
   letter-spacing: -0.01em;
   border-radius: 9999px;
   padding: 0.875rem 1.75rem;
-  transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: all 0.22s var(--sortie);
   text-decoration: none;
   white-space: nowrap;
 }
 
 .service-btn--primary {
-  background: #f96500;
-  color: #1a2039;
-  box-shadow: 0 4px 20px oklch(55% 0.22 40 / 0.35);
+  background: var(--color-orange);
+  color: var(--color-navy-profond);
+  box-shadow: 0 4px 20px color-mix(in srgb, var(--color-orange) 35%, transparent);
 }
 
 .service-btn--primary:hover {
-  background: #ffffff;
-  color: #1a2039;
+  background: var(--color-blanc);
+  color: var(--color-navy-profond);
   transform: translateY(-2px);
-  box-shadow: 0 8px 32px oklch(100% 0 0 / 0.18);
+  box-shadow: 0 8px 32px color-mix(in srgb, var(--color-blanc) 18%, transparent);
 }
 
 .service-btn__arrow {
@@ -511,15 +524,15 @@ const schema = {
 }
 
 .service-btn--ghost {
-  background: oklch(100% 0 0 / 0.06);
-  color: oklch(100% 0 0 / 0.85);
-  border: 1px solid oklch(100% 0 0 / 0.18);
+  background: color-mix(in srgb, var(--color-blanc) 6%, transparent);
+  color: color-mix(in srgb, var(--color-blanc) 85%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-blanc) 18%, transparent);
   backdrop-filter: blur(8px);
 }
 
 .service-btn--ghost:hover {
-  background: oklch(100% 0 0 / 0.12);
-  border-color: oklch(100% 0 0 / 0.3);
+  background: color-mix(in srgb, var(--color-blanc) 12%, transparent);
+  border-color: color-mix(in srgb, var(--color-blanc) 30%, transparent);
   transform: translateY(-2px);
 }
 
@@ -538,15 +551,15 @@ const schema = {
   align-items: center;
   gap: 0.4rem;
   font-family: var(--font-display);
-  font-size: 0.8125rem;
+  font-size: var(--text-petit);
   font-weight: 600;
-  color: oklch(100% 0 0 / 0.75);
+  color: color-mix(in srgb, var(--color-blanc) 75%, transparent);
 }
 
 .service-hero__badge-icon {
   width: 16px;
   height: 16px;
-  color: #34d399;
+  color: var(--color-orange);
   flex-shrink: 0;
 }
 
@@ -562,14 +575,14 @@ const schema = {
 }
 
 .service-hero__card-inner {
-  background: oklch(100% 0 0 / 0.04);
-  border: 1px solid oklch(100% 0 0 / 0.1);
-  border-radius: 24px;
+  background: color-mix(in srgb, var(--color-blanc) 4%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-blanc) 10%, transparent);
+  border-radius: var(--radius-bloc);
   padding: 2rem;
   backdrop-filter: blur(24px);
   box-shadow:
-    0 0 0 1px oklch(100% 0 0 / 0.06) inset,
-    0 24px 60px oklch(0% 0 0 / 0.3);
+    0 0 0 1px color-mix(in srgb, var(--color-blanc) 6%, transparent) inset,
+    0 24px 60px color-mix(in srgb, var(--color-navy) 30%, transparent);
   animation: float-card 5s ease-in-out infinite;
 }
 
@@ -586,20 +599,20 @@ const schema = {
 
 .service-hero__card-label {
   font-family: var(--font-display);
-  font-size: 0.6875rem;
+  font-size: var(--text-etiquette);
   font-weight: 600;
-  letter-spacing: 0.1em;
+  letter-spacing: var(--text-etiquette--letter-spacing);
   text-transform: uppercase;
-  color: oklch(100% 0 0 / 0.45);
+  color: color-mix(in srgb, var(--color-blanc) 70%, transparent);
   margin-bottom: 0.375rem;
 }
 
 .service-hero__card-title {
   font-family: var(--font-display);
-  font-size: 1.125rem;
+  font-size: var(--text-corps-large);
   font-weight: 700;
   letter-spacing: -0.015em;
-  color: #ffffff;
+  color: var(--color-blanc);
   line-height: 1.25;
   margin-bottom: 1.5rem;
   text-wrap: balance;
@@ -607,7 +620,7 @@ const schema = {
 
 .service-hero__card-divider {
   height: 1px;
-  background: oklch(100% 0 0 / 0.08);
+  background: color-mix(in srgb, var(--color-blanc) 8%, transparent);
   margin-bottom: 1.5rem;
 }
 
@@ -626,18 +639,18 @@ const schema = {
 
 .service-hero__card-stat-value {
   font-family: var(--font-display);
-  font-size: 1.25rem;
+  font-size: var(--text-carte);
   font-weight: 800;
   letter-spacing: -0.02em;
-  color: #f96500;
+  color: var(--color-orange);
   line-height: 1;
 }
 
 .service-hero__card-stat-label {
   font-family: var(--font-sans);
-  font-size: 0.6875rem;
+  font-size: var(--text-etiquette);
   font-weight: 400;
-  color: oklch(100% 0 0 / 0.45);
+  color: color-mix(in srgb, var(--color-blanc) 70%, transparent);
   line-height: 1.3;
 }
 
@@ -648,22 +661,22 @@ const schema = {
   gap: 0.5rem;
   width: 100%;
   padding: 0.875rem 1.25rem;
-  background: #f96500;
-  color: #1a2039;
+  background: var(--color-orange);
+  color: var(--color-navy-profond);
   font-family: var(--font-display);
-  font-size: 0.875rem;
+  font-size: var(--text-petit);
   font-weight: 700;
   letter-spacing: -0.01em;
-  border-radius: 12px;
+  border-radius: var(--radius-carte);
   text-decoration: none;
-  transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
-  box-shadow: 0 4px 16px oklch(55% 0.22 40 / 0.35);
+  transition: all 0.22s var(--sortie);
+  box-shadow: 0 4px 16px color-mix(in srgb, var(--color-orange) 35%, transparent);
 }
 
 .service-hero__card-cta:hover {
-  background: #ffffff;
+  background: var(--color-blanc);
   transform: translateY(-1px);
-  box-shadow: 0 8px 24px oklch(100% 0 0 / 0.15);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--color-blanc) 15%, transparent);
 }
 
 /* ─── SCROLL INDICATOR ─── */
@@ -682,7 +695,7 @@ const schema = {
   display: block;
   width: 1px;
   height: 40px;
-  background: linear-gradient(to bottom, transparent, oklch(100% 0 0 / 0.3), transparent);
+  background: linear-gradient(to bottom, transparent, color-mix(in srgb, var(--color-blanc) 30%, transparent), transparent);
   animation: scroll-line 2s ease-in-out infinite;
 }
 

@@ -4,8 +4,8 @@ slug: "points-ancrage"
 ordre: 9
 shortLabel: "Points d'ancrage & lignes de vie"
 
-metaTitle: "Installation points d'ancrage & lignes de vie EN 795 — Paris, Île-de-France | ALPITEC"
-metaDescription: "Installation de points d'ancrage et lignes de vie conformes EN 795 par cordistes à Paris et en Île-de-France. Étude technique, pose, certification et contrôles périodiques. Devis gratuit."
+metaTitle: "Points d'ancrage & lignes de vie EN 795 à Paris | ALPITEC"
+metaDescription: "Points d'ancrage et lignes de vie conformes EN 795 par cordistes à Paris et en Île-de-France. Étude, pose, certification et contrôles. Devis gratuit."
 
 surtitre: "Nos services · Points d'ancrage & lignes de vie"
 h1: "Installation de points d'ancrage et lignes de vie à Paris et en Île-de-France"

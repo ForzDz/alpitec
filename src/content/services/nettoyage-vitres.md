@@ -4,7 +4,7 @@ slug: "nettoyage-vitres"
 ordre: 3
 shortLabel: "Nettoyage de vitres toute hauteur"
 
-metaTitle: "Nettoyage de vitres en hauteur Paris & Île-de-France — Cordistes | ALPITEC"
+metaTitle: "Nettoyage de vitres en hauteur à Paris | Cordistes ALPITEC"
 metaDescription: "Nettoyage de vitres toute hauteur par cordistes à Paris et en Île-de-France. Entreprise de travaux en hauteur certifiée, produits écologiques. Devis gratuit."
 
 surtitre: "Nos services · Nettoyage de vitres toute hauteur"

@@ -29,19 +29,19 @@ const { items, title, class: className = '' } = Astro.props;
 <style>
 .infobox {
   position: relative;
-  border-radius: 20px;
-  background: linear-gradient(135deg, #232b4a 0%, #1a2039 100%);
-  border: 1px solid oklch(100% 0 0 / 0.1);
+  border-radius: var(--radius-bloc);
+  background: linear-gradient(135deg, var(--color-navy) 0%, var(--color-navy-profond) 100%);
+  border: 1px solid color-mix(in srgb, var(--color-blanc) 10%, transparent);
   padding: 1.75rem 2rem;
   overflow: hidden;
-  box-shadow: 0 8px 40px oklch(26% 0.07 260 / 0.15);
+  box-shadow: 0 8px 40px color-mix(in srgb, var(--color-navy) 15%, transparent);
 }
 
 .infobox::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, oklch(55% 0.22 40 / 0.06) 0%, transparent 60%);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--color-orange) 6%, transparent) 0%, transparent 60%);
   pointer-events: none;
 }
 
@@ -52,16 +52,16 @@ const { items, title, class: className = '' } = Astro.props;
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(to right, transparent, oklch(100% 0 0 / 0.15), transparent);
+  background: linear-gradient(to right, transparent, color-mix(in srgb, var(--color-blanc) 15%, transparent), transparent);
 }
 
 .infobox__label {
   font-family: var(--font-display);
-  font-size: 0.6875rem;
+  font-size: var(--text-etiquette);
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: var(--text-etiquette--letter-spacing);
   text-transform: uppercase;
-  color: var(--color-orange);
+  color: var(--color-blanc);
   margin-bottom: 1.25rem;
   display: flex;
   align-items: center;
@@ -100,7 +100,7 @@ const { items, title, class: className = '' } = Astro.props;
   flex-direction: column;
   gap: 0.25rem;
   padding: 1rem 1.25rem;
-  border-left: 1px solid oklch(100% 0 0 / 0.08);
+  border-left: 1px solid color-mix(in srgb, var(--color-blanc) 8%, transparent);
   position: relative;
 }
 
@@ -111,7 +111,7 @@ const { items, title, class: className = '' } = Astro.props;
 @media (max-width: 639px) {
   .infobox__item {
     border-left: none;
-    border-top: 1px solid oklch(100% 0 0 / 0.08);
+    border-top: 1px solid color-mix(in srgb, var(--color-blanc) 8%, transparent);
     padding: 0.875rem 0;
   }
 
@@ -134,20 +134,20 @@ const { items, title, class: className = '' } = Astro.props;
 
 .infobox__dt {
   font-family: var(--font-display);
-  font-size: 0.6875rem;
+  font-size: var(--text-etiquette);
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: oklch(100% 0 0 / 0.4);
+  color: color-mix(in srgb, var(--color-blanc) 70%, transparent);
   line-height: 1;
 }
 
 .infobox__dd {
   font-family: var(--font-display);
-  font-size: 0.9375rem;
+  font-size: var(--text-petit);
   font-weight: 700;
   letter-spacing: -0.01em;
-  color: #ffffff;
+  color: var(--color-blanc);
   line-height: 1.35;
   text-wrap: balance;
 }

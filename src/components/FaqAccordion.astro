@@ -83,11 +83,11 @@ const { items, title, id = 'faq' } = Astro.props;
   align-items: center;
   gap: 0.5rem;
   font-family: var(--font-display);
-  font-size: 0.6875rem;
+  font-size: var(--text-etiquette);
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: var(--text-etiquette--letter-spacing);
   text-transform: uppercase;
-  color: var(--color-orange-texte);
+  color: var(--color-navy);
   margin-bottom: 1rem;
 }
 
@@ -111,16 +111,16 @@ const { items, title, id = 'faq' } = Astro.props;
 
 /* ─── FAQ Card ───────────────────────────────────────────────────────────────── */
 .faq-card {
-  border-radius: 16px;
-  background: #ffffff;
-  border: 1px solid oklch(26% 0.07 260 / 0.08);
+  border-radius: var(--radius-bloc);
+  background: var(--color-blanc);
+  border: 1px solid color-mix(in srgb, var(--color-navy) 8%, transparent);
   overflow: hidden;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .faq-card:has([aria-expanded='true']) {
-  border-color: oklch(55% 0.22 40 / 0.2);
-  box-shadow: 0 4px 24px oklch(26% 0.07 260 / 0.08);
+  border-color: color-mix(in srgb, var(--color-orange) 20%, transparent);
+  box-shadow: 0 4px 24px color-mix(in srgb, var(--color-navy) 8%, transparent);
 }
 
 .faq-card__heading {
@@ -142,7 +142,7 @@ const { items, title, id = 'faq' } = Astro.props;
 }
 
 .faq-card__trigger:hover {
-  background: oklch(26% 0.07 260 / 0.02);
+  background: color-mix(in srgb, var(--color-navy) 2%, transparent);
 }
 
 .faq-card__trigger:focus-visible {
@@ -167,7 +167,7 @@ const { items, title, id = 'faq' } = Astro.props;
   justify-content: center;
   width: 28px;
   height: 28px;
-  border-radius: 8px;
+  border-radius: var(--radius-tuile);
   background: var(--color-gris);
   color: var(--color-navy);
   flex-shrink: 0;
@@ -176,13 +176,13 @@ const { items, title, id = 'faq' } = Astro.props;
 }
 
 .faq-card__trigger:hover .faq-card__toggle {
-  background: oklch(55% 0.22 40 / 0.12);
+  background: color-mix(in srgb, var(--color-orange) 12%, transparent);
   color: var(--color-orange-texte);
 }
 
 .faq-card__trigger[aria-expanded='true'] .faq-card__toggle {
   background: var(--color-navy);
-  color: #ffffff;
+  color: var(--color-blanc);
   transform: rotate(45deg);
 }
 
@@ -195,10 +195,10 @@ const { items, title, id = 'faq' } = Astro.props;
 .faq-card__answer {
   padding: 0 1.5rem 1.25rem;
   font-family: var(--font-sans);
-  font-size: 0.9375rem;
+  font-size: var(--text-petit);
   font-weight: 300;
   line-height: 1.7;
-  color: oklch(26% 0.07 260 / 0.65);
+  color: color-mix(in srgb, var(--color-navy) 70%, transparent);
   text-wrap: pretty;
   max-width: 64ch;
 }

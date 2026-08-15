@@ -8,6 +8,26 @@
 # Site 100 % statique : aucun adapter Astro, Netlify sert le HTML pré-rendu.
 
 # =============================================================================
+# DOMAINE CANONIQUE — APEX VERS WWW
+# =============================================================================
+# Tous les canonical, le sitemap et robots.txt pointent vers www.alpitec.fr.
+# Sans cette redirection, alpitec.fr et www.alpitec.fr servent le même contenu
+# sous deux hôtes : Google voit des doublons et répartit le jus de lien.
+# `force = true` est nécessaire, sinon Netlify sert d'abord le fichier existant.
+
+[[redirects]]
+  from = "https://alpitec.fr/*"
+  to = "https://www.alpitec.fr/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "http://alpitec.fr/*"
+  to = "https://www.alpitec.fr/:splat"
+  status = 301
+  force = true
+
+# =============================================================================
 # REDIRECTIONS 301 — ANCIEN SITE JOOMLA
 # =============================================================================
 # Les anciennes URLs n'ont pas encore été fournies. Sans elles, chaque page
@@ -283,8 +303,11 @@
     # Politique de sécurité du contenu.
     # 'unsafe-inline' sur script-src est nécessaire : Astro insère les scripts
     # de page en ligne. À remplacer par des empreintes si un audit l'exige.
-    # frame-src autorise uniquement la carte OpenStreetMap, chargée au clic.
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; media-src 'self'; frame-src https://www.openstreetmap.org; form-action 'self'; connect-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'"
+    # frame-src autorise la carte OpenStreetMap (chargée au clic) et le widget
+    # reCAPTCHA du formulaire de devis. Sans les entrées google.com et
+    # gstatic.com ci-dessous, la CSP bloquerait le reCAPTCHA et le formulaire
+    # deviendrait impossible à soumettre.
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.google.com https://www.gstatic.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://www.gstatic.com; font-src 'self'; media-src 'self'; frame-src https://www.openstreetmap.org https://www.google.com; form-action 'self'; connect-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'"
 
 # Ressources à empreinte : elles ne changent jamais sous la même URL.
 [[headers]]

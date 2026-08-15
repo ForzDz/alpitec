@@ -39,7 +39,7 @@ const CADRAGES = {
 const positionClass = CADRAGES[slug] ?? 'object-center';
 ---
 
-<article class={`group relative flex h-full w-full flex-col overflow-hidden rounded-2xl bg-white border border-slate-200/90 shadow-sm transition-all duration-300 hover:shadow-xl hover:border-orange/40 hover:-translate-y-1.5 ${className}`}>
+<article class={`group relative flex h-full w-full flex-col overflow-hidden eleve rounded-carte bg-blanc ${className}`}>
   {/* Zone Photo avec cadrage focalisé sur le travailleur */}
   <div class="relative aspect-[16/11] w-full overflow-hidden bg-navy-profond">
     {image ? (
@@ -60,7 +60,7 @@ const positionClass = CADRAGES[slug] ?? 'object-center';
         <span class="font-display text-sm font-extrabold text-orange">
           {formattedOrdre}
         </span>
-        <span class="font-display text-sm font-bold uppercase tracking-wider text-white/90 text-balance">
+        <span class="font-display text-sm font-bold uppercase tracking-wider text-blanc/90 text-balance">
           {shortLabel}
         </span>
       </div>
@@ -88,8 +88,8 @@ const positionClass = CADRAGES[slug] ?? 'object-center';
     )}
 
     {/* Lien d'action discret & pro */}
-    <div class="mt-5 pt-3.5 border-t border-slate-100 flex items-center justify-between">
-      <span class="inline-flex items-center gap-1.5 font-display text-[0.8125rem] font-bold tracking-tight text-orange transition-transform duration-200 group-hover:translate-x-1">
+    <div class="mt-5 pt-3.5 border-t border-gris-bord flex items-center justify-between">
+      <span class="inline-flex items-center gap-1.5 font-display text-[0.8125rem] font-bold tracking-tight text-navy underline-offset-4 decoration-orange decoration-2 transition-transform duration-200 group-hover:translate-x-1 group-hover:underline">
         <span>{linkLabel}</span>
         <svg
           width="14"

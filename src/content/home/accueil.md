@@ -2,8 +2,8 @@
 title: "Accueil"
 slug: "accueil"
 
-metaTitle: "ALPITEC — Travaux en hauteur Paris & Île-de-France | Cordistes certifiés"
-metaDescription: "Entreprise de travaux en hauteur sur cordes à Paris et en Île-de-France. Cordistes certifiés CQP, IRATA, CATSC & CACES. Ravalement, couverture, nettoyage, sécurisation. Devis gratuit."
+metaTitle: "Travaux en hauteur sur cordes à Paris & Île-de-France | ALPITEC"
+metaDescription: "Travaux en hauteur sur cordes à Paris et en Île-de-France. Cordistes certifiés CQP, IRATA, CATSC & CACES. Ravalement, couverture, nettoyage. Devis gratuit."
 
 # Bande de chantiers : photos de src/assets/photos/accueil/, appariées par nom
 # de fichier. Une photo sans alt écrit ici n'est pas affichée.

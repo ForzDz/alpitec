@@ -4,7 +4,7 @@ slug: "pics-anti-pigeons"
 ordre: 6
 shortLabel: "Anti-pigeons"
 
-metaTitle: "Pose de pics anti-pigeons Paris & Île-de-France — Cordistes | ALPITEC"
+metaTitle: "Pose de pics anti-pigeons à Paris | Cordistes ALPITEC"
 metaDescription: "Pose de pics anti-pigeons par cordistes à Paris et en Île-de-France. Protection discrète et durable, nettoyage et désinfection inclus. Devis gratuit."
 
 surtitre: "Nos services · Pose de pics anti-pigeons"

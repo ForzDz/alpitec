@@ -117,6 +117,7 @@ const classeChamp =
           method="POST"
           data-netlify="true"
           netlify-honeypot="bot-field"
+          data-netlify-recaptcha="true"
           action="/merci"
           class="mt-8 grid min-w-0 gap-5 sm:grid-cols-2"
           data-formulaire-devis
@@ -163,6 +164,7 @@ const classeChamp =
                     rows="5"
                     required={champ.requis}
                     minlength="10"
+                    maxlength="2000"
                     class={`${classeChamp} leading-relaxed`}
                     aria-describedby={`${champ.id}-erreur`}
                   />
@@ -174,6 +176,7 @@ const classeChamp =
                     autocomplete={champ.autocomplete}
                     inputmode={champ.inputmode}
                     required={champ.requis}
+                    maxlength="80"
                     class={classeChamp}
                     aria-describedby={`${champ.id}-erreur`}
                   />
@@ -187,6 +190,10 @@ const classeChamp =
               </div>
             ))
           }
+
+          {/* Emplacement du widget reCAPTCHA. Netlify a besoin de l'attribut
+              sur le formulaire ET de ce conteneur pour l'y injecter. */}
+          <div class="sm:col-span-2" data-netlify-recaptcha="true"></div>
 
           <div class="sm:col-span-2">
             {/* Récapitulatif d'erreurs, annoncé aux lecteurs d'écran à la soumission. */}

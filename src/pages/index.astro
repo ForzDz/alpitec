@@ -297,15 +297,15 @@ const schema = {
         </div>
 
         {/*
-          Badges de réassurance : fond transparent, icône verte certifiée
+          Badges de réassurance : fond transparent, coche orange
         */}
         <ul class="mt-5 flex max-w-[200px] flex-col gap-2 sm:max-w-none sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-4 sm:gap-y-2 md:mt-14">
           {
             d.hero.badges.map((badge) => (
               <li class="flex items-center gap-2 text-blanc">
-                {/* Icône verte certifiée / vérifiée */}
+                {/* Coche de validation, dans l orange de la marque. */}
                 <svg
-                  class="size-4 shrink-0 text-emerald-400"
+                  class="size-4 shrink-0 text-orange"
                   viewBox="0 0 20 20"
                   fill="currentColor"
                   aria-hidden="true"

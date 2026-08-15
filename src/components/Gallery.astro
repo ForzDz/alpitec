@@ -127,7 +127,7 @@ const tuiles = photos.length < 3 ? Math.max(0, 2 - reste.length) : 0;
 <style>
 /* ─── GALLERY SECTION ────────────────────────────────────────────────────────── */
 .gallery-section {
-  background: #ffffff;
+  background: var(--color-blanc);
   padding: var(--espace-section) 0;
 }
 
@@ -152,11 +152,11 @@ const tuiles = photos.length < 3 ? Math.max(0, 2 - reste.length) : 0;
   align-items: center;
   gap: 0.5rem;
   font-family: var(--font-display);
-  font-size: 0.6875rem;
+  font-size: var(--text-etiquette);
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: var(--text-etiquette--letter-spacing);
   text-transform: uppercase;
-  color: var(--color-orange-texte);
+  color: var(--color-navy);
   margin-bottom: 1rem;
 }
 
@@ -180,7 +180,7 @@ const tuiles = photos.length < 3 ? Math.max(0, 2 - reste.length) : 0;
 .gallery-solo__img-wrap {
   position: relative;
   aspect-ratio: 16/9;
-  border-radius: 20px;
+  border-radius: var(--radius-bloc);
   overflow: hidden;
   background: var(--color-gris);
 }
@@ -217,7 +217,7 @@ const tuiles = photos.length < 3 ? Math.max(0, 2 - reste.length) : 0;
 
 .gallery-split__main-img-wrap {
   position: relative;
-  border-radius: 20px;
+  border-radius: var(--radius-bloc);
   overflow: hidden;
   background: var(--color-gris);
   height: 100%;
@@ -243,7 +243,7 @@ const tuiles = photos.length < 3 ? Math.max(0, 2 - reste.length) : 0;
 
 .gallery-split__thumb-img-wrap {
   position: relative;
-  border-radius: 16px;
+  border-radius: var(--radius-bloc);
   overflow: hidden;
   background: var(--color-gris);
   height: 100%;
@@ -267,30 +267,30 @@ const tuiles = photos.length < 3 ? Math.max(0, 2 - reste.length) : 0;
 /* ─── Tuile de rembourrage ── */
 .gallery-tile {
   flex: 1;
-  border-radius: 16px;
+  border-radius: var(--radius-bloc);
   background: linear-gradient(135deg, var(--color-navy) 0%, var(--color-navy-profond) 100%);
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   min-height: 140px;
-  border: 1px solid oklch(100% 0 0 / 0.06);
+  border: 1px solid color-mix(in srgb, var(--color-blanc) 6%, transparent);
 }
 
 .gallery-tile__index {
   font-family: var(--font-display);
-  font-size: 0.6875rem;
+  font-size: var(--text-etiquette);
   font-weight: 800;
-  letter-spacing: 0.1em;
-  color: #f96500;
+  letter-spacing: var(--text-etiquette--letter-spacing);
+  color: var(--color-orange);
 }
 
 .gallery-tile__label {
   font-family: var(--font-display);
-  font-size: 0.875rem;
+  font-size: var(--text-petit);
   font-weight: 700;
   letter-spacing: -0.01em;
-  color: oklch(100% 0 0 / 0.8);
+  color: color-mix(in srgb, var(--color-blanc) 80%, transparent);
   text-wrap: balance;
   max-width: 16ch;
   line-height: 1.25;
@@ -301,10 +301,10 @@ const tuiles = photos.length < 3 ? Math.max(0, 2 - reste.length) : 0;
 .gallery-caption {
   margin-top: 0.625rem;
   font-family: var(--font-sans);
-  font-size: 0.8125rem;
+  font-size: var(--text-petit);
   font-weight: 300;
   line-height: 1.5;
-  color: oklch(26% 0.07 260 / 0.55);
+  color: color-mix(in srgb, var(--color-navy) 70%, transparent);
   text-wrap: pretty;
   font-style: italic;
 }

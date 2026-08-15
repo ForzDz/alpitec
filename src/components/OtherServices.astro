@@ -85,11 +85,11 @@ const autres = await getOtherServices(currentSlug);
   align-items: center;
   gap: 0.5rem;
   font-family: var(--font-display);
-  font-size: 0.6875rem;
+  font-size: var(--text-etiquette);
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: var(--text-etiquette--letter-spacing);
   text-transform: uppercase;
-  color: var(--color-orange-texte);
+  color: var(--color-navy);
   margin-bottom: 1rem;
 }
 
@@ -143,11 +143,11 @@ const autres = await getOtherServices(currentSlug);
   gap: 1rem;
   width: 100%;
   padding: 1.125rem 1.25rem;
-  background: #ffffff;
+  background: var(--color-blanc);
   border: 1px solid transparent;
-  border-radius: 14px;
+  border-radius: var(--radius-carte);
   text-decoration: none;
-  transition: all 0.2s cubic-bezier(0.34, 1.3, 0.64, 1);
+  transition: all 0.2s var(--sortie);
   position: relative;
   overflow: hidden;
 }
@@ -156,15 +156,15 @@ const autres = await getOtherServices(currentSlug);
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, oklch(55% 0.22 40 / 0.04) 0%, transparent 60%);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--color-orange) 4%, transparent) 0%, transparent 60%);
   opacity: 0;
   transition: opacity 0.2s ease;
 }
 
 .other-services__link:hover {
-  border-color: oklch(55% 0.22 40 / 0.25);
+  border-color: color-mix(in srgb, var(--color-orange) 25%, transparent);
   transform: translateY(-2px);
-  box-shadow: 0 6px 24px oklch(26% 0.07 260 / 0.1);
+  box-shadow: 0 6px 24px color-mix(in srgb, var(--color-navy) 10%, transparent);
 }
 
 .other-services__link:hover::before {
@@ -173,21 +173,21 @@ const autres = await getOtherServices(currentSlug);
 
 .other-services__index {
   font-family: var(--font-display);
-  font-size: 0.6875rem;
+  font-size: var(--text-etiquette);
   font-weight: 800;
   letter-spacing: 0.04em;
-  color: oklch(26% 0.07 260 / 0.25);
+  color: color-mix(in srgb, var(--color-navy) 70%, transparent);
   flex-shrink: 0;
   transition: color 0.2s ease;
 }
 
 .other-services__link:hover .other-services__index {
-  color: var(--color-orange-texte);
+  color: var(--color-navy);
 }
 
 .other-services__label {
   font-family: var(--font-display);
-  font-size: 0.875rem;
+  font-size: var(--text-petit);
   font-weight: 700;
   letter-spacing: -0.01em;
   color: var(--color-navy);
@@ -199,7 +199,7 @@ const autres = await getOtherServices(currentSlug);
 .other-services__arrow {
   width: 14px;
   height: 14px;
-  color: oklch(26% 0.07 260 / 0.25);
+  color: color-mix(in srgb, var(--color-navy) 70%, transparent);
   flex-shrink: 0;
   transition: color 0.2s ease, transform 0.2s ease;
 }
