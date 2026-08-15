@@ -138,12 +138,12 @@ const schema = {
 <Base title={d.metaTitle} description={d.metaDescription} canonical={url}>
   <script slot="schema" type="application/ld+json" set:html={JSON.stringify(schema)} is:inline />
 
-  <Header />
+  <Header transparent />
 
   <main id="contenu">
 
     {/* ─── HERO CINÉMATIQUE ─── */}
-    <section class="service-hero relative isolate overflow-hidden bg-navy-profond">
+    <section class="service-hero relative isolate -mt-16 sm:-mt-20 overflow-hidden bg-navy-profond pt-16 sm:pt-20">
 
       {/* Fond : photo du service si disponible, sinon blobs abstraits */}
       <div class="service-hero__bg" aria-hidden="true">

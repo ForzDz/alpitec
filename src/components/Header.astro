@@ -63,32 +63,25 @@ const estActif = (href) => {
   <div class="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-5 sm:h-20 sm:px-8">
     <a
       href="/"
-      class="inline-flex h-11 shrink-0 items-center focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orange"
+      class="inline-flex h-11 shrink-0 items-center gap-2.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orange"
       aria-label={`${site.nom} — accueil`}
     >
-      {/*
-        Deux logos superposés en fondu. La version claire est le logo détouré
-        (fond blanc retiré au colorkey) repassé en blanc plein par filtre CSS :
-        c'est le vrai tracé de la marque, pas une reconstitution.
-      */}
-      <span class="relative block h-7 w-auto sm:h-8">
-        <Image
-          src={logo}
-          alt={`${site.nom}, ${site.baseline.toLowerCase()}`}
-          widths={[160, 240, 320]}
-          sizes="160px"
-          loading="eager"
-          class="h-7 w-auto opacity-100 transition-opacity duration-200 ease-out group-data-[etat=haut]:opacity-0 motion-reduce:transition-none sm:h-8"
-        />
-        <Image
-          src={logoDetoure}
-          alt=""
+      <span class="flex items-center gap-2.5">
+        <svg
+          class="h-7 w-auto sm:h-8 aspect-[1/1] shrink-0"
+          viewBox="0 0 100 100"
+          fill="none"
           aria-hidden="true"
-          widths={[160, 240, 320]}
-          sizes="160px"
-          loading="eager"
-          class="absolute inset-0 h-7 w-auto opacity-0 transition-opacity duration-200 ease-out group-data-[etat=haut]:opacity-100 motion-reduce:transition-none sm:h-8"
-        />
+        >
+          <path fill="#F96500" d="M34.6 0h28.9L30.2 100H1.3z" />
+          <path
+            class="fill-navy group-data-[etat=haut]:fill-blanc transition-colors duration-200"
+            d="M50.5 39.7h27.3L98.4 100H69.8z"
+          />
+        </svg>
+        <span class="font-display text-xl sm:text-2xl font-black tracking-wider text-navy group-data-[etat=haut]:text-blanc transition-colors duration-200">
+          ALPITEC
+        </span>
       </span>
     </a>
 

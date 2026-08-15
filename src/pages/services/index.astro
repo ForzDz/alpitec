@@ -74,12 +74,12 @@ const schema = {
 <Base title={titre} description={description} canonical="/services">
   <script slot="schema" type="application/ld+json" set:html={JSON.stringify(schema)} is:inline />
 
-  <Header />
+  <Header transparent />
 
   <main id="contenu">
 
     {/* ─── HERO ─── */}
-    <section class="si-hero">
+    <section class="si-hero -mt-16 pt-16 sm:-mt-20 sm:pt-20">
       <div class="si-hero__bg" aria-hidden="true">
         <div class="si-hero__blob si-hero__blob--1"></div>
         <div class="si-hero__blob si-hero__blob--2"></div>
