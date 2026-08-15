@@ -704,11 +704,25 @@ const schema = {
           </p>
         </div>
 
-        <ol class="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4" data-reveal-groupe>
+        {/*
+          Ligne de progression, mobile uniquement. La grille reste à UNE colonne
+          jusqu'à `md` — au-delà le rail disparaît, et une ligne verticale le
+          long de deux colonnes n'aurait aucun sens.
+        */}
+        <div class="etapes mt-16" data-etapes>
+          <span class="rail" aria-hidden="true" data-rail>
+            <span class="rail-progression"></span>
+          </span>
+
+          <ol class="grid gap-6 md:grid-cols-2 lg:grid-cols-4" data-reveal-groupe>
           {
             d.process.steps.map((step, i) => (
-              <li class:list={['eleve rounded-carte bg-blanc p-6', i % 2 === 1 && 'lg:mt-12']}>
-                <TuileIcone variant={i === 0 ? 'orange' : 'navy'} taille="sm">
+              <li class:list={['etape eleve rounded-carte bg-blanc p-6', i % 2 === 1 && 'lg:mt-12']}>
+                <TuileIcone
+                  variant={i === 0 ? 'orange' : 'navy'}
+                  taille="sm"
+                  class="etape-point"
+                >
                   <span class="font-display text-[0.8125rem] font-bold">{i + 1}</span>
                 </TuileIcone>
                 <p class="mt-5 font-display text-etiquette uppercase text-navy/70">{step.step}</p>
@@ -717,7 +731,8 @@ const schema = {
               </li>
             ))
           }
-        </ol>
+          </ol>
+        </div>
       </div>
     </section>
 

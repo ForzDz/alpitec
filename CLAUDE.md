@@ -184,6 +184,21 @@ L'apparition n'utilise que `translate` et `scale`. `transform` est réservé à
 l'élévation au survol et au zoom photo — trois propriétés distinctes se
 composent, alors que deux règles sur `transform` s'écrasent.
 
+**La ligne de progression des étapes** (`data-etapes`) est MOBILE UNIQUEMENT,
+sous 48 rem. Une verticale droite à gauche des cartes se remplit en orange
+selon une ligne de référence fixée aux trois cinquièmes de la fenêtre ; chaque
+numéro est un point posé dessus, navy tant qu'il n'est pas atteint. Au-delà de
+48 rem le rail disparaît et la grille reprend ses colonnes — c'est pourquoi
+elle reste à une seule colonne jusqu'à `md` et non jusqu'à `sm`.
+
+L'état par défaut du CSS est l'état FINAL : rail plein, points allumés. Le
+script ajoute `.etapes-animees` pour reprendre la main et repartir de zéro.
+Sans JavaScript ou en mouvement réduit, on obtient donc un schéma d'étapes
+complet, jamais une ligne grise inerte qui aurait l'air cassée.
+
+Le point inactif est navy et non gris : c'est déjà l'état inactif des tuiles
+d'icône partout ailleurs, et un gris de plus n'aurait servi qu'ici.
+
 Le parallax (`data-parallax`) est limité aux photos pleine largeur : l'image
 est tirée à 115 % et déplacée de ±7,5 % au maximum, dans une boucle rAF unique
 qui ne tourne que tant qu'une photo est à l'écran.

@@ -280,6 +280,93 @@
 }
 
 /* ---------------------------------------------------------------------------
+   Ligne de progression des étapes — MOBILE UNIQUEMENT.
+
+   Une verticale droite à gauche des cartes, qui se remplit en orange au fur et
+   à mesure du défilement. Chaque numéro d'étape est un point posé dessus.
+
+   L'état par défaut est l'état FINAL : ligne pleine, tous les points allumés.
+   Sans JavaScript, ou en mouvement réduit, on obtient donc un schéma d'étapes
+   complet et lisible, jamais une ligne grise inerte qui aurait l'air cassée.
+   Le script ajoute `.etapes-animees` pour prendre la main et repartir de zéro.
+
+   Le point inactif est navy et non gris : c'est déjà l'état inactif des tuiles
+   d'icône partout ailleurs sur le site, et introduire un gris de plus pour
+   cette seule section aurait ajouté une couleur d'état au système.
+--------------------------------------------------------------------------- */
+@media (width < 48rem) {
+  .etapes {
+    position: relative;
+  }
+
+  /* Rail : part du centre du premier point, descend jusqu'au bas du bloc. */
+  .rail {
+    position: absolute;
+    top: 1.125rem;
+    bottom: 0;
+    left: 1.0625rem;
+    width: 2px;
+    border-radius: 1px;
+    background: color-mix(in srgb, var(--color-navy) 15%, transparent);
+  }
+
+  .rail-progression {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--color-orange);
+    transform: scaleY(var(--progression, 1));
+    transform-origin: top;
+  }
+
+  .etape {
+    position: relative;
+    padding-left: 3.5rem;
+  }
+
+  /* Le numéro quitte le flux de la carte et vient se poser sur le rail. */
+  .etape-point {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition:
+      background-color 300ms var(--sortie),
+      color 300ms var(--sortie),
+      scale 300ms var(--sortie);
+  }
+
+  /* Sous la main du script : tout repart éteint. */
+  .etapes-animees .rail-progression {
+    --progression: 0;
+  }
+
+  .etapes-animees .etape-point {
+    background-color: var(--color-navy);
+    color: var(--color-blanc);
+    scale: 1;
+  }
+
+  .etapes-animees .etape-point.atteint {
+    background-color: var(--color-orange);
+    color: var(--color-navy);
+    scale: 1.12;
+  }
+}
+
+/* Au-delà, la mise en page d'origine reprend : ni rail, ni décalage. */
+@media (width >= 48rem) {
+  .rail {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rail-progression {
+    transform: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
    Traitement photo — unifie dix chantiers photographiés dans dix conditions.
    Contraste +8 %, saturation −5 %, et un voile navy à 6 % en multiply qui
    ramène tous les ciels vers la même température.

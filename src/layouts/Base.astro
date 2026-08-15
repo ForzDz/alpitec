@@ -322,6 +322,76 @@ const ogImageURL = new URL(ogImage, Astro.site);
         else addEventListener('load', verifier, { once: true });
         addEventListener('scroll', verifier, { passive: true });
 
+        /* ------------------------- Ligne de progression des étapes (mobile) */
+        /*
+         * Le rail se remplit selon la position d'une ligne de référence fixée
+         * aux trois cinquièmes de la fenêtre : une étape s'allume quand elle
+         * arrive à cette hauteur, pas quand elle effleure le bas de l'écran.
+         *
+         * Tout est calculé dans une boucle rAF partagée, alimentée par un
+         * observateur : hors écran, rien ne tourne. On n'écrit que deux
+         * propriétés composables — une variable de transform et une classe.
+         */
+        const blocsEtapes = document.querySelectorAll('[data-etapes]');
+
+        if (blocsEtapes.length > 0 && !matchMedia('(width >= 48rem)').matches) {
+          const actifs = new Set();
+          let planifieEtapes = false;
+
+          const majEtapes = () => {
+            planifieEtapes = false;
+            const reference = window.innerHeight * 0.6;
+
+            for (const bloc of actifs) {
+              const rail = bloc.querySelector('[data-rail]');
+              const points = bloc.querySelectorAll('.etape-point');
+              if (!rail || points.length === 0) continue;
+
+              const r = rail.getBoundingClientRect();
+              if (r.height === 0) continue;
+
+              const avance = Math.max(0, Math.min(1, (reference - r.top) / r.height));
+              rail.style.setProperty('--progression', avance.toFixed(3));
+
+              for (const point of points) {
+                const p = point.getBoundingClientRect();
+                const centre = p.top + p.height / 2;
+                point.classList.toggle('atteint', centre <= reference);
+              }
+            }
+          };
+
+          const demanderEtapes = () => {
+            if (planifieEtapes) return;
+            planifieEtapes = true;
+            requestAnimationFrame(majEtapes);
+          };
+
+          const suiviEtapes = new IntersectionObserver(
+            (entrees) => {
+              for (const entree of entrees) {
+                if (entree.isIntersecting) actifs.add(entree.target);
+                else actifs.delete(entree.target);
+              }
+              if (actifs.size > 0) demanderEtapes();
+            },
+            { rootMargin: '20% 0px' },
+          );
+
+          for (const bloc of blocsEtapes) {
+            // La classe n'est posée qu'ici : sans script, l'état par défaut du
+            // CSS reste le schéma complet, jamais une ligne grise inerte.
+            bloc.classList.add('etapes-animees');
+            suiviEtapes.observe(bloc);
+          }
+
+          addEventListener('scroll', () => actifs.size > 0 && demanderEtapes(), {
+            passive: true,
+          });
+          addEventListener('resize', demanderEtapes, { passive: true });
+          demanderEtapes();
+        }
+
         /* ------------------------------------------------------ Parallax */
         const photos = document.querySelectorAll('[data-parallax]');
 
