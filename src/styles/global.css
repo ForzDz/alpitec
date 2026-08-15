@@ -17,12 +17,20 @@
      node subset.mjs Technor-Variable.woff2 technor-latin-variable.woff2
    (le script de sous-ensemble est décrit dans CLAUDE.md, section Typographie)
 --------------------------------------------------------------------------- */
+/*
+  Montserrat (Google Fonts, licence OFL) porte les titres depuis le
+  14 août 2026, à la demande du client. Variable 100–900, sous-ensemble latin,
+  35 Ko — 18 de plus que Technor, qu'elle remplace.
+
+  Technor reste dans public/fonts/ le temps de la bascule : si le client
+  revient en arrière, il suffit de rebrancher --font-display.
+*/
 @font-face {
-  font-family: 'Technor';
+  font-family: 'Montserrat';
   font-style: normal;
-  font-weight: 200 900;
+  font-weight: 100 900;
   font-display: swap;
-  src: url('/fonts/technor-latin-variable.woff2') format('woff2-variations');
+  src: url('/fonts/montserrat-latin-variable.woff2') format('woff2-variations');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
     U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
     U+2212, U+2215, U+FEFF, U+FFFD;
@@ -72,7 +80,7 @@
   --color-alerte: #b03a00;
 
   /* --- Familles --- */
-  --font-display: 'Technor', 'Arial Black', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Montserrat', ui-sans-serif, system-ui, sans-serif;
   --font-sans: 'Switzer', ui-sans-serif, system-ui, -apple-system, 'Segoe UI',
     Roboto, 'Helvetica Neue', Arial, sans-serif;
 
@@ -83,22 +91,22 @@
      sa propre hauteur de ligne, on ne la redéfinit pas au cas par cas. */
   --text-affiche: clamp(2.375rem, 8.5vw, 4.5rem);
   --text-affiche--line-height: 0.98;
-  --text-affiche--letter-spacing: -0.035em;
+  --text-affiche--letter-spacing: -0.02em;
   --text-affiche--font-weight: 800;
 
   --text-titre: clamp(1.75rem, 4.2vw, 2.75rem);
   --text-titre--line-height: 1.04;
-  --text-titre--letter-spacing: -0.03em;
+  --text-titre--letter-spacing: -0.02em;
   --text-titre--font-weight: 800;
 
   --text-sous-titre: clamp(1.25rem, 2.4vw, 1.625rem);
   --text-sous-titre--line-height: 1.15;
-  --text-sous-titre--letter-spacing: -0.02em;
+  --text-sous-titre--letter-spacing: -0.015em;
   --text-sous-titre--font-weight: 700;
 
   --text-carte: clamp(1.0625rem, 0.95rem + 0.5vw, 1.25rem);
   --text-carte--line-height: 1.2;
-  --text-carte--letter-spacing: -0.015em;
+  --text-carte--letter-spacing: -0.01em;
   --text-carte--font-weight: 700;
 
   /* Corps : 17 px de base. 15 px passait mal la relecture mobile. */

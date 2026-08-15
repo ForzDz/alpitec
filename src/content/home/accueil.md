@@ -30,7 +30,11 @@ photosAccueil:
 
 hero:
   surtitre: "Cordistes certifiés · Paris & Île-de-France"
-  h1: "Les spécialistes des travaux en hauteur à Paris et en Île-de-France"
+  # Raccourci le 14 août 2026 : à 320 px l'ancien titre occupait six lignes et
+  # noyait le hero. « sur cordes » remplace « spécialistes » — c'est la vraie
+  # différenciation du métier. « Île-de-France » quitte le H1 mais reste dans le
+  # metaTitle, le surtitre, l'accroche et toute la section Zones.
+  h1: "Travaux en hauteur sur cordes à Paris"
   intro: "Ravalement, couverture, nettoyage, sécurisation : ALPITEC, entreprise de travaux en hauteur, fait intervenir ses cordistes sur tous types de bâtiments à Paris et en Île-de-France — copropriétés, sites industriels, chantiers du BTP. Sans échafaudage coûteux, sans immobiliser votre immeuble."
   # Dernière phrase de `intro`, précédée de la requête cible « travaux en
   # hauteur à Paris » : sur mobile, c'est le seul sous-titre affiché, et

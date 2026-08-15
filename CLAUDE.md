@@ -70,22 +70,26 @@ blanc sur orange plafonne à 3,0:1, navy monte à 4,5:1 — et c'est le contrast
 la signalétique de chantier.
 
 ### Typographie
-**Technor** (titres) + **Switzer** (corps), Fontshare, licence FFL, auto-hébergées
-en woff2 variable, sous-ensemble latin — 17 Ko + 28 Ko. Technor seule est
-préchargée : elle porte le H1, donc le LCP.
+**Montserrat** (titres, Google Fonts, licence OFL) + **Switzer** (corps,
+Fontshare, licence FFL), auto-hébergées en woff2 variable, sous-ensemble latin
+— 35 Ko + 28 Ko. Montserrat seule est préchargée : elle porte le H1, donc le
+LCP.
 
-Technor est un sans à terminaisons carrées et courbes aplaties, un dessin
-d'instrumentation : de la personnalité sans folklore, crédible pour du BTP.
-Switzer est un neutre suisse qui s'efface derrière lui.
+_Montserrat remplace Technor le 14 août 2026, sur décision du client. Technor
+reste dans public/fonts/ : rebrancher `--font-display` suffit à revenir en
+arrière. Montserrat étant géométrique et large, le tracking des titres est
+remonté de −0,035em à −0,02em — le serrage qui allait à Technor colle les
+lettres ici._
 
 L'échelle vit dans `@theme` : `text-affiche`, `text-titre`, `text-sous-titre`,
 `text-carte`, `text-corps`, `text-corps-large`, `text-petit`, `text-etiquette`.
 Chaque taille porte son interlignage et son tracking — on ne les redéfinit pas
-au cas par cas. Titres 800/900 et tracking −0,03em ; corps 300/400 et
+au cas par cas. Titres 800/900 et tracking −0,02em ; corps 300/400 et
 interlignage 1,7. C'est l'écart entre les deux qui fait la hiérarchie.
 
-Pour régénérer une police : télécharger le zip Fontshare, `npm i subset-font
---no-save`, sous-ensembler sur les plages latin listées dans `global.css`.
+Pour régénérer une police : récupérer le woff2 variable (zip Fontshare pour
+Switzer, API Google Fonts pour Montserrat), `npm i subset-font --no-save`,
+sous-ensembler sur les plages latin listées dans `global.css`.
 
 ### Formes et profondeur
 Trois rayons, pas un de plus : `rounded-tuile` (8 px) pour tout ce qui est petit
@@ -123,11 +127,25 @@ luminance 0,640, relevé sur six images réparties sur les cinq secondes. Il fau
 **55 % de navy minimum** pour que du blanc y tienne le seuil AA du corps de
 texte. Toute retouche du voile se revérifie sur la vidéo réelle, jamais à l'œil.
 
-À partir de `sm`, le voile est HORIZONTAL : opaque à gauche, totalement
-transparent à partir de 64 %, soit 36 % de largeur où plus rien ne sépare l'œil
-du cordiste. Pas 40 % : les glyphes du H1 descendent jusqu'à 58,6 % et il faut
-une rampe pour les couvrir. Sur mobile le voile reste vertical — le texte y
-occupe toute la largeur, un dégradé horizontal n'aurait aucun sens.
+Le seuil est `md` (768 px), pas `sm`.
+
+**À partir de md — voile HORIZONTAL.** Opaque à gauche, transparent à partir
+de 64 %, soit 36 % de largeur dégagée sur le cordiste. Pas 40 % : les glyphes
+du H1 descendent jusqu’à 50,6 % et il faut une rampe pour les couvrir.
+
+**Sous md — voile VERTICAL.** Le texte occupe toute la largeur, il n’existe
+aucun côté droit libre. Dense jusqu’à 40 % derrière le surtitre et le titre,
+puis chute : transparent à partir de 80 %.
+
+Et surtout : sous md, les CTA et les badges portent LEUR PROPRE FOND — navy à
+70 % pour le bouton téléphone, navy éclairci à 80 % pour les pastilles. C’est
+ce qui permet d’alléger le voile sous eux sans rien perdre en lisibilité ; le
+bouton de devis, aplat orange opaque, se suffit déjà.
+
+**`object-position` en Y est inopérant sous md.** Le cadre du hero et l’image
+ont presque le même ratio : il ne reste que 7 px à rogner. Le cordiste est où
+la vidéo l’a mis, autour de 44 à 70 % de la hauteur, et aucun cadrage ne l’en
+délogera. Le seul levier est le voile. Ne pas repartir sur cette piste.
 
 **La bande du header a son propre voile**, tenu à 78 % sur toute la hauteur de
 la barre. Le menu, le téléphone et le bouton de devis sont alignés à droite,
