@@ -1,4 +1,4 @@
-﻿---
+---
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import Header from '../../components/Header.astro';
@@ -10,27 +10,6 @@ import FaqAccordion from '../../components/FaqAccordion.astro';
 import ContactSection from '../../components/ContactSection.astro';
 import OtherServices from '../../components/OtherServices.astro';
 import { getSite, getServicePhotos, actionHref, serviceHref } from '../../lib/content.js';
-
-/**
- * Template unique des 9 pages services.
- *
- * Les 11 sections des documents client, dans l'ordre imposé :
- *   1  Bandeau d'accueil     frontmatter (surtitre, h1, intro, boutons, badges)
- *   2  Infos clés            sections[] keyFacts      → InfoBox
- *   3  Notre expertise       sections[] expertise
- *   4  Comment ça marche     sections[] process
- *   5  Adapté à vos enjeux   sections[] audiences
- *   6  Zones d'intervention  sections[] zones
- *   7  Réalisations          sections[] realisations  → Gallery
- *   8  FAQ                   frontmatter faq[]        → FaqAccordion
- *   9  Bloc d'appel final    sections[] cta           → CtaBand
- *   10 Contact               → ContactSection
- *   11 Nos autres services   → OtherServices
- *
- * La FAQ vit dans le frontmatter et non dans `sections[]` : on coupe donc la
- * liste des sections au bloc d'appel pour l'insérer entre 7 et 9, comme les
- * documents l'exigent. Aucun `if` par service nulle part.
- */
 
 export async function getStaticPaths() {
   const services = await getCollection('services');
@@ -53,17 +32,35 @@ const filAriane = [
   { label: d.shortLabel, href: url },
 ];
 
-// Galerie : lue sur le disque, vide tant que les photos ne sont pas triées.
 const sectionPhotos = d.sections.find((s) => s.type === 'realisations');
 const photos = getServicePhotos(d.slug, sectionPhotos?.photos ?? [], 8);
 
-// Sections 2 à 7, puis 9 : la FAQ s'intercale au milieu.
-const iCta = d.sections.findIndex((s) => s.type === 'cta');
-const sectionsAvantFaq = iCta === -1 ? d.sections : d.sections.slice(0, iCta);
-const sectionsApresFaq = iCta === -1 ? [] : d.sections.slice(iCta);
+// Photo héro : première photo disponible du service (alt requis)
+const heroPhoto = photos.length > 0 ? photos[0] : null;
 
-/* ------------------------------------------------------------------ JSON-LD */
-/* Construits depuis le contenu qui alimente le HTML : impossible de diverger. */
+// Réordonnancement des sections :
+//   1. keyFacts  (infobox)
+//   2. realisations — REMONTÉ avant expertise
+//   3. expertise
+//   4. process
+//   5. audiences
+//   6. zones
+// Le bloc cta reste après la FAQ (traité séparément).
+const ORDRE_SECTIONS = ['keyFacts', 'realisations', 'expertise', 'process', 'audiences', 'zones'];
+
+const sectionsOrdered = [
+  ...ORDRE_SECTIONS
+    .map((type) => d.sections.find((s) => s.type === type))
+    .filter(Boolean),
+  // sections non référencées dans ORDRE_SECTIONS (hors cta) conservées telles quelles
+  ...d.sections.filter(
+    (s) => !ORDRE_SECTIONS.includes(s.type) && s.type !== 'cta'
+  ),
+];
+
+const iCta = d.sections.findIndex((s) => s.type === 'cta');
+const sectionsAvantFaq = sectionsOrdered;
+const sectionsApresFaq = iCta === -1 ? [] : d.sections.slice(iCta);
 
 const expertise = d.sections.find((s) => s.type === 'expertise');
 
@@ -144,74 +141,131 @@ const schema = {
   <Header />
 
   <main id="contenu">
-    {/*
-      ------------------------------------------------------ 1. En-tête
 
-      Aplat navy, comme le hero de l'accueil et pour la même raison : c'est
-      l'ouverture de la page, elle doit peser. Sans vidéo en revanche — le
-      décor animé est réservé à l'accueil, ici c'est le titre qui travaille.
+    {/* ─── HERO CINÉMATIQUE ─── */}
+    <section class="service-hero relative isolate overflow-hidden bg-navy-profond">
 
-      La corde en version longue descend du surtitre jusqu'aux boutons. La seule
-      autre de la page est celle du bandeau de conversion, en version courte :
-      deux au maximum, c'est la règle du projet.
+      {/* Fond : photo du service si disponible, sinon blobs abstraits */}
+      <div class="service-hero__bg" aria-hidden="true">
+        {heroPhoto ? (
+          <>
+            {/* Photo du service en fond, droite, avec overlay navy à gauche */}
+            <div
+              class="service-hero__photo-bg"
+              style={`background-image: url('${heroPhoto.src.src}')`}
+            ></div>
+            <div class="service-hero__photo-overlay"></div>
+          </>
+        ) : (
+          <>
+            <div class="service-hero__blob service-hero__blob--1"></div>
+            <div class="service-hero__blob service-hero__blob--2"></div>
+          </>
+        )}
+        <div class="service-hero__noise"></div>
+      </div>
 
-      Bord franc en bas, volontairement : la limite entre l'en-tête et le
-      contenu est une ligne d'architecture, pas une couture à masquer. Les
-      dégradés de jonction servent aux changements de fond DANS le contenu.
-    */}
-    <section class="relative isolate overflow-hidden bg-navy">
-      <span
-        aria-hidden="true"
-        class="pointer-events-none absolute -right-40 -top-24 size-[34rem] rounded-full bg-orange/10 blur-3xl"
-      ></span>
+      {/* Breadcrumb */}
+      <div class="relative mx-auto max-w-6xl px-5 pt-6 sm:px-8 sm:pt-8">
+        <Breadcrumb items={filAriane} ton="clair" class="mb-0" />
+      </div>
 
-      <div class="relative mx-auto max-w-6xl px-5 pb-16 pt-6 sm:px-8 sm:pb-24 sm:pt-8">
-        <Breadcrumb items={filAriane} ton="clair" class="mb-12 sm:mb-16" />
+      {/* Contenu hero — split layout */}
+      <div class="service-hero__inner relative mx-auto max-w-6xl px-5 pb-20 pt-10 sm:px-8 sm:pt-14 sm:pb-28">
 
-        <div class="corde corde-descend">
-          <p class="max-w-[26ch] font-display text-etiquette uppercase text-blanc/85 sm:max-w-none">
-            {d.surtitre}
-          </p>
+        {/* Colonne gauche — texte */}
+        <div class="service-hero__text">
 
-          <h1 class="mt-7 max-w-[18ch] text-affiche text-blanc" data-reveal="titre">
+          {/* Surtitre pill */}
+          <div class="service-hero__pill">
+            <span class="service-hero__pill-dot" aria-hidden="true"></span>
+            <span>{d.surtitre}</span>
+          </div>
+
+          {/* H1 */}
+          <h1 class="service-hero__h1" data-reveal="titre">
             {d.h1}
           </h1>
 
-          <p class="mt-7 max-w-[58ch] text-corps-large font-light text-blanc/85 text-pretty">
+          {/* Intro */}
+          <p class="service-hero__intro">
             {d.intro}
           </p>
 
-          <div class="mt-10 flex max-w-md flex-col gap-3 sm:max-w-none sm:flex-row sm:flex-wrap sm:items-center">
-            {
-              d.heroButtons.map((bouton, i) => (
-                <Button
-                  href={actionHref(bouton.action, site)}
-                  variant={i === 0 ? 'primaire' : 'clair'}
-                  size="lg"
-                  class="w-full sm:w-auto"
-                  data-cta={`${bouton.action}-hero`}
-                >
-                  {bouton.label}
-                </Button>
-              ))
-            }
+          {/* CTA Buttons */}
+          <div class="service-hero__ctas">
+            {d.heroButtons.map((bouton, i) => (
+              <a
+                href={actionHref(bouton.action, site)}
+                class={i === 0 ? 'service-btn service-btn--primary' : 'service-btn service-btn--ghost'}
+                data-cta={`${bouton.action}-hero`}
+              >
+                {bouton.label}
+                {i === 0 && (
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" class="service-btn__arrow" aria-hidden="true">
+                    <path d="M3 8h10M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                )}
+              </a>
+            ))}
           </div>
-        </div>
 
-        {
-          d.heroBadges.length > 0 && (
-            <ul class="mt-14 flex flex-wrap gap-2.5">
+          {/* Badges reassurance */}
+          {d.heroBadges.length > 0 && (
+            <ul class="service-hero__badges">
               {d.heroBadges.map((badge) => (
-                <li class="flex items-center gap-2.5 rounded-tuile bg-navy-clair/70 px-4 py-2.5 backdrop-blur-sm">
-                  <span aria-hidden="true" class="h-3.5 w-0.5 shrink-0 rounded-full bg-orange" />
-                  <span class="font-display text-[0.8125rem] font-bold tracking-tight text-blanc">
-                    {badge}
-                  </span>
+                <li class="service-hero__badge">
+                  <svg class="service-hero__badge-icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"/>
+                  </svg>
+                  <span>{badge}</span>
                 </li>
               ))}
             </ul>
-          )
-        }
+          )}
+        </div>
+
+        {/* Colonne droite — carte flottante service */}
+        <div class="service-hero__card" aria-hidden="true">
+          <div class="service-hero__card-inner">
+            <div class="service-hero__card-icon">
+              <svg viewBox="0 0 40 40" fill="none" aria-hidden="true">
+                <circle cx="20" cy="20" r="19" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 3" class="text-orange/30"/>
+                <path d="M20 8v24M8 20h24" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="text-orange"/>
+                <circle cx="20" cy="20" r="5" fill="currentColor" class="text-orange/20"/>
+              </svg>
+            </div>
+            <p class="service-hero__card-label">Prestation certifiée</p>
+            <p class="service-hero__card-title">{d.shortLabel}</p>
+            <div class="service-hero__card-divider" aria-hidden="true"></div>
+            <div class="service-hero__card-stats">
+              <div class="service-hero__card-stat">
+                <span class="service-hero__card-stat-value">24h</span>
+                <span class="service-hero__card-stat-label">Réponse garantie</span>
+              </div>
+              <div class="service-hero__card-stat">
+                <span class="service-hero__card-stat-value">0€</span>
+                <span class="service-hero__card-stat-label">Devis offert</span>
+              </div>
+              <div class="service-hero__card-stat">
+                <span class="service-hero__card-stat-value">10 ans</span>
+                <span class="service-hero__card-stat-label">Garantie décennale</span>
+              </div>
+            </div>
+            <a href={actionHref('devis', site)} class="service-hero__card-cta">
+              Obtenir un devis gratuit
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" class="size-3.5">
+                <path d="M3 8h10M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+      {/* Scroll indicator */}
+      <div class="service-hero__scroll" aria-hidden="true">
+        <span class="service-hero__scroll-line"></span>
       </div>
     </section>
 
@@ -222,7 +276,7 @@ const schema = {
       ))
     }
 
-    {/* 8. FAQ — même rythme que partout ailleurs */}
+    {/* 8. FAQ */}
     <div class="mx-auto max-w-3xl px-5 py-[var(--espace-section)] sm:px-8">
       <FaqAccordion items={d.faq} title={d.faqTitle} id={`faq-${d.slug}`} />
     </div>
@@ -243,3 +297,399 @@ const schema = {
 
   <Footer />
 </Base>
+
+<style>
+/* ─── SERVICE HERO ─────────────────────────────────────────────────────────── */
+.service-hero {
+  min-height: 88svh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Background layers */
+.service-hero__bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Photo de fond (quand une photo du service existe) ── */
+.service-hero__photo-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center 30%;
+  background-repeat: no-repeat;
+  /* La photo occupe toute la section, mais sera masquée à gauche par l'overlay */
+  transform: scale(1.04);
+  transition: transform 8s ease-out;
+}
+
+.service-hero:hover .service-hero__photo-bg {
+  transform: scale(1.07);
+}
+
+.service-hero__photo-overlay {
+  position: absolute;
+  inset: 0;
+  /* Overlay en dégradé horizontal : navy plein à gauche, semi-transparent à droite */
+  background: linear-gradient(
+    to right,
+    #1a2039 0%,
+    #1a2039 28%,
+    oklch(14% 0.07 260 / 0.95) 38%,
+    oklch(14% 0.07 260 / 0.82) 50%,
+    oklch(14% 0.07 260 / 0.55) 62%,
+    oklch(14% 0.07 260 / 0.28) 75%,
+    oklch(14% 0.07 260 / 0.12) 88%,
+    transparent 100%
+  );
+}
+
+@media (max-width: 767px) {
+  /* Sur mobile : overlay plus couvrant pour garder le texte lisible */
+  .service-hero__photo-overlay {
+    background: linear-gradient(
+      to bottom,
+      oklch(14% 0.07 260 / 0.92) 0%,
+      oklch(14% 0.07 260 / 0.88) 50%,
+      oklch(14% 0.07 260 / 0.75) 75%,
+      oklch(14% 0.07 260 / 0.6) 100%
+    );
+  }
+}
+
+.service-hero__blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+}
+
+.service-hero__blob--1 {
+  width: 600px;
+  height: 600px;
+  right: -120px;
+  top: -160px;
+  background: radial-gradient(circle, oklch(60% 0.22 40 / 0.12) 0%, transparent 70%);
+}
+
+.service-hero__blob--2 {
+  width: 400px;
+  height: 400px;
+  left: -80px;
+  bottom: -80px;
+  background: radial-gradient(circle, oklch(40% 0.14 260 / 0.18) 0%, transparent 70%);
+}
+
+.service-hero__noise {
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  mix-blend-mode: overlay;
+  opacity: 0.6;
+}
+
+/* Inner layout */
+.service-hero__inner {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+  align-items: center;
+  flex: 1;
+}
+
+@media (min-width: 1024px) {
+  .service-hero__inner {
+    grid-template-columns: 1fr 420px;
+    gap: 4rem;
+  }
+}
+
+/* Pill surtitre */
+.service-hero__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.875rem;
+  border-radius: 9999px;
+  background: oklch(100% 0 0 / 0.06);
+  border: 1px solid oklch(100% 0 0 / 0.12);
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: oklch(100% 0 0 / 0.65);
+  margin-bottom: 1.5rem;
+}
+
+.service-hero__pill-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #f96500;
+  box-shadow: 0 0 6px #f96500;
+  animation: pulse-dot 2.4s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.85); }
+}
+
+/* H1 */
+.service-hero__h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2.25rem, 5.5vw, 4rem);
+  font-weight: 800;
+  line-height: 1.0;
+  letter-spacing: -0.025em;
+  color: #ffffff;
+  max-width: 18ch;
+  text-wrap: balance;
+  margin-bottom: 1.75rem;
+}
+
+/* Intro */
+.service-hero__intro {
+  font-family: var(--font-sans);
+  font-size: 1.125rem;
+  font-weight: 300;
+  line-height: 1.7;
+  color: oklch(100% 0 0 / 0.72);
+  max-width: 54ch;
+  text-wrap: pretty;
+  margin-bottom: 2.25rem;
+}
+
+/* CTA Buttons */
+.service-hero__ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.service-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.9375rem;
+  letter-spacing: -0.01em;
+  border-radius: 9999px;
+  padding: 0.875rem 1.75rem;
+  transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.service-btn--primary {
+  background: #f96500;
+  color: #1a2039;
+  box-shadow: 0 4px 20px oklch(55% 0.22 40 / 0.35);
+}
+
+.service-btn--primary:hover {
+  background: #ffffff;
+  color: #1a2039;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px oklch(100% 0 0 / 0.18);
+}
+
+.service-btn__arrow {
+  width: 14px;
+  height: 14px;
+  transition: transform 0.2s ease;
+}
+
+.service-btn--primary:hover .service-btn__arrow {
+  transform: translateX(3px);
+}
+
+.service-btn--ghost {
+  background: oklch(100% 0 0 / 0.06);
+  color: oklch(100% 0 0 / 0.85);
+  border: 1px solid oklch(100% 0 0 / 0.18);
+  backdrop-filter: blur(8px);
+}
+
+.service-btn--ghost:hover {
+  background: oklch(100% 0 0 / 0.12);
+  border-color: oklch(100% 0 0 / 0.3);
+  transform: translateY(-2px);
+}
+
+/* Badges */
+.service-hero__badges {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+}
+
+.service-hero__badge {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: oklch(100% 0 0 / 0.75);
+}
+
+.service-hero__badge-icon {
+  width: 16px;
+  height: 16px;
+  color: #34d399;
+  flex-shrink: 0;
+}
+
+/* ─── FLOATING CARD ─── */
+.service-hero__card {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .service-hero__card {
+    display: block;
+  }
+}
+
+.service-hero__card-inner {
+  background: oklch(100% 0 0 / 0.04);
+  border: 1px solid oklch(100% 0 0 / 0.1);
+  border-radius: 24px;
+  padding: 2rem;
+  backdrop-filter: blur(24px);
+  box-shadow:
+    0 0 0 1px oklch(100% 0 0 / 0.06) inset,
+    0 24px 60px oklch(0% 0 0 / 0.3);
+  animation: float-card 5s ease-in-out infinite;
+}
+
+@keyframes float-card {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.service-hero__card-icon {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 1.25rem;
+}
+
+.service-hero__card-label {
+  font-family: var(--font-display);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: oklch(100% 0 0 / 0.45);
+  margin-bottom: 0.375rem;
+}
+
+.service-hero__card-title {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  color: #ffffff;
+  line-height: 1.25;
+  margin-bottom: 1.5rem;
+  text-wrap: balance;
+}
+
+.service-hero__card-divider {
+  height: 1px;
+  background: oklch(100% 0 0 / 0.08);
+  margin-bottom: 1.5rem;
+}
+
+.service-hero__card-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.service-hero__card-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.service-hero__card-stat-value {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #f96500;
+  line-height: 1;
+}
+
+.service-hero__card-stat-label {
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 400;
+  color: oklch(100% 0 0 / 0.45);
+  line-height: 1.3;
+}
+
+.service-hero__card-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.875rem 1.25rem;
+  background: #f96500;
+  color: #1a2039;
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 4px 16px oklch(55% 0.22 40 / 0.35);
+}
+
+.service-hero__card-cta:hover {
+  background: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px oklch(100% 0 0 / 0.15);
+}
+
+/* ─── SCROLL INDICATOR ─── */
+.service-hero__scroll {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.service-hero__scroll-line {
+  display: block;
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, transparent, oklch(100% 0 0 / 0.3), transparent);
+  animation: scroll-line 2s ease-in-out infinite;
+}
+
+@keyframes scroll-line {
+  0% { transform: scaleY(0); transform-origin: top; }
+  50% { transform: scaleY(1); transform-origin: top; }
+  51% { transform: scaleY(1); transform-origin: bottom; }
+  100% { transform: scaleY(0); transform-origin: bottom; }
+}
+</style>

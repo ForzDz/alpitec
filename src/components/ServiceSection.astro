@@ -5,33 +5,10 @@ import CtaBand from './CtaBand.astro';
 import TitreSection from './TitreSection.astro';
 import TuileIcone from './TuileIcone.astro';
 
-/**
- * Rend UNE section de page service selon son `type`.
- *
- * Toute la mise en forme des blocs 2 à 9 vit ici : le template [slug].astro se
- * contente de boucler. Ajouter un type de section = ajouter un `case`, sans
- * toucher au template ni aux neuf fichiers de contenu.
- *
- * RYTHME — chaque type a sa propre mise en page ET son propre fond, de sorte
- * qu'en descendant la page on ne rencontre jamais deux fois la même structure :
- *
- *   keyFacts    carte grise posée              fond blanc
- *   expertise   deux colonnes asymétriques 5/7 fond blanc
- *   process     grille décalée, 4 étapes       fond gris
- *   audiences   deux colonnes de cartes        fond blanc
- *   zones       colonne unique, mesure courte  fond navy plein
- *   realisations galerie pleine largeur        photos
- *   cta         bandeau                        fond navy profond
- *
- * C'est l'alternance qui porte la hiérarchie, plus le filet orange répété en
- * tête de chaque bloc. La corde, elle, n'apparaît pas ici : elle appartient à
- * l'en-tête de la page et au bandeau de conversion, deux par page au maximum.
- */
-
 const { section, photos = [], shortLabel, ordre } = Astro.props;
 ---
 
-{/* 2. Infos clés — remonte contre le hero, sans respiration avant */}
+{/* 2. Infos clés — remonte contre le hero */}
 {
   section.type === 'keyFacts' && (
     <div class="mx-auto max-w-6xl px-5 pb-4 pt-12 sm:px-8 sm:pt-16">
@@ -40,65 +17,72 @@ const { section, photos = [], shortLabel, ordre } = Astro.props;
   )
 }
 
-{/* 3. Notre expertise — deux colonnes asymétriques : le titre tient seul à
-    gauche, la matière défile à droite. */}
+{/* 3. Notre expertise — split layout avec cartes premium */}
 {
   section.type === 'expertise' && (
-    <section class="mx-auto max-w-6xl px-5 py-[var(--espace-section)] sm:px-8" data-reveal>
-      <div class="grid gap-x-16 gap-y-10 lg:grid-cols-12">
-        <div class="lg:col-span-5">
-          <div class="lg:sticky lg:top-28">
+    <section class="ss-expertise" data-reveal>
+      <div class="ss-expertise__inner">
+
+        {/* Sticky header colonne gauche */}
+        <div class="ss-expertise__header">
+          <div class="ss-expertise__header-sticky">
+            <div class="ss-section-eyebrow">Expertise</div>
             <TitreSection texte={section.title} data-reveal="titre" />
-            <p class="mt-6 max-w-[46ch] text-corps font-light text-navy/75 text-pretty">
-              {section.intro}
-            </p>
+            <p class="ss-expertise__intro">{section.intro}</p>
+
+            {/* Indicateur vertical décoratif */}
+            <div class="ss-expertise__indicator" aria-hidden="true">
+              <span class="ss-expertise__indicator-line"></span>
+              <span class="ss-expertise__indicator-dot"></span>
+            </div>
           </div>
         </div>
 
-        <ul class="grid gap-8 lg:col-span-7" data-reveal-groupe>
-          {section.items.map((item) => (
-            <li class="rounded-carte bg-blanc p-6 shadow-repos sm:p-7">
-              <h3 class="text-carte text-navy text-balance">{item.label}</h3>
-              <p class="mt-3 max-w-[54ch] text-petit font-light text-navy/75 text-pretty">
-                {item.text}
-              </p>
+        {/* Grille cartes droite */}
+        <ul class="ss-expertise__grid" data-reveal-groupe>
+          {section.items.map((item, i) => (
+            <li class="ss-expertise__card">
+              <div class="ss-expertise__card-index" aria-hidden="true">
+                {String(i + 1).padStart(2, '0')}
+              </div>
+              <h3 class="ss-expertise__card-title">{item.label}</h3>
+              <p class="ss-expertise__card-text">{item.text}</p>
+              <div class="ss-expertise__card-bar" aria-hidden="true"></div>
             </li>
           ))}
         </ul>
+
       </div>
     </section>
   )
 }
 
-{/* 4. Comment ça marche — grille décalée : une étape sur deux descend d'un
-    demi-pas sur écran large, la lecture cesse d'être une rangée de cases. */}
+{/* 4. Process — timeline horizontale premium */}
 {
   section.type === 'process' && (
-    <section class="jonction bg-gris" style="--jonction-de: var(--color-blanc)">
-      <div class="mx-auto max-w-6xl px-5 py-[var(--espace-section)] sm:px-8">
-        <TitreSection texte={section.title} class="max-w-[20ch]" data-reveal="titre" />
+    <section class="ss-process">
+      <div class="ss-process__inner">
 
-        {/* Ligne de progression, mobile uniquement — voir global.css. */}
-        <div class="etapes mt-14" data-etapes>
-          <span class="rail" aria-hidden="true" data-rail>
-            <span class="rail-progression"></span>
-          </span>
+        <div class="ss-section-eyebrow ss-section-eyebrow--light">Méthode</div>
+        <TitreSection texte={section.title} ton="clair" class="ss-process__title" data-reveal="titre" />
 
-          <ol class="grid gap-8 md:grid-cols-2 lg:grid-cols-4" data-reveal-groupe>
+        <div class="ss-process__track" data-etapes>
+          {/* Ligne de connexion */}
+          <div class="ss-process__connector" aria-hidden="true">
+            <div class="ss-process__connector-line"></div>
+          </div>
+
+          <ol class="ss-process__steps" data-reveal-groupe>
             {section.steps.map((step, i) => (
-              <li
-                class={`etape eleve rounded-carte bg-blanc p-6 ${i % 2 === 1 ? 'lg:mt-10' : ''}`}
-              >
-                <TuileIcone
-                  variant={i === 0 ? 'orange' : 'navy'}
-                  taille="sm"
-                  class="etape-point"
-                >
-                  <span class="font-display text-[0.8125rem] font-bold">{i + 1}</span>
-                </TuileIcone>
-                <p class="mt-5 font-display text-etiquette uppercase text-navy/70">{step.step}</p>
-                <h3 class="mt-2 text-carte text-navy text-balance">{step.label}</h3>
-                <p class="mt-3 text-petit font-light text-navy/75 text-pretty">{step.text}</p>
+              <li class="ss-process__step">
+                <div class="ss-process__step-badge">
+                  <span class="ss-process__step-num">{String(i + 1).padStart(2, '0')}</span>
+                </div>
+                <div class="ss-process__step-body">
+                  <p class="ss-process__step-label">{step.step}</p>
+                  <h3 class="ss-process__step-title">{step.label}</h3>
+                  <p class="ss-process__step-text">{step.text}</p>
+                </div>
               </li>
             ))}
           </ol>
@@ -108,40 +92,49 @@ const { section, photos = [], shortLabel, ordre } = Astro.props;
   )
 }
 
-{/* 5. Adapté à vos enjeux — cartes flottantes, plus de grille en grillage */}
+{/* 5. Audiences — grille immersive */}
 {
   section.type === 'audiences' && (
-    <section class="mx-auto max-w-6xl px-5 py-[var(--espace-section)] sm:px-8" data-reveal>
-      <TitreSection texte={section.title} class="max-w-[20ch]" data-reveal="titre" />
+    <section class="ss-audiences" data-reveal>
+      <div class="ss-audiences__inner">
+        <div class="ss-section-eyebrow">Adapté à</div>
+        <TitreSection texte={section.title} class="ss-audiences__title" data-reveal="titre" />
 
-      <ul class="mt-12 grid gap-6 sm:grid-cols-2" data-reveal-groupe>
-        {section.items.map((item) => (
-          <li class="eleve rounded-carte bg-blanc p-7 sm:p-8">
-            <h3 class="text-carte text-navy text-balance">{item.label}</h3>
-            <p class="mt-3 text-petit font-light text-navy/75 text-pretty">{item.text}</p>
-          </li>
-        ))}
-      </ul>
+        <ul class="ss-audiences__grid" data-reveal-groupe>
+          {section.items.map((item, i) => (
+            <li class={`ss-audiences__card ${i === 0 ? 'ss-audiences__card--featured' : ''}`}>
+              <div class="ss-audiences__card-accent" aria-hidden="true"></div>
+              <h3 class="ss-audiences__card-title">{item.label}</h3>
+              <p class="ss-audiences__card-text">{item.text}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
     </section>
   )
 }
 
-{/* 6. Zones d'intervention — aplat navy, colonne unique, mesure courte.
-    C'est la respiration sombre au milieu de la page. */}
+{/* 6. Zones — fond navy avec typographie expressive */}
 {
   section.type === 'zones' && (
-    <section class="jonction relative overflow-hidden bg-navy" style="--jonction-de: var(--color-blanc)">
-      <span
-        aria-hidden="true"
-        class="pointer-events-none absolute -right-24 top-1/2 size-[28rem] -translate-y-1/2 rounded-full bg-orange/10 blur-3xl"
-      />
-      <div class="relative mx-auto max-w-6xl px-5 py-[var(--espace-section)] sm:px-8">
-        <div class="max-w-[60ch]">
-          <TitreSection texte={section.title} ton="clair" data-reveal="titre" />
+    <section class="ss-zones">
+      <div class="ss-zones__bg" aria-hidden="true">
+        <div class="ss-zones__blob"></div>
+        <div class="ss-zones__grid-pattern"></div>
+      </div>
+      <div class="ss-zones__inner">
+        <div class="ss-section-eyebrow ss-section-eyebrow--light">Zones</div>
+        <TitreSection texte={section.title} ton="clair" class="ss-zones__title" data-reveal="titre" />
+        <div class="ss-zones__paragraphs">
           {section.paragraphs.map((paragraphe) => (
-            <p class="mt-6 text-corps-large font-light text-blanc/80 text-pretty">
-              {paragraphe}
-            </p>
+            <p class="ss-zones__para">{paragraphe}</p>
+          ))}
+        </div>
+
+        {/* Tags de zones géographiques */}
+        <div class="ss-zones__tags" aria-hidden="true">
+          {['Paris 1–20', 'Seine-Saint-Denis', 'Hauts-de-Seine', 'Val-de-Marne', 'Val-d\'Oise', 'Yvelines', 'Essonne', 'Seine-et-Marne'].map(z => (
+            <span class="ss-zones__tag">{z}</span>
           ))}
         </div>
       </div>
@@ -149,16 +142,540 @@ const { section, photos = [], shortLabel, ordre } = Astro.props;
   )
 }
 
-{/* 7. Réalisations — ne rend rien tant que src/assets/photos/{slug}/ est vide */}
+{/* 7. Réalisations */}
 {
   section.type === 'realisations' && (
     <Gallery photos={photos} title={section.title} shortLabel={shortLabel} ordre={ordre} />
   )
 }
 
-{/* 9. Bloc d'appel final */}
+{/* 9. CTA final */}
 {
   section.type === 'cta' && (
     <CtaBand title={section.title} text={section.text} buttons={section.buttons} />
   )
 }
+
+<style>
+/* ── SHARED ─────────────────────────────────────────────────────────────────── */
+.ss-section-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-display);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-orange-texte);
+  margin-bottom: 1rem;
+}
+
+.ss-section-eyebrow::before {
+  content: '';
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: var(--color-orange);
+  border-radius: 1px;
+}
+
+.ss-section-eyebrow--light {
+  color: var(--color-orange);
+}
+
+.ss-section-eyebrow--light::before {
+  background: var(--color-orange);
+}
+
+/* ── EXPERTISE ──────────────────────────────────────────────────────────────── */
+.ss-expertise {
+  padding: var(--espace-section) 0;
+  background: #ffffff;
+}
+
+.ss-expertise__inner {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+}
+
+@media (min-width: 1024px) {
+  .ss-expertise__inner {
+    grid-template-columns: 5fr 7fr;
+    gap: 5rem;
+    padding: 0 2rem;
+  }
+}
+
+.ss-expertise__header-sticky {
+  position: static;
+}
+
+@media (min-width: 1024px) {
+  .ss-expertise__header-sticky {
+    position: sticky;
+    top: 7rem;
+  }
+}
+
+.ss-expertise__intro {
+  margin-top: 1.25rem;
+  font-family: var(--font-sans);
+  font-size: 1.0625rem;
+  font-weight: 300;
+  line-height: 1.7;
+  color: oklch(26% 0.07 260 / 0.65);
+  max-width: 42ch;
+  text-wrap: pretty;
+}
+
+.ss-expertise__indicator {
+  display: none;
+  margin-top: 2.5rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+}
+
+@media (min-width: 1024px) {
+  .ss-expertise__indicator {
+    display: flex;
+  }
+}
+
+.ss-expertise__indicator-line {
+  display: block;
+  width: 2px;
+  height: 48px;
+  background: linear-gradient(to bottom, var(--color-orange), transparent);
+  border-radius: 1px;
+}
+
+.ss-expertise__indicator-dot {
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-orange);
+  margin-top: -1px;
+  margin-left: -3px;
+  box-shadow: 0 0 8px var(--color-orange);
+}
+
+.ss-expertise__grid {
+  display: grid;
+  gap: 1rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.ss-expertise__card {
+  position: relative;
+  background: #ffffff;
+  border: 1px solid oklch(26% 0.07 260 / 0.08);
+  border-radius: 16px;
+  padding: 1.5rem 1.75rem 1.75rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  overflow: hidden;
+}
+
+.ss-expertise__card:hover {
+  border-color: oklch(26% 0.07 260 / 0.16);
+  box-shadow: 0 8px 32px oklch(26% 0.07 260 / 0.08);
+  transform: translateY(-2px);
+}
+
+.ss-expertise__card-index {
+  font-family: var(--font-display);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: oklch(26% 0.07 260 / 0.3);
+  margin-bottom: 0.75rem;
+}
+
+.ss-expertise__card-title {
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--color-navy);
+  line-height: 1.25;
+  margin-bottom: 0.625rem;
+  text-wrap: balance;
+}
+
+.ss-expertise__card-text {
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  font-weight: 300;
+  line-height: 1.65;
+  color: oklch(26% 0.07 260 / 0.65);
+  text-wrap: pretty;
+}
+
+.ss-expertise__card-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--color-orange);
+  transition: width 0.35s ease;
+  border-radius: 0 2px 0 0;
+}
+
+.ss-expertise__card:hover .ss-expertise__card-bar {
+  width: 100%;
+}
+
+/* ── PROCESS ────────────────────────────────────────────────────────────────── */
+.ss-process {
+  background: var(--color-navy-profond);
+  position: relative;
+  overflow: hidden;
+}
+
+.ss-process__inner {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: var(--espace-section) 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .ss-process__inner {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+.ss-process__title {
+  max-width: 22ch;
+  margin-bottom: 3.5rem;
+}
+
+.ss-process__track {
+  position: relative;
+}
+
+.ss-process__connector {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .ss-process__connector {
+    display: block;
+    position: absolute;
+    top: 2.25rem;
+    left: 2.25rem;
+    right: 2.25rem;
+    z-index: 0;
+  }
+}
+
+.ss-process__connector-line {
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    oklch(100% 0 0 / 0.15) 10%,
+    oklch(100% 0 0 / 0.15) 90%,
+    transparent 100%
+  );
+}
+
+.ss-process__steps {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 1rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+@media (min-width: 768px) {
+  .ss-process__steps {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .ss-process__steps {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.ss-process__step {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  background: oklch(100% 0 0 / 0.04);
+  border: 1px solid oklch(100% 0 0 / 0.08);
+  border-radius: 16px;
+  padding: 1.5rem;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.ss-process__step:hover {
+  background: oklch(100% 0 0 / 0.07);
+  border-color: oklch(100% 0 0 / 0.14);
+}
+
+.ss-process__step-badge {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #f96500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 14px oklch(55% 0.22 40 / 0.4);
+}
+
+.ss-process__step-num {
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
+  font-weight: 800;
+  color: #1a2039;
+  letter-spacing: -0.01em;
+}
+
+.ss-process__step-label {
+  font-family: var(--font-display);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: oklch(100% 0 0 / 0.4);
+  margin-bottom: 0.25rem;
+}
+
+.ss-process__step-title {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+  line-height: 1.25;
+  margin-bottom: 0.5rem;
+  text-wrap: balance;
+}
+
+.ss-process__step-text {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 300;
+  line-height: 1.65;
+  color: oklch(100% 0 0 / 0.55);
+  text-wrap: pretty;
+}
+
+/* ── AUDIENCES ──────────────────────────────────────────────────────────────── */
+.ss-audiences {
+  padding: var(--espace-section) 0;
+  background: var(--color-gris);
+}
+
+.ss-audiences__inner {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .ss-audiences__inner {
+    padding: 0 2rem;
+  }
+}
+
+.ss-audiences__title {
+  max-width: 22ch;
+  margin-bottom: 2.5rem;
+}
+
+.ss-audiences__grid {
+  display: grid;
+  gap: 1rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+@media (min-width: 640px) {
+  .ss-audiences__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .ss-audiences__grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .ss-audiences__card--featured {
+    grid-column: span 2;
+  }
+}
+
+.ss-audiences__card {
+  position: relative;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 1.75rem;
+  overflow: hidden;
+  border: 1px solid transparent;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.ss-audiences__card:hover {
+  border-color: oklch(26% 0.07 260 / 0.1);
+  box-shadow: 0 8px 32px oklch(26% 0.07 260 / 0.08);
+  transform: translateY(-2px);
+}
+
+.ss-audiences__card--featured {
+  background: linear-gradient(135deg, var(--color-navy) 0%, var(--color-navy-profond) 100%);
+}
+
+.ss-audiences__card--featured .ss-audiences__card-title {
+  color: #ffffff;
+}
+
+.ss-audiences__card--featured .ss-audiences__card-text {
+  color: oklch(100% 0 0 / 0.6);
+}
+
+.ss-audiences__card-accent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(to right, var(--color-orange), transparent);
+  border-radius: 16px 16px 0 0;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.ss-audiences__card:hover .ss-audiences__card-accent,
+.ss-audiences__card--featured .ss-audiences__card-accent {
+  opacity: 1;
+}
+
+.ss-audiences__card-title {
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--color-navy);
+  line-height: 1.25;
+  margin-bottom: 0.625rem;
+  text-wrap: balance;
+}
+
+.ss-audiences__card-text {
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  font-weight: 300;
+  line-height: 1.65;
+  color: oklch(26% 0.07 260 / 0.65);
+  text-wrap: pretty;
+}
+
+/* ── ZONES ──────────────────────────────────────────────────────────────────── */
+.ss-zones {
+  position: relative;
+  overflow: hidden;
+  background: var(--color-navy);
+}
+
+.ss-zones__bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.ss-zones__blob {
+  position: absolute;
+  right: -10%;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, oklch(55% 0.22 40 / 0.1) 0%, transparent 70%);
+  filter: blur(60px);
+}
+
+.ss-zones__grid-pattern {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(oklch(100% 0 0 / 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(100% 0 0 / 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 60% 80% at 80% 50%, black 40%, transparent 100%);
+}
+
+.ss-zones__inner {
+  position: relative;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: var(--espace-section) 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .ss-zones__inner {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+.ss-zones__title {
+  max-width: 22ch;
+  margin-bottom: 1.5rem;
+}
+
+.ss-zones__paragraphs {
+  max-width: 58ch;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+}
+
+.ss-zones__para {
+  font-family: var(--font-sans);
+  font-size: 1.0625rem;
+  font-weight: 300;
+  line-height: 1.7;
+  color: oklch(100% 0 0 / 0.7);
+  text-wrap: pretty;
+}
+
+.ss-zones__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.ss-zones__tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.375rem 0.875rem;
+  border-radius: 9999px;
+  background: oklch(100% 0 0 / 0.06);
+  border: 1px solid oklch(100% 0 0 / 0.1);
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: oklch(100% 0 0 / 0.6);
+  letter-spacing: 0.02em;
+}
+</style>

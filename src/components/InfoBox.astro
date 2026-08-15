@@ -1,39 +1,154 @@
 ---
 /**
- * Encadré « Infos clés » — zone d'intervention, devis, certifications, assurance.
- *
- * Alimenté par la section `keyFacts` des fichiers services.
- *
- * Le filet orange du bord gauche a disparu : la corde est désormais une seule
- * verticale continue au niveau de la page (`.corde` dans global.css), et la
- * répéter ici la banaliserait. L'encadré se distingue par son fond gris et son
- * ombre, comme les autres surfaces posées.
+ * InfoBox — Encadré "Infos clés" premium
+ * Design glassmorphic avec grille de données élégante
  */
 
 const { items, title, class: className = '' } = Astro.props;
 ---
 
 <aside
-  class={`relative rounded-carte bg-gris px-6 py-7 shadow-repos sm:px-8 sm:py-8 ${className}`}
+  class={`infobox ${className}`}
   aria-label={title ?? 'Informations clés'}
   data-reveal
 >
-  {
-    title && (
-      <h2 class="mb-6 font-display text-etiquette uppercase text-navy/70">{title}</h2>
-    )
-  }
+  {title && (
+    <p class="infobox__label">{title}</p>
+  )}
 
-  <dl class="grid gap-x-10 gap-y-6 sm:grid-cols-2">
-    {
-      items.map((item) => (
-        <div class="flex flex-col gap-1.5">
-          <dt class="font-display text-etiquette uppercase text-navy/70">{item.label}</dt>
-          <dd class="text-[0.9375rem] font-medium leading-snug text-navy text-balance">
-            {item.text}
-          </dd>
-        </div>
-      ))
-    }
+  <dl class="infobox__grid">
+    {items.map((item) => (
+      <div class="infobox__item">
+        <dt class="infobox__dt">{item.label}</dt>
+        <dd class="infobox__dd">{item.text}</dd>
+      </div>
+    ))}
   </dl>
 </aside>
+
+<style>
+.infobox {
+  position: relative;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #232b4a 0%, #1a2039 100%);
+  border: 1px solid oklch(100% 0 0 / 0.1);
+  padding: 1.75rem 2rem;
+  overflow: hidden;
+  box-shadow: 0 8px 40px oklch(26% 0.07 260 / 0.15);
+}
+
+.infobox::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, oklch(55% 0.22 40 / 0.06) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.infobox::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(to right, transparent, oklch(100% 0 0 / 0.15), transparent);
+}
+
+.infobox__label {
+  font-family: var(--font-display);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-orange);
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.infobox__label::before {
+  content: '';
+  display: block;
+  width: 16px;
+  height: 2px;
+  background: var(--color-orange);
+  border-radius: 1px;
+}
+
+.infobox__grid {
+  display: grid;
+  gap: 0;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+  .infobox__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .infobox__grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.infobox__item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 1rem 1.25rem;
+  border-left: 1px solid oklch(100% 0 0 / 0.08);
+  position: relative;
+}
+
+.infobox__item:first-child {
+  border-left: none;
+}
+
+@media (max-width: 639px) {
+  .infobox__item {
+    border-left: none;
+    border-top: 1px solid oklch(100% 0 0 / 0.08);
+    padding: 0.875rem 0;
+  }
+
+  .infobox__item:first-child {
+    border-top: none;
+    padding-top: 0;
+  }
+}
+
+@media (min-width: 640px) and (max-width: 1023px) {
+  .infobox__item:nth-child(1),
+  .infobox__item:nth-child(2) {
+    border-top: none;
+    padding-top: 0;
+  }
+  .infobox__item:nth-child(2n+1) {
+    border-left: none;
+  }
+}
+
+.infobox__dt {
+  font-family: var(--font-display);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: oklch(100% 0 0 / 0.4);
+  line-height: 1;
+}
+
+.infobox__dd {
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+  line-height: 1.35;
+  text-wrap: balance;
+}
+</style>

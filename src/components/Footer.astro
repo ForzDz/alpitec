@@ -1,4 +1,4 @@
-﻿---
+---
 import { getSite, getServices, serviceHref, whatsappHref } from '../lib/content.js';
 
 /**
@@ -20,19 +20,14 @@ const adresseComplete = [site.adresse.rue, `${site.adresse.codePostal} ${site.ad
   .join(', ');
 ---
 
-<footer class="bg-navy text-blanc">
-  <div class="mx-auto max-w-6xl px-5 pb-14 pt-14 sm:px-8 sm:pb-16 sm:pt-20 lg:pb-20">
-    <div class="grid gap-12 lg:grid-cols-12 lg:gap-10">
-      <!-- Identité + coordonnées -->
-      <div class="lg:col-span-4">
-        {/*
-          Marque en version inversée : le symbole fourni est un JPEG à fond noir,
-          inutilisable sur l'aplat navy. Tracé repris de _sources/logo/logo-symbole.jpeg,
-          à remplacer par le SVG officiel dès que le client le fournit.
-        */}
+<footer class="bg-navy text-blanc border-t border-blanc/10">
+  <div class="mx-auto max-w-6xl px-5 py-12 sm:px-8 sm:py-16">
+    <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-12 lg:gap-8">
+      <!-- Identité + baseline -->
+      <div class="lg:col-span-5">
         <svg
           viewBox="0 0 100 100"
-          class="h-11 w-auto"
+          class="h-10 w-auto"
           role="img"
           aria-label={site.nom}
         >
@@ -40,119 +35,85 @@ const adresseComplete = [site.adresse.rue, `${site.adresse.codePostal} ${site.ad
           <path fill="currentColor" d="M50.5 39.7h27.3L98.4 100H69.8z" />
         </svg>
 
-        <p class="mt-5 max-w-[34ch] text-sm leading-relaxed text-blanc/70 text-pretty">
-          {site.baseline} à Paris et en Île-de-France.
+        <p class="mt-4 max-w-[36ch] text-sm leading-relaxed text-blanc/70 text-pretty">
+          {site.baseline} à Paris et sur l'ensemble de l'Île-de-France.
         </p>
 
-        <address class="mt-7 space-y-3 text-sm not-italic">
-          <a
-            href={`tel:${site.telephone.lien}`}
-            class="-my-2.5 flex min-h-11 items-center gap-2.5 py-2.5 font-bold tracking-tight transition-colors duration-150 hover:text-orange focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orange"
-            data-cta="tel-footer"
-          >
-            <span aria-hidden="true" class="h-4 w-0.5 bg-orange"></span>
-            {site.telephone.affichage}
-          </a>
+        <div class="mt-6 flex flex-wrap items-center gap-2 text-xs text-blanc/60">
+          <span class="inline-flex items-center gap-1.5 rounded-full border border-blanc/10 bg-blanc/[0.04] px-3 py-1 text-blanc/80">
+            <span class="size-1.5 rounded-full bg-emerald-400"></span>
+            Cordistes CQP & IRATA
+          </span>
+          <span class="inline-flex items-center gap-1.5 rounded-full border border-blanc/10 bg-blanc/[0.04] px-3 py-1 text-blanc/80">
+            <span class="size-1.5 rounded-full bg-orange"></span>
+            Garantie décennale
+          </span>
+        </div>
+      </div>
 
-          {/*
-            WhatsApp a quitté la barre d'action mobile, passée à deux boutons.
-            Il reprend sa place ici et sur /contact : c'est un canal de second
-            recours, pas un réflexe de pouce.
-          */}
-          <a
-            href={whatsappHref(site)}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="-my-2.5 flex min-h-11 items-center gap-2.5 py-2.5 text-blanc/75 transition-colors duration-150 hover:text-orange focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orange"
-            data-cta="whatsapp-footer"
-          >
-            <span aria-hidden="true" class="h-4 w-0.5 bg-orange/45"></span>
-            WhatsApp
-          </a>
+      <!-- Navigation rapide -->
+      <div class="lg:col-span-3">
+        <h2 class="font-display text-xs font-bold uppercase tracking-wider text-blanc/50">
+          Navigation
+        </h2>
+        <ul class="mt-4 space-y-2.5 text-sm">
+          <li>
+            <a href="/" class="text-blanc/75 transition-colors hover:text-orange">Accueil</a>
+          </li>
+          <li>
+            <a href="/services" class="text-blanc/75 transition-colors hover:text-orange">Nos 9 prestations sur cordes</a>
+          </li>
+          <li>
+            <a href="/contact" class="text-blanc/75 transition-colors hover:text-orange">Contact & Devis gratuit</a>
+          </li>
+          <li>
+            <a href="#devis" class="font-semibold text-orange transition-colors hover:underline">Demander un devis en ligne →</a>
+          </li>
+        </ul>
+      </div>
 
-          <a
-            href={`mailto:${site.email}`}
-            class="-my-2.5 flex min-h-11 items-center gap-2.5 py-2.5 text-blanc/75 transition-colors duration-150 hover:text-orange focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orange"
-          >
-            <span aria-hidden="true" class="h-4 w-0.5 bg-orange/45"></span>
-            {site.email}
-          </a>
+      <!-- Contact direct & Zones -->
+      <div class="lg:col-span-4">
+        <h2 class="font-display text-xs font-bold uppercase tracking-wider text-blanc/50">
+          Contact & Urgences
+        </h2>
+        <address class="mt-4 space-y-3 text-sm not-italic text-blanc/75">
+          <p>
+            <a
+              href={`tel:${site.telephone.lien}`}
+              class="inline-flex items-center gap-2 font-bold text-blanc transition-colors hover:text-orange"
+              data-cta="tel-footer"
+            >
+              <svg class="size-4 text-orange" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 3h3l1.5 4L6.5 8.5a11 11 0 005 5L13 11.5l4 1.5v3a1 1 0 01-1 1A13 13 0 013 4a1 1 0 011-1z" />
+              </svg>
+              {site.telephone.affichage}
+            </a>
+          </p>
+
+          <p>
+            <a
+              href={`mailto:${site.email}`}
+              class="inline-flex items-center gap-2 transition-colors hover:text-blanc"
+            >
+              <svg class="size-4 text-orange/70" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 4h14a1 1 0 011 1v10a1 1 0 01-1 1H3a1 1 0 01-1-1V5a1 1 0 011-1zM3 5l7 6 7-6" />
+              </svg>
+              {site.email}
+            </a>
+          </p>
 
           {
             adresseComplete && (
-              <p class="flex items-start gap-2.5 text-blanc/75">
-                <span aria-hidden="true" class="mt-1 h-4 w-0.5 shrink-0 bg-orange/45" />
+              <p class="flex items-center gap-2 text-blanc/65">
+                <svg class="size-4 shrink-0 text-orange/70" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M10 2a6 6 0 00-6 6c0 4.5 6 10 6 10s6-5.5 6-10a6 6 0 00-6-6zm0 8a2 2 0 110-4 2 2 0 010 4z" />
+                </svg>
                 {adresseComplete}
               </p>
             )
           }
-
-          {
-            site.horaires && (
-              <p class="flex items-start gap-2.5 text-blanc/75">
-                <span aria-hidden="true" class="mt-1 h-4 w-0.5 shrink-0 bg-orange/45" />
-                {site.horaires}
-              </p>
-            )
-          }
         </address>
-      </div>
-
-      <!-- Les 9 services -->
-      <div class="lg:col-span-5">
-        <h2 class="font-display text-etiquette uppercase text-blanc/70">
-          Nos services
-        </h2>
-        <ul class="mt-6 grid gap-x-8 gap-y-3 sm:grid-cols-2">
-          {
-            services.map((service) => (
-              <li>
-                <a
-                  href={serviceHref(service.data.slug)}
-                  class="group inline-flex min-h-11 items-center gap-2.5 text-sm leading-snug text-blanc/75 transition-colors duration-150 hover:text-blanc focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orange"
-                >
-                  <span
-                    aria-hidden="true"
-                    class="h-3 w-0.5 shrink-0 bg-orange/45 transition-all duration-150 group-hover:h-4 group-hover:bg-orange"
-                  />
-                  {service.data.shortLabel}
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-      </div>
-
-      <!-- Certifications -->
-      <div class="lg:col-span-3">
-        <h2 class="font-display text-etiquette uppercase text-blanc/70">
-          Certifications
-        </h2>
-        {/*
-          Sur navy, une ombre ne se voit pas : la profondeur vient de la valeur.
-          Les certifications sont posées sur du navy éclairci, comme les tuiles
-          d'icône le sont sur les fonds sombres ailleurs.
-        */}
-        <dl class="mt-6 grid gap-2.5">
-          {
-            site.certifications.map((certif) => (
-              <div class="rounded-tuile bg-navy-clair px-4 py-3">
-                <dt class="font-display text-sm font-bold tracking-tight">{certif.label}</dt>
-                <dd class="mt-0.5 text-[0.8125rem] font-light leading-snug text-blanc/70">
-                  {certif.text}
-                </dd>
-              </div>
-            ))
-          }
-        </dl>
-
-        {
-          site.legal.assurance && (
-            <p class="mt-2.5 rounded-tuile bg-navy-clair px-4 py-3 font-display text-sm font-bold tracking-tight">
-              {site.legal.assurance}
-            </p>
-          )
-        }
       </div>
     </div>
 

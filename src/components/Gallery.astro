@@ -1,138 +1,311 @@
-﻿---
+---
 import { Image } from 'astro:assets';
 import TitreSection from './TitreSection.astro';
 
 /**
- * Galerie « Réalisations ».
+ * Galerie « Réalisations » — redesign premium.
  *
- * Les photos viennent de src/assets/photos/{slug}/ via getServicePhotos().
- * Tant qu'un service n'a aucune photo, la section entière disparaît : mieux
- * vaut une section absente qu'une section creuse sur une page qui doit
- * inspirer confiance.
+ * Layout :
+ *   1 photo → pleine largeur 16/9 avec légende
+ *   2 photos → split 60/40
+ *   3+ photos → grande photo gauche + colonne droite empilée
  *
- * MISE EN PAGE — une photo de tête en pleine largeur, puis les autres en
- * grille. C'est la disposition de la bande de chantiers de l'accueil, et elle
- * a la même raison d'être : l'œil entre par une grande image, pas par une
- * rangée de vignettes égales.
- *
- * La précédente version faisait courir la première photo sur deux colonnes
- * d'une grille de quatre. À quatre photos — le cas de la plupart des pages
- * depuis l'arrivée des photos client — la quatrième se retrouvait seule sur
- * une deuxième rangée, avec trois cases vides à côté d'elle.
- *
- * Quand un service a moins de trois photos, la rangée du bas est complétée
- * par des tuiles navy plutôt que par une image répétée : répéter la même
- * photo dans une galerie de « réalisations » se voit immédiatement.
+ * Les tuiles navy viennent compléter si < 3 photos totales pour éviter
+ * une galerie à une seule image sans suite.
  */
 
 const { photos = [], title, shortLabel, ordre } = Astro.props;
 
-// Photo de tête : celle que le contenu désigne, sinon la première.
+// Masquée si vide
+if (photos.length === 0) return;
+
 const enTete = photos.find((p) => p.miseEnAvant) ?? photos[0];
 const reste = photos.filter((p) => p !== enTete);
 
-// La grille du bas se cale sur son effectif pour ne jamais laisser de case
-// vide en bout de rangée, et complète à deux items minimum par des tuiles.
-const tuiles = photos.length > 0 && photos.length < 3 ? 2 - reste.length : 0;
-const cases = reste.length + tuiles;
-
-/*
- * Nombre de colonnes et rattrapage du dernier élément, de sorte qu'aucune
- * rangée ne se termine sur une case vide — ni sur mobile, ni sur grand écran.
- *
- *   effectif multiple de 3  →  trois colonnes ; si l'effectif est impair, le
- *                              dernier s'étale sur les deux colonnes du mobile
- *                              mais reprend sa case sur grand écran ;
- *   sinon                   →  deux colonnes ; si l'effectif est impair, le
- *                              dernier s'étale partout, y compris sur grand
- *                              écran, sinon il resterait seul sur sa rangée.
- *
- * Sept vignettes — le cas de « filets de protection » — tombent dans le second
- * cas : trois rangées de deux, puis une pleine largeur.
- */
-const parTrois = cases % 3 === 0;
-const impair = cases % 2 === 1;
-const colonnes = parTrois ? 'lg:grid-cols-3' : 'lg:grid-cols-2';
-const dernier = impair ? (parTrois ? 'col-span-2 lg:col-span-1' : 'col-span-2') : '';
+// Tuiles de rembourrage si moins de 3 photos au total
+const tuiles = photos.length < 3 ? Math.max(0, 2 - reste.length) : 0;
 ---
 
-{
-  photos.length > 0 && (
-    <section
-      class="mx-auto max-w-6xl px-5 py-[var(--espace-section)] sm:px-8"
-      aria-labelledby="realisations"
-    >
-      <TitreSection texte={title} id="realisations" class="max-w-[18ch]" data-reveal="titre" />
+{photos.length > 0 && (
+  <section class="gallery-section" aria-labelledby="realisations">
+    <div class="gallery-section__inner">
 
-      {/* Photo de tête, pleine largeur, 16/9. */}
-      <figure class="mt-12" data-reveal="image">
-        <div class="photo aspect-[16/9] w-full rounded-bloc shadow-repos">
-          <Image
-            src={enTete.src}
-            alt={enTete.alt}
-            width={1280}
-            widths={[480, 768, 1280]}
-            sizes="(min-width: 1280px) 1152px, 92vw"
-            format="webp"
-            quality={72}
-            loading="lazy"
-            decoding="async"
-          />
+      <div class="gallery-section__header">
+        <div class="gallery-section__eyebrow">
+          <span class="gallery-section__eyebrow-line" aria-hidden="true"></span>
+          Nos réalisations
         </div>
-        {enTete.caption && (
-          <figcaption class="mt-3.5 text-[0.8125rem] font-light leading-snug text-navy/70 text-pretty">
-            {enTete.caption}
-          </figcaption>
-        )}
-      </figure>
+        <TitreSection texte={title} id="realisations" class="gallery-section__title" data-reveal="titre" />
+      </div>
 
-      {/* Les suivantes en 4/3. Deux ratios sur tout le site, pas un de plus. */}
-      {cases > 0 && (
-        <ul class:list={['mt-4 grid grid-cols-2 gap-4 sm:mt-5 sm:gap-5', colonnes]} data-reveal-groupe>
-          {reste.map((photo, i) => (
-            <li class:list={['flex flex-col', i === cases - 1 && dernier]}>
-              <figure class="flex h-full flex-col">
-                <div class="photo aspect-[4/3] rounded-bloc shadow-repos">
+      {/* Disposition principale */}
+      {photos.length === 1 ? (
+        /* ── 1 seule photo : pleine largeur ── */
+        <figure class="gallery-solo" data-reveal="image">
+          <div class="gallery-solo__img-wrap">
+            <Image
+              src={enTete.src}
+              alt={enTete.alt}
+              width={1280}
+              widths={[480, 768, 1280]}
+              sizes="(min-width: 1280px) 1152px, 92vw"
+              format="webp"
+              quality={72}
+              loading="lazy"
+              decoding="async"
+              class="gallery-solo__img"
+            />
+          </div>
+          {enTete.caption && (
+            <figcaption class="gallery-caption">{enTete.caption}</figcaption>
+          )}
+        </figure>
+      ) : (
+        /* ── 2+ photos : grande gauche + grille droite ── */
+        <div class="gallery-split" data-reveal-groupe>
+          {/* Photo principale */}
+          <figure class="gallery-split__main">
+            <div class="gallery-split__main-img-wrap">
+              <Image
+                src={enTete.src}
+                alt={enTete.alt}
+                width={960}
+                widths={[480, 768, 960]}
+                sizes="(min-width: 1024px) 58vw, 92vw"
+                format="webp"
+                quality={72}
+                loading="lazy"
+                decoding="async"
+                class="gallery-split__img"
+              />
+            </div>
+            {enTete.caption && (
+              <figcaption class="gallery-caption">{enTete.caption}</figcaption>
+            )}
+          </figure>
+
+          {/* Colonne droite */}
+          <div class="gallery-split__aside">
+            {reste.map((photo) => (
+              <figure class="gallery-split__thumb">
+                <div class="gallery-split__thumb-img-wrap">
                   <Image
                     src={photo.src}
                     alt={photo.alt}
-                    width={720}
-                    widths={[320, 480, 720]}
-                    sizes="(min-width: 1024px) 33vw, 46vw"
+                    width={480}
+                    widths={[240, 380, 480]}
+                    sizes="(min-width: 1024px) 38vw, 92vw"
                     format="webp"
                     quality={70}
                     loading="lazy"
                     decoding="async"
+                    class="gallery-split__img"
                   />
                 </div>
-
                 {photo.caption && (
-                  <figcaption class="mt-3.5 text-[0.8125rem] font-light leading-snug text-navy/70 text-pretty">
-                    {photo.caption}
-                  </figcaption>
+                  <figcaption class="gallery-caption">{photo.caption}</figcaption>
                 )}
               </figure>
-            </li>
-          ))}
+            ))}
 
-          {/* Complément : tuiles navy, jamais une photo réutilisée. */}
-          {Array.from({ length: tuiles }).map(() => (
-            <li class="flex">
-              <div
-                class="flex aspect-[4/3] w-full flex-col justify-between rounded-bloc bg-navy p-5 shadow-repos"
-                aria-hidden="true"
-              >
-                <span class="font-display text-etiquette text-orange">
+            {/* Tuiles navy de rembourrage */}
+            {Array.from({ length: tuiles }).map(() => (
+              <div class="gallery-tile" aria-hidden="true">
+                <span class="gallery-tile__index">
                   {String(ordre ?? 0).padStart(2, '0')}
                 </span>
-                <span class="max-w-[16ch] font-display text-[0.9375rem] font-bold uppercase leading-tight tracking-[0.08em] text-blanc/85 text-balance">
-                  {shortLabel}
-                </span>
+                <span class="gallery-tile__label">{shortLabel}</span>
               </div>
-            </li>
-          ))}
-        </ul>
+            ))}
+          </div>
+        </div>
       )}
-    </section>
-  )
+    </div>
+  </section>
+)}
+
+<style>
+/* ─── GALLERY SECTION ────────────────────────────────────────────────────────── */
+.gallery-section {
+  background: #ffffff;
+  padding: var(--espace-section) 0;
 }
+
+.gallery-section__inner {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .gallery-section__inner {
+    padding: 0 2rem;
+  }
+}
+
+.gallery-section__header {
+  margin-bottom: 2.5rem;
+}
+
+.gallery-section__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-display);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-orange-texte);
+  margin-bottom: 1rem;
+}
+
+.gallery-section__eyebrow-line {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: var(--color-orange);
+  border-radius: 1px;
+}
+
+.gallery-section__title {
+  max-width: 22ch;
+}
+
+/* ─── Solo (1 photo) ───── */
+.gallery-solo {
+  margin: 0;
+}
+
+.gallery-solo__img-wrap {
+  position: relative;
+  aspect-ratio: 16/9;
+  border-radius: 20px;
+  overflow: hidden;
+  background: var(--color-gris);
+}
+
+.gallery-solo__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 6s ease-out;
+}
+
+.gallery-solo__img-wrap:hover .gallery-solo__img {
+  transform: scale(1.04);
+}
+
+/* ─── Split (2+ photos) ── */
+.gallery-split {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .gallery-split {
+    grid-template-columns: 3fr 2fr;
+    gap: 1rem;
+  }
+}
+
+.gallery-split__main {
+  margin: 0;
+}
+
+.gallery-split__main-img-wrap {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  background: var(--color-gris);
+  height: 100%;
+  min-height: 300px;
+}
+
+@media (min-width: 768px) {
+  .gallery-split__main-img-wrap {
+    min-height: 420px;
+  }
+}
+
+.gallery-split__aside {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.gallery-split__thumb {
+  margin: 0;
+  flex: 1;
+}
+
+.gallery-split__thumb-img-wrap {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--color-gris);
+  height: 100%;
+  min-height: 160px;
+}
+
+/* Image commune */
+.gallery-split__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 6s ease-out;
+}
+
+.gallery-split__main-img-wrap:hover .gallery-split__img,
+.gallery-split__thumb-img-wrap:hover .gallery-split__img {
+  transform: scale(1.05);
+}
+
+/* ─── Tuile de rembourrage ── */
+.gallery-tile {
+  flex: 1;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--color-navy) 0%, var(--color-navy-profond) 100%);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 140px;
+  border: 1px solid oklch(100% 0 0 / 0.06);
+}
+
+.gallery-tile__index {
+  font-family: var(--font-display);
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: #f96500;
+}
+
+.gallery-tile__label {
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: oklch(100% 0 0 / 0.8);
+  text-wrap: balance;
+  max-width: 16ch;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+/* ─── Légende ── */
+.gallery-caption {
+  margin-top: 0.625rem;
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  font-weight: 300;
+  line-height: 1.5;
+  color: oklch(26% 0.07 260 / 0.55);
+  text-wrap: pretty;
+  font-style: italic;
+}
+</style>

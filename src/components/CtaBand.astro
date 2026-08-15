@@ -1,67 +1,315 @@
 ---
 import Button from './Button.astro';
-import TitreSection from './TitreSection.astro';
 import { getSite, actionHref } from '../lib/content.js';
 
 /**
- * Bandeau de conversion réutilisable — bas de page service, bas d'accueil.
- *
- * Aplat navy profond pleine largeur, avec une lueur orange très diffuse dans
- * l'angle supérieur gauche : de la profondeur sans ajouter une seule forme.
- * C'est le point d'arrêt visuel de la page, il doit peser.
- *
- * `buttons` vient du contenu (`{ label, action }`), les URLs sont résolues ici :
- * un fichier Markdown n'a pas à connaître le numéro de téléphone.
+ * CtaBand — Bandeau de conversion premium, style "Apple" avec animation douce.
  */
 
 const { title, text, buttons = [], variant = 'navy', id } = Astro.props;
 const site = await getSite();
 
 const clair = variant !== 'gris';
-const fond = clair ? 'bg-navy-profond text-blanc' : 'bg-gris text-navy';
-const texte = clair ? 'text-blanc/80' : 'text-navy/75';
+
+// Split du titre pour l'accent sur le dernier mot
+const mots = String(title).trim().split(/\s+/);
+const dernierMot = mots.pop();
+const debutTitre = mots.join(' ');
 ---
 
-<section class={`relative overflow-hidden ${fond}`} id={id} data-reveal>
-  {
-    clair && (
-      <span
-        aria-hidden="true"
-        class="pointer-events-none absolute -left-32 -top-40 size-[34rem] rounded-full bg-orange/12 blur-3xl"
-      />
-    )
-  }
-
-  <div class="relative mx-auto max-w-6xl px-5 py-[var(--espace-section)] sm:px-8">
-    <div class="corde corde-descend max-w-[52rem]">
-      <TitreSection texte={title} ton={clair ? 'clair' : 'sombre'} class="max-w-[20ch]" />
-
-      {
-        text && (
-          <p class={`mt-6 max-w-[58ch] text-corps-large font-light text-pretty ${texte}`}>
-            {text}
-          </p>
-        )
-      }
-
-      <slot />
-
-      {
-        buttons.length > 0 && (
-          <div class="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
-            {buttons.map((bouton, i) => (
-              <Button
-                href={actionHref(bouton.action, site)}
-                variant={i === 0 ? 'primaire' : clair ? 'clair' : 'secondaire'}
-                size="lg"
-                class="w-full sm:w-auto"
-              >
-                {bouton.label}
-              </Button>
-            ))}
-          </div>
-        )
-      }
+<section class={`ctaband ${clair ? 'ctaband--navy' : 'ctaband--gris'}`} id={id} data-reveal>
+  {clair && (
+    <div class="ctaband__bg" aria-hidden="true">
+      <div class="ctaband__blob ctaband__blob--1"></div>
+      <div class="ctaband__blob ctaband__blob--2"></div>
+      <div class="ctaband__grid"></div>
     </div>
+  )}
+
+  <div class="ctaband__inner">
+
+    {/* Eyebrow */}
+    <div class={`ctaband__eyebrow ${clair ? 'ctaband__eyebrow--light' : ''}`}>
+      <span class="ctaband__eyebrow-dot" aria-hidden="true"></span>
+      Passer à l'action
+    </div>
+
+    {/* Titre */}
+    <h2 class="ctaband__title">
+      {debutTitre && <>{debutTitre} </>}
+      <span class="ctaband__title-accent">{dernierMot}</span>
+    </h2>
+
+    {text && (
+      <p class="ctaband__text">{text}</p>
+    )}
+
+    {buttons.length > 0 && (
+      <div class="ctaband__ctas">
+        {buttons.map((bouton, i) => (
+          <a
+            href={actionHref(bouton.action, site)}
+            class={i === 0 ? 'ctaband-btn ctaband-btn--primary' : 'ctaband-btn ctaband-btn--ghost'}
+          >
+            {bouton.label}
+            {i === 0 && (
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" class="ctaband-btn__arrow" aria-hidden="true">
+                <path d="M3 8h10M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            )}
+          </a>
+        ))}
+      </div>
+    )}
+
+    {/* Trust strip */}
+    <div class="ctaband__trust" aria-label="Garanties">
+      {[
+        { icon: '✓', text: 'Devis gratuit sous 24h' },
+        { icon: '✓', text: 'Cordistes certifiés CQP & IRATA' },
+        { icon: '✓', text: 'Garantie décennale incluse' },
+      ].map(item => (
+        <span class="ctaband__trust-item">
+          <span class="ctaband__trust-check" aria-hidden="true">{item.icon}</span>
+          {item.text}
+        </span>
+      ))}
+    </div>
+
   </div>
 </section>
+
+<style>
+/* ─── CtaBand ────────────────────────────────────────────────────────────────── */
+.ctaband {
+  position: relative;
+  overflow: hidden;
+}
+
+.ctaband--navy {
+  background: #1a2039;
+}
+
+.ctaband--gris {
+  background: var(--color-gris);
+}
+
+/* Background */
+.ctaband__bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.ctaband__blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+}
+
+.ctaband__blob--1 {
+  width: 500px;
+  height: 500px;
+  left: -120px;
+  top: -160px;
+  background: radial-gradient(circle, oklch(55% 0.22 40 / 0.14) 0%, transparent 70%);
+}
+
+.ctaband__blob--2 {
+  width: 350px;
+  height: 350px;
+  right: -60px;
+  bottom: -80px;
+  background: radial-gradient(circle, oklch(40% 0.14 260 / 0.12) 0%, transparent 70%);
+}
+
+.ctaband__grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(oklch(100% 0 0 / 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(100% 0 0 / 0.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* Inner */
+.ctaband__inner {
+  position: relative;
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: var(--espace-section) 1.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+@media (min-width: 640px) {
+  .ctaband__inner {
+    padding-left: 2rem;
+    padding-right: 2rem;
+    align-items: center;
+    text-align: center;
+  }
+}
+
+/* Eyebrow */
+.ctaband__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-display);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: oklch(26% 0.07 260 / 0.5);
+  margin-bottom: 1.25rem;
+}
+
+.ctaband__eyebrow--light {
+  color: oklch(100% 0 0 / 0.45);
+}
+
+.ctaband__eyebrow-dot {
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-orange);
+  box-shadow: 0 0 6px var(--color-orange);
+  animation: pulse-dot 2.4s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.85); }
+}
+
+/* Title */
+.ctaband__title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4.5vw, 3.25rem);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  color: #ffffff;
+  max-width: 20ch;
+  text-wrap: balance;
+  margin-bottom: 1.25rem;
+}
+
+.ctaband--gris .ctaband__title {
+  color: var(--color-navy);
+}
+
+.ctaband__title-accent {
+  color: var(--color-orange);
+}
+
+.ctaband--gris .ctaband__title-accent {
+  color: var(--color-orange-texte);
+}
+
+/* Text */
+.ctaband__text {
+  font-family: var(--font-sans);
+  font-size: 1.0625rem;
+  font-weight: 300;
+  line-height: 1.7;
+  color: oklch(100% 0 0 / 0.65);
+  max-width: 52ch;
+  text-wrap: pretty;
+  margin-bottom: 2.25rem;
+}
+
+.ctaband--gris .ctaband__text {
+  color: oklch(26% 0.07 260 / 0.65);
+}
+
+/* CTAs */
+.ctaband__ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.ctaband-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.9375rem;
+  letter-spacing: -0.01em;
+  border-radius: 9999px;
+  padding: 0.875rem 1.75rem;
+  transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.ctaband-btn--primary {
+  background: #f96500;
+  color: #1a2039;
+  box-shadow: 0 4px 20px oklch(55% 0.22 40 / 0.4);
+}
+
+.ctaband-btn--primary:hover {
+  background: #ffffff;
+  color: #1a2039;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px oklch(100% 0 0 / 0.2);
+}
+
+.ctaband-btn__arrow {
+  width: 14px;
+  height: 14px;
+  transition: transform 0.2s ease;
+}
+
+.ctaband-btn--primary:hover .ctaband-btn__arrow {
+  transform: translateX(3px);
+}
+
+.ctaband-btn--ghost {
+  background: oklch(100% 0 0 / 0.06);
+  color: oklch(100% 0 0 / 0.85);
+  border: 1px solid oklch(100% 0 0 / 0.18);
+  backdrop-filter: blur(8px);
+}
+
+.ctaband-btn--ghost:hover {
+  background: oklch(100% 0 0 / 0.12);
+  border-color: oklch(100% 0 0 / 0.3);
+  transform: translateY(-2px);
+}
+
+/* Trust strip */
+.ctaband__trust {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  align-items: center;
+}
+
+.ctaband__trust-item {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: oklch(100% 0 0 / 0.45);
+}
+
+.ctaband--gris .ctaband__trust-item {
+  color: oklch(26% 0.07 260 / 0.5);
+}
+
+.ctaband__trust-check {
+  color: #34d399;
+  font-style: normal;
+  font-size: 0.75rem;
+}
+</style>

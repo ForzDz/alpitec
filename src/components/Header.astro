@@ -1,4 +1,4 @@
-﻿---
+---
 import { Image } from 'astro:assets';
 import logo from '../assets/logo-complet.jpeg';
 import logoDetoure from '../assets/logo-detoure.png';
@@ -279,37 +279,27 @@ const estActif = (href) => {
   </div>
 </header>
 
-<!-- Barre d'action fixe mobile : Appeler (35 %) · Devis gratuit (65 %) -->
+<!-- Barre d'action fixe mobile : style Apple Pro Floating Glass Dock -->
 <div
-  class="fixed inset-x-0 bottom-0 z-50 bg-navy pb-[env(safe-area-inset-bottom)] shadow-eleve lg:hidden"
+  class="fixed inset-x-0 bottom-3 z-50 flex justify-center px-4 pb-[env(safe-area-inset-bottom)] pointer-events-none lg:hidden"
   data-action-bar
 >
-  {/*
-    Deux boutons, plus trois. WhatsApp a quitté la barre : à trois entrées, le
-    devis n'occupait plus que 60 % d'une largeur déjà partagée, et deux canaux
-    de contact secondaires se disputaient l'attention d'un pouce. Le lien
-    WhatsApp reste accessible dans le pied de page et sur /contact, où il est
-    lu au calme plutôt qu'en réflexe.
-
-    « Appeler » perd son libellé : à 35 % de 320 px il reste 112 px, et un
-    pictogramme de téléphone n'a besoin de personne pour se faire comprendre.
-    Le nom part dans `aria-label`, donc rien n'est perdu pour un lecteur
-    d'écran — au contraire, il annonce le numéro.
-  */}
-  <div class="grid grid-cols-[35%_65%] gap-px bg-blanc/15">
+  <div
+    class="pointer-events-auto flex items-center gap-2 rounded-full border border-blanc/15 bg-navy-profond/90 p-1.5 shadow-[0_8px_32px_rgba(0,0,0,0.36),0_2px_8px_rgba(0,0,0,0.2)] backdrop-blur-xl w-full max-w-[340px]"
+  >
     <a
       href={telHref}
-      class="flex min-h-14 items-center justify-center bg-navy text-blanc transition-colors duration-200 active:bg-navy-clair"
+      class="flex size-11 shrink-0 items-center justify-center rounded-full bg-navy-clair/90 text-orange border border-blanc/10 transition-transform duration-150 active:scale-90 hover:bg-navy-clair shadow-sm"
       aria-label={`Appeler ALPITEC au ${site.telephone.affichage}`}
       data-cta="tel-barre"
     >
       <svg
         aria-hidden="true"
         viewBox="0 0 20 20"
-        class="size-6 text-orange"
+        class="size-5 text-orange"
         fill="none"
         stroke="currentColor"
-        stroke-width="1.9"
+        stroke-width="2"
       >
         <path
           d="M4 3h3l1.5 4L6.5 8.5a11 11 0 005 5L13 11.5l4 1.5v3a1 1 0 01-1 1A13 13 0 013 4a1 1 0 011-1z"
@@ -320,19 +310,17 @@ const estActif = (href) => {
 
     <a
       href="#devis"
-      class="group/devis flex min-h-14 items-center justify-center gap-2.5 bg-orange px-3 text-navy transition-colors duration-200 active:bg-navy active:text-blanc"
+      class="group/devis flex h-11 flex-1 items-center justify-center gap-2 rounded-full bg-gradient-to-r from-orange to-[#ff7a1a] px-4 font-display text-[0.9375rem] font-bold text-navy shadow-[0_2px_12px_rgba(249,101,0,0.3)] transition-transform duration-150 active:scale-[0.97]"
       data-cta="devis-barre"
     >
-      <span class="font-display text-base font-bold leading-none tracking-tight">
-        Devis gratuit
-      </span>
+      <span>Devis gratuit</span>
       <svg
         aria-hidden="true"
         viewBox="0 0 16 16"
-        class="h-4 w-4 shrink-0 transition-transform duration-200 group-active/devis:translate-x-1"
+        class="size-4 shrink-0 transition-transform duration-200 group-active/devis:translate-x-1"
         fill="none"
         stroke="currentColor"
-        stroke-width="2.4"
+        stroke-width="2.5"
       >
         <path d="M2 8h11M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round" />
       </svg>

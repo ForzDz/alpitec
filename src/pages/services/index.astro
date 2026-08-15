@@ -9,16 +9,6 @@ import CtaBand from '../../components/CtaBand.astro';
 import ContactSection from '../../components/ContactSection.astro';
 import { getServices, getServicePhotos, serviceHref } from '../../lib/content.js';
 
-/**
- * Page hub : les 9 services.
- *
- * Les accroches des 6 premiers services viennent du bloc « Nos services » du
- * document d'accueil. Les 3 services ajoutés ensuite (chéneaux, dévégétalisation,
- * points d'ancrage) n'ont AUCUN texte de carte dans les documents : leur carte
- * s'affiche sans accroche plutôt qu'avec un texte inventé.
- * Voir le rapport de l'étape 1, point 2 — 3 accroches à demander au client.
- */
-
 const services = await getServices();
 const accueil = await getEntry('home', 'accueil');
 const cartesAccueil = accueil.data.services;
@@ -32,10 +22,8 @@ const filAriane = [
   { label: 'Nos services', href: '/services' },
 ];
 
-// Chaque carte reçoit sa première photo si le dossier du service en contient une.
 const cartes = services.map((service) => {
   const accroche = cartesAccueil.cards.find((c) => c.slug === service.data.slug);
-  // Textes alternatifs du frontmatter, appariés par nom de fichier.
   const legendes = service.data.sections.find((s) => s.type === 'realisations')?.photos ?? [];
   const [photo] = getServicePhotos(service.data.slug, legendes, 1);
 
@@ -44,9 +32,7 @@ const cartes = services.map((service) => {
     ordre: service.data.ordre,
     title: service.data.title,
     shortLabel: service.data.shortLabel,
-    // Accroche du document d'accueil si elle existe, sinon rien d'inventé.
     text: accroche?.text,
-    // Pas d'image sans alt propre : la tuile navy prend le relais.
     image: photo?.alt ? { src: photo.src, alt: photo.alt } : undefined,
   };
 });
@@ -91,36 +77,113 @@ const schema = {
   <Header />
 
   <main id="contenu">
-    <section class="border-b border-navy/10">
-      <div class="mx-auto max-w-6xl px-5 pb-12 pt-6 sm:px-8 sm:pb-16 sm:pt-8">
-        <Breadcrumb items={filAriane} class="mb-10 sm:mb-14" />
 
-        <p class="text-xs font-bold uppercase tracking-[0.14em] text-navy/70">Nos services</p>
+    {/* ─── HERO ─── */}
+    <section class="si-hero">
+      <div class="si-hero__bg" aria-hidden="true">
+        <div class="si-hero__blob si-hero__blob--1"></div>
+        <div class="si-hero__blob si-hero__blob--2"></div>
+        <div class="si-hero__grid"></div>
+      </div>
 
-        <h1 class="mt-5 max-w-[18ch] text-[2rem] font-bold leading-[1.08] tracking-tight text-navy text-balance sm:text-5xl lg:text-6xl">
+      <div class="si-hero__inner">
+        <Breadcrumb items={filAriane} ton="clair" class="mb-10 sm:mb-14" />
+
+        <div class="si-hero__pill">
+          <span class="si-hero__pill-dot" aria-hidden="true"></span>
+          <span>Paris & Île-de-France</span>
+        </div>
+
+        <h1 class="si-hero__h1">
           {cartesAccueil.title}
         </h1>
 
-        <p class="mt-6 max-w-[64ch] text-base leading-relaxed text-navy/75 text-pretty sm:text-lg">
-          {cartesAccueil.intro}
-        </p>
+        <p class="si-hero__intro">{cartesAccueil.intro}</p>
+
+        {/* Stats horizontales */}
+        <div class="si-hero__stats" aria-hidden="true">
+          {[
+            { val: '9', lbl: 'Prestations cordistes' },
+            { val: '2009', lbl: "Depuis" },
+            { val: '24h', lbl: 'Réponse devis' },
+            { val: '10 ans', lbl: 'Garantie décennale' },
+          ].map(s => (
+            <div class="si-hero__stat">
+              <span class="si-hero__stat-val">{s.val}</span>
+              <span class="si-hero__stat-lbl">{s.lbl}</span>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
 
-    <section class="mx-auto max-w-6xl px-5 py-14 sm:px-8 sm:py-20" aria-label="Liste des services">
-      <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {
-          cartes.map((carte) => (
-            <li class="flex">
+    {/* ─── GRILLE SERVICES ─── */}
+    <section class="si-grid-section" aria-label="Liste des services">
+      <div class="si-grid-section__inner">
+
+        <div class="si-grid-section__eyebrow">
+          <span class="si-grid-section__eyebrow-line" aria-hidden="true"></span>
+          Toutes nos prestations
+        </div>
+
+        <ul class="si-grid">
+          {cartes.map((carte, i) => (
+            <li class={`si-grid__item ${i === 0 ? 'si-grid__item--featured' : ''}`}>
               <ServiceCard
                 service={carte}
                 image={carte.image}
                 linkLabel={cartesAccueil.linkLabel}
+                featured={i === 0}
               />
             </li>
-          ))
-        }
-      </ul>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    {/* ─── WHY CORDISTES SECTION ─── */}
+    <section class="si-why">
+      <div class="si-why__inner">
+        <div class="si-why__eyebrow">
+          <span class="si-why__eyebrow-line" aria-hidden="true"></span>
+          Pourquoi les cordistes ?
+        </div>
+
+        <h2 class="si-why__title">
+          Sans échafaudage,<br/><span class="si-why__title-accent">sans compromis</span>
+        </h2>
+
+        <div class="si-why__grid">
+          {[
+            {
+              icon: '⚡',
+              title: 'Intervention rapide',
+              text: 'Aucune autorisation de voirie, aucun montage — nos cordistes déploient leur matériel en moins d\'une heure.',
+            },
+            {
+              icon: '💰',
+              title: 'Coût maîtrisé',
+              text: 'L\'accès sur cordes coûte 3 à 5× moins qu\'un échafaudage complet, pour un résultat identique ou supérieur.',
+            },
+            {
+              icon: '🎯',
+              title: 'Précision au centimètre',
+              text: 'Le cordiste travaille au contact direct de la surface — ce qui lui permet d\'intervenir là où aucune nacelle ne peut aller.',
+            },
+            {
+              icon: '🛡️',
+              title: 'Certifiés & assurés',
+              text: 'CQP, IRATA, CATSC, CACES — nos équipes sont qualifiées selon les standards les plus élevés du secteur.',
+            },
+          ].map(item => (
+            <div class="si-why__card">
+              <div class="si-why__card-icon" aria-hidden="true">{item.icon}</div>
+              <h3 class="si-why__card-title">{item.title}</h3>
+              <p class="si-why__card-text">{item.text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
     </section>
 
     <CtaBand
@@ -134,3 +197,340 @@ const schema = {
 
   <Footer />
 </Base>
+
+<style>
+/* ─── HERO ─────────────────────────────────────────────────────────────────── */
+.si-hero {
+  position: relative;
+  overflow: hidden;
+  background: #1a2039;
+  padding-bottom: 5rem;
+}
+
+.si-hero__bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.si-hero__blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+}
+
+.si-hero__blob--1 {
+  width: 700px;
+  height: 700px;
+  right: -200px;
+  top: -200px;
+  background: radial-gradient(circle, oklch(55% 0.22 40 / 0.1) 0%, transparent 70%);
+}
+
+.si-hero__blob--2 {
+  width: 400px;
+  height: 400px;
+  left: -100px;
+  bottom: -100px;
+  background: radial-gradient(circle, oklch(40% 0.12 260 / 0.15) 0%, transparent 70%);
+}
+
+.si-hero__grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(oklch(100% 0 0 / 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(100% 0 0 / 0.025) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+.si-hero__inner {
+  position: relative;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 0;
+}
+
+@media (min-width: 640px) {
+  .si-hero__inner {
+    padding: 2rem 2rem 0;
+  }
+}
+
+.si-hero__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.875rem;
+  border-radius: 9999px;
+  background: oklch(100% 0 0 / 0.06);
+  border: 1px solid oklch(100% 0 0 / 0.12);
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: oklch(100% 0 0 / 0.6);
+  margin-bottom: 1.5rem;
+}
+
+.si-hero__pill-dot {
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #f96500;
+  box-shadow: 0 0 6px #f96500;
+  animation: pulse-dot 2.4s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.85); }
+}
+
+.si-hero__h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2.25rem, 5.5vw, 4.25rem);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.0;
+  color: #ffffff;
+  max-width: 18ch;
+  text-wrap: balance;
+  margin-bottom: 1.5rem;
+}
+
+.si-hero__intro {
+  font-family: var(--font-sans);
+  font-size: 1.125rem;
+  font-weight: 300;
+  line-height: 1.7;
+  color: oklch(100% 0 0 / 0.65);
+  max-width: 58ch;
+  text-wrap: pretty;
+  margin-bottom: 3rem;
+}
+
+/* Stats bar */
+.si-hero__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  border-top: 1px solid oklch(100% 0 0 / 0.08);
+  padding-top: 2rem;
+}
+
+.si-hero__stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0 2rem 1rem 0;
+  border-right: 1px solid oklch(100% 0 0 / 0.08);
+  margin-right: 2rem;
+}
+
+.si-hero__stat:last-child {
+  border-right: none;
+}
+
+.si-hero__stat-val {
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: #f96500;
+  line-height: 1;
+}
+
+.si-hero__stat-lbl {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: oklch(100% 0 0 / 0.45);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ─── GRID SECTION ──────────────────────────────────────────────────────────── */
+.si-grid-section {
+  background: #f5f6f8;
+  padding: 5rem 0;
+}
+
+.si-grid-section__inner {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .si-grid-section__inner {
+    padding: 0 2rem;
+  }
+}
+
+.si-grid-section__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-display);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-orange-texte);
+  margin-bottom: 2.5rem;
+}
+
+.si-grid-section__eyebrow-line {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: var(--color-orange);
+  border-radius: 1px;
+}
+
+/* Grille asymétrique : 1ère carte en vedette, toutes les autres normales */
+.si-grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+  .si-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .si-grid {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: auto;
+  }
+  /* Première carte : grande, sur 2 colonnes et 2 rangées */
+  .si-grid__item--featured {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+}
+
+.si-grid__item {
+  display: flex;
+}
+
+/* ─── WHY SECTION ───────────────────────────────────────────────────────────── */
+.si-why {
+  background: #ffffff;
+  padding: 5rem 0;
+}
+
+.si-why__inner {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .si-why__inner {
+    padding: 0 2rem;
+  }
+}
+
+.si-why__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-display);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-orange-texte);
+  margin-bottom: 1rem;
+}
+
+.si-why__eyebrow-line {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: var(--color-orange);
+  border-radius: 1px;
+}
+
+.si-why__title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  color: var(--color-navy);
+  margin-bottom: 3rem;
+  text-wrap: balance;
+}
+
+.si-why__title-accent {
+  color: var(--color-orange-texte);
+}
+
+.si-why__grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+  .si-why__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .si-why__grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.si-why__card {
+  background: #f5f6f8;
+  border-radius: 16px;
+  padding: 1.75rem;
+  border: 1px solid transparent;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.si-why__card:hover {
+  border-color: oklch(26% 0.07 260 / 0.1);
+  box-shadow: 0 8px 32px oklch(26% 0.07 260 / 0.08);
+  transform: translateY(-2px);
+}
+
+.si-why__card-icon {
+  font-size: 1.75rem;
+  margin-bottom: 1rem;
+  line-height: 1;
+}
+
+.si-why__card-title {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--color-navy);
+  margin-bottom: 0.625rem;
+  line-height: 1.25;
+}
+
+.si-why__card-text {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 300;
+  line-height: 1.65;
+  color: oklch(26% 0.07 260 / 0.65);
+  text-wrap: pretty;
+}
+</style>

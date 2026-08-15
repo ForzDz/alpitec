@@ -3,23 +3,14 @@ import { Image } from 'astro:assets';
 import { serviceHref } from '../lib/content.js';
 
 /**
- * Carte service — image, titre, accroche, lien.
- *
- * Toute la carte est cliquable via l'extension du lien du titre (::after) :
- * une seule cible pour les lecteurs d'écran, une grande zone tactile au doigt.
- *
- * Plus de bordure : la carte tient par son ombre et son fond blanc. Au survol
- * elle monte de 3 px, l'ombre s'élargit et la photo zoome lentement — les
- * trois se déclenchent ensemble, sur la même durée.
- *
- * `image` est facultatif : les photos de chantier ne sont pas toutes triées.
- * En son absence, une tuile navy tient la place sans casser la grille.
+ * Carte service — premium redesign.
+ * Variante `featured` (1ère carte) : image en fond pleine hauteur,
+ * texte en overlay avec dégradé bas-haut, badge "01" orange.
+ * Variante normale : image en haut, texte en bas, hover élévation.
  */
 
-const { service, linkLabel = 'Voir le service', image, class: className = '' } = Astro.props;
+const { service, linkLabel = 'Voir le service', image, featured = false, class: className = '' } = Astro.props;
 
-// Tolère les deux formes : une entrée de la collection `services` (title,
-// shortLabel, intro) et une carte de l'accueil (label, text).
 const slug = service.slug;
 const title = service.title ?? service.label;
 const shortLabel = service.shortLabel ?? service.label ?? title;
@@ -27,12 +18,63 @@ const accroche = service.text ?? service.intro;
 const ordre = service.ordre;
 ---
 
-<article
-  class={`eleve group relative flex h-full flex-col overflow-hidden rounded-carte bg-blanc ${className}`}
->
-  <div class="photo photo-zoom relative aspect-[4/3]">
-    {
-      image ? (
+{featured ? (
+  /* ── CARTE VEDETTE : image plein fond + overlay ── */
+  <article class={`sc-featured group relative flex h-full w-full flex-col overflow-hidden rounded-2xl ${className}`}>
+    {/* Image de fond */}
+    <div class="sc-featured__img-wrap">
+      {image ? (
+        <Image
+          src={image.src}
+          alt={image.alt}
+          width={960}
+          widths={[480, 768, 960]}
+          sizes="(min-width: 1024px) 60vw, 92vw"
+          format="webp"
+          quality={72}
+          loading="eager"
+          decoding="async"
+          class="sc-featured__img"
+        />
+      ) : (
+        <div class="sc-featured__fallback" aria-hidden="true">
+          <span class="sc-featured__fallback-index">{String(ordre ?? 0).padStart(2, '0')}</span>
+        </div>
+      )}
+      {/* Overlay dégradé */}
+      <div class="sc-featured__overlay" aria-hidden="true"></div>
+    </div>
+
+    {/* Contenu */}
+    <div class="sc-featured__content">
+      <div class="sc-featured__badge" aria-hidden="true">
+        {String(ordre ?? 0).padStart(2, '0')}
+      </div>
+      <h3 class="sc-featured__title">
+        <a
+          href={serviceHref(slug)}
+          class="sc-featured__link after:absolute after:inset-0 after:content-[''] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orange"
+        >
+          {title}
+        </a>
+      </h3>
+      {accroche && (
+        <p class="sc-featured__accroche">{accroche}</p>
+      )}
+      <span class="sc-featured__cta">
+        {linkLabel}
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" class="sc-featured__arrow" aria-hidden="true">
+          <path d="M2 8h11M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+    </div>
+  </article>
+) : (
+  /* ── CARTE NORMALE ── */
+  <article class={`sc-card group relative flex h-full w-full flex-col overflow-hidden rounded-2xl bg-white ${className}`}>
+    {/* Zone image */}
+    <div class="sc-card__img-wrap">
+      {image ? (
         <Image
           src={image.src}
           alt={image.alt}
@@ -43,61 +85,313 @@ const ordre = service.ordre;
           quality={68}
           loading="lazy"
           decoding="async"
+          class="sc-card__img"
         />
       ) : (
-        /*
-          Pas encore de photo : plutôt qu'un cadre gris qui se lit comme une
-          image cassée, une tuile navy assumée — index, nom du service en
-          capitales. Ça ressemble à une fiche technique, pas à un gabarit
-          inachevé.
-        */
-        <div
-          class="flex h-full w-full flex-col justify-between bg-navy p-5"
-          aria-hidden="true"
-        >
-          <span class="font-display text-etiquette text-orange">
-            {String(ordre ?? 0).padStart(2, '0')}
-          </span>
-          <span class="max-w-[16ch] font-display text-[0.9375rem] font-bold uppercase leading-tight tracking-[0.08em] text-blanc/85 text-balance">
-            {shortLabel}
-          </span>
+        <div class="sc-card__fallback" aria-hidden="true">
+          <span class="sc-card__fallback-index">{String(ordre ?? 0).padStart(2, '0')}</span>
+          <span class="sc-card__fallback-label">{shortLabel}</span>
         </div>
-      )
-    }
-  </div>
+      )}
+      {/* Barre accent top */}
+      <div class="sc-card__accent-bar" aria-hidden="true"></div>
+    </div>
 
-  <div class="flex flex-1 flex-col gap-3 p-6 sm:p-7">
-    <h3 class="text-carte text-navy text-balance">
-      <a
-        href={serviceHref(slug)}
-        class="rounded-[2px] after:absolute after:inset-0 after:content-[''] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orange"
-      >
-        {title}
-      </a>
-    </h3>
-
-    {
-      accroche ? (
-        <p class="flex-1 text-petit font-light text-navy/75 text-pretty">{accroche}</p>
+    {/* Texte */}
+    <div class="sc-card__body">
+      <h3 class="sc-card__title">
+        <a
+          href={serviceHref(slug)}
+          class="sc-card__link after:absolute after:inset-0 after:content-[''] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orange"
+        >
+          {title}
+        </a>
+      </h3>
+      {accroche ? (
+        <p class="sc-card__accroche">{accroche}</p>
       ) : (
         <div class="flex-1" />
-      )
-    }
+      )}
+      <span class="sc-card__cta">
+        {linkLabel}
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" class="sc-card__arrow" aria-hidden="true">
+          <path d="M2 8h11M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+    </div>
+  </article>
+)}
 
-    <span
-      class="mt-1 inline-flex items-center gap-2 font-display text-[0.9375rem] font-bold tracking-tight text-navy transition-colors duration-200 group-hover:text-orange"
-    >
-      {linkLabel}
-      <svg
-        aria-hidden="true"
-        viewBox="0 0 16 16"
-        class="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-1"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-      >
-        <path d="M2 8h11M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round" />
-      </svg>
-    </span>
-  </div>
-</article>
+<style>
+/* ─── CARTE VEDETTE ─────────────────────────────────────────────────────────── */
+.sc-featured {
+  position: relative;
+  min-height: 420px;
+  border: 1px solid oklch(26% 0.07 260 / 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+.sc-featured:hover {
+  box-shadow: 0 16px 48px oklch(26% 0.07 260 / 0.16);
+}
+
+.sc-featured__img-wrap {
+  position: absolute;
+  inset: 0;
+}
+
+.sc-featured__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+  transition: transform 7s ease-out;
+}
+
+.sc-featured:hover .sc-featured__img {
+  transform: scale(1.04);
+}
+
+.sc-featured__fallback {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, var(--color-navy) 0%, var(--color-navy-profond) 100%);
+  display: flex;
+  align-items: flex-end;
+  padding: 2rem;
+}
+
+.sc-featured__fallback-index {
+  font-family: var(--font-display);
+  font-size: 5rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: oklch(100% 0 0 / 0.08);
+  line-height: 1;
+}
+
+.sc-featured__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    #1a2039 0%,
+    oklch(14% 0.07 260 / 0.85) 30%,
+    oklch(14% 0.07 260 / 0.4) 60%,
+    transparent 100%
+  );
+}
+
+.sc-featured__content {
+  position: relative;
+  margin-top: auto;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  z-index: 1;
+}
+
+.sc-featured__badge {
+  font-family: var(--font-display);
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: #f96500;
+  text-transform: uppercase;
+}
+
+.sc-featured__title {
+  font-family: var(--font-display);
+  font-size: clamp(1.375rem, 2.5vw, 1.75rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+  line-height: 1.15;
+  text-wrap: balance;
+  margin: 0;
+}
+
+.sc-featured__link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.sc-featured__accroche {
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  font-weight: 300;
+  line-height: 1.6;
+  color: oklch(100% 0 0 / 0.65);
+  text-wrap: pretty;
+  max-width: 48ch;
+}
+
+.sc-featured__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #f96500;
+  transition: gap 0.2s ease;
+}
+
+.sc-featured:hover .sc-featured__cta {
+  gap: 0.65rem;
+}
+
+.sc-featured__arrow {
+  width: 13px;
+  height: 13px;
+  transition: transform 0.2s ease;
+}
+
+.sc-featured:hover .sc-featured__arrow {
+  transform: translateX(3px);
+}
+
+/* ─── CARTE NORMALE ──────────────────────────────────────────────────────────── */
+.sc-card {
+  border: 1px solid oklch(26% 0.07 260 / 0.07);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.sc-card:hover {
+  border-color: oklch(26% 0.07 260 / 0.14);
+  box-shadow: 0 8px 32px oklch(26% 0.07 260 / 0.1);
+  transform: translateY(-2px);
+}
+
+.sc-card__img-wrap {
+  position: relative;
+  aspect-ratio: 4/3;
+  overflow: hidden;
+}
+
+.sc-card__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 6s ease-out;
+}
+
+.sc-card:hover .sc-card__img {
+  transform: scale(1.06);
+}
+
+.sc-card__fallback {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, var(--color-navy) 0%, var(--color-navy-profond) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1.25rem;
+}
+
+.sc-card__fallback-index {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #f96500;
+}
+
+.sc-card__fallback-label {
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: oklch(100% 0 0 / 0.85);
+  text-wrap: balance;
+  max-width: 16ch;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.sc-card__accent-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(to right, #f96500, transparent);
+  border-radius: 2px 2px 0 0;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.sc-card:hover .sc-card__accent-bar {
+  opacity: 1;
+}
+
+.sc-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  padding: 1.25rem 1.5rem 1.5rem;
+  flex: 1;
+}
+
+.sc-card__title {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--color-navy);
+  line-height: 1.25;
+  text-wrap: balance;
+  margin: 0;
+}
+
+.sc-card__link {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.sc-card:hover .sc-card__link {
+  color: var(--color-orange-texte);
+}
+
+.sc-card__accroche {
+  flex: 1;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 300;
+  line-height: 1.65;
+  color: oklch(26% 0.07 260 / 0.65);
+  text-wrap: pretty;
+}
+
+.sc-card__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--color-navy);
+  transition: color 0.2s ease, gap 0.2s ease;
+}
+
+.sc-card:hover .sc-card__cta {
+  color: var(--color-orange-texte);
+  gap: 0.6rem;
+}
+
+.sc-card__arrow {
+  width: 12px;
+  height: 12px;
+  transition: transform 0.2s ease;
+}
+
+.sc-card:hover .sc-card__arrow {
+  transform: translateX(2px);
+}
+</style>

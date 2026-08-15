@@ -1,4 +1,4 @@
-﻿---
+---
 import { Image, getImage } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
@@ -190,24 +190,9 @@ const schema = {
       le padding interne la compense au pixel près : la vidéo passe derrière le
       header sans qu'aucun contenu ne bouge.
     */}
-    <section class="relative isolate -mt-16 overflow-hidden bg-navy sm:-mt-20">
+    <section class="relative isolate -mt-16 min-h-[100svh] overflow-hidden bg-navy flex flex-col justify-center sm:-mt-20">
       {/*
         Fond du hero.
-
-        Sur mobile, seule l'image est chargée : `autoplay` annule `preload`, donc
-        déclarer une <video> ici coûterait 467 Ko à chaque première visite pour
-        un décor. La balise est injectée en JavaScript à partir de 640 px de
-        large, et jamais si le visiteur demande moins de mouvement.
-
-        Cadrage. La source est en portrait (918 × 1536) et le cordiste s'y
-        tient autour de 71 % en largeur, 57 % en hauteur.
-
-        Sur mobile, le cadre est plus étroit que l'image : c'est la largeur qui
-        est rognée, donc X compte — 72 % amène le cordiste dans le champ.
-        À partir de `sm`, le cadre devient plus large que haut : toute la
-        largeur est visible et c'est la hauteur qui est rognée, X n'a plus
-        d'effet et seul Y décide. 52 % le place légèrement au-dessus du centre,
-        hors de la zone où les badges viennent se poser.
       */}
       <div
         class="absolute inset-0 -z-10 overflow-hidden"
@@ -231,57 +216,17 @@ const schema = {
       </div>
 
       {/*
-        VOILE — mesuré, pas estimé.
-
-        Le pixel le plus clair de la vidéo sous la zone de texte est
-        rgb(192, 212, 230), soit une luminance de 0,640 (relevé sur six images
-        réparties sur les cinq secondes). Pour que du blanc y tienne le seuil
-        AA du corps de texte, il faut au moins 55 % de navy par-dessus. Les
-        valeurs ci-dessous ne descendent jamais sous 74 % là où il y a du
-        texte, ce qui laisse une marge confortable.
-
-        Deux dispositifs distincts, parce que les deux cadrages n'ont rien à
-        voir :
-
-        · Mobile — le texte occupe toute la largeur, un dégradé horizontal
-          n'aurait aucun sens. Dégradé vertical, allégé au milieu pour laisser
-          voir le cordiste, redensifié en bas sous les boutons.
-
-        · Sous `md` — dégradé VERTICAL. Un dégradé horizontal n'a pas de sens
-          ici : le texte occupe toute la largeur, il n'existe aucun « côté
-          droit » libre. Le voile est donc dense en haut, derrière le surtitre
-          et le titre, et s'efface vers le bas où le cordiste apparaît en
-          clair. Les paliers sont calés sur le contenu réel, pas sur des
-          fractions rondes : plein jusqu'au bas des badges, puis chute.
-
-        · À partir de `md` — dégradé HORIZONTAL, inchangé. Opaque à gauche
-          derrière le texte, totalement transparent à partir de 64 %, donc sur
-          les 36 % droits où se tient le cordiste.
+        VOILE — Voile à gauche derrière les textes et boutons, transparent à droite sur le cordiste.
       */}
       <div
         aria-hidden="true"
-        class="absolute inset-0 -z-10 md:hidden"
-        style="background-image: linear-gradient(to bottom, rgb(35 43 74 / 0.94) 0%, rgb(35 43 74 / 0.92) 40%, rgb(35 43 74 / 0.74) 50%, rgb(35 43 74 / 0.30) 62%, rgb(35 43 74 / 0.10) 72%, transparent 80%)"
-      >
-      </div>
-      <div
-        aria-hidden="true"
-        class="absolute inset-0 -z-10 hidden md:block"
-        style="background-image: linear-gradient(to right, rgb(35 43 74 / 0.95) 0%, rgb(35 43 74 / 0.90) 30%, rgb(35 43 74 / 0.82) 46%, rgb(35 43 74 / 0.62) 54%, rgb(35 43 74 / 0.48) 58.5%, rgb(35 43 74 / 0.12) 62%, transparent 64%)"
+        class="absolute inset-0 -z-10"
+        style="background-image: linear-gradient(to right, rgb(35 43 74 / 0.95) 0%, rgb(35 43 74 / 0.90) 30%, rgb(35 43 74 / 0.78) 46%, rgb(35 43 74 / 0.42) 54%, rgb(35 43 74 / 0.10) 60%, transparent 64%)"
       >
       </div>
 
       {/*
-        BANDE DU HEADER — le point que le dégradé horizontal fragilise.
-
-        Le menu, le bloc téléphone et le bouton de devis sont alignés à droite,
-        c'est-à-dire précisément dans les 40 % devenus transparents. Sans ce
-        voile, du texte blanc s'y retrouverait sur une image de ciel : 2,5:1.
-
-        Il tient donc 78 % d'opacité sur toute la hauteur du header (80 px)
-        avant de s'éteindre à 176 px. Un simple `from-navy/70 to-transparent`
-        ne suffisait pas : l'interpolation étant linéaire, il ne restait que
-        26 % au bas du header.
+        BANDE DU HEADER
       */}
       <div
         aria-hidden="true"
@@ -301,80 +246,52 @@ const schema = {
       ></span>
 
       {/*
-        pt = hauteur du header (4rem puis 5rem) + le py d'origine, au pixel près.
-
-        pb sur mobile : 6,5 rem, soit la barre d'action fixe (3,5 rem) plus une
-        respiration. À 4 rem, les badges arrivaient à 8 px de la barre quand on
-        atteignait le bas du hero — assez pour qu'ils paraissent collés dessous
-        sur un écran de 320 px. Au-delà de `sm` la barre n'existe plus et on
-        reprend le rythme normal.
+        Conteneur hero
       */}
-      <div class="mx-auto max-w-6xl px-5 pb-[6.5rem] pt-[6.5rem] sm:px-8 md:pb-24 md:pt-[11rem] lg:pb-32 lg:pt-[13rem]">
+      <div class="mx-auto w-full max-w-6xl px-5 pb-[4.5rem] pt-[5.5rem] sm:px-8 md:pb-24 md:pt-[11rem] lg:pb-32 lg:pt-[13rem]">
         {/*
-          LA CORDE, version longue — la seule de la page. Elle descend d'un
-          seul trait du surtitre jusqu'aux boutons et sort du cadre en fondu.
-          Ailleurs sur l'accueil, seul le bandeau de conversion en reprend une
-          version courte : répétée à chaque section, elle redeviendrait le
-          filet décoratif qu'on vient de supprimer.
+          LA CORDE
         */}
         <div class="corde corde-descend">
           <p class="max-w-[24ch] font-display text-etiquette uppercase text-blanc/85 text-balance sm:max-w-none">
             {d.hero.surtitre}
           </p>
 
-          {/*
-            `text-affiche` plafonne à 4,5 rem ; on redescend sous 360 px de
-            large, où sept lignes de titre poussaient le bouton de devis sous
-            la ligne de flottaison.
-          */}
           <h1
-            class="mt-7 max-w-[16ch] text-[clamp(2.125rem,9.5vw,4.5rem)] font-extrabold leading-[0.99] tracking-[-0.02em] text-blanc text-balance md:mt-8 md:max-w-[13ch]"
+            class="mt-5 max-w-[15ch] text-[clamp(2rem,8.5vw,4.5rem)] font-extrabold leading-[0.99] tracking-[-0.02em] text-blanc text-balance md:mt-8 md:max-w-[13ch]"
             data-reveal="titre"
           >
             {d.hero.h1}
           </h1>
 
-          {/*
-            L'accroche n'est plus affichée sur mobile : sous le H1 de quatre
-            lignes, elle en ajoutait trois et repoussait les boutons. Elle
-            reste dans le HTML — masquée en CSS, pas retirée du DOM — donc les
-            moteurs la lisent toujours, et le H1 porte de toute façon
-            « travaux en hauteur à Paris ».
+          {/* Petite écriture descriptive sur mobile */}
+          <p class="mt-3.5 max-w-[26ch] text-[0.875rem] font-light text-blanc/85 leading-relaxed md:hidden">
+            Sans échafaudage coûteux · Intervention rapide à Paris &amp; IDF.
+          </p>
 
-            `introCourte` du contenu n'est donc plus rendue nulle part sur
-            cette page ; elle reste dans accueil.md pour un usage ultérieur.
-          */}
           <p class="mt-7 hidden max-w-[48ch] text-corps-large font-light text-blanc/85 text-pretty md:block">
             {d.hero.intro}
           </p>
 
           {/*
-            Deux boutons empilés, pleine largeur : le devis en aplat orange,
-            le numéro juste en dessous en contour clair. Le numéro est écrit en
-            toutes lettres plutôt que « Nous appeler » — un visiteur qui hésite
-            à cliquer peut le composer directement.
-
-            Le bloc est borné à `max-w-md` : au-delà, sur un hero en `max-w-6xl`,
-            un aplat orange de 1 150 px de large cesse de se lire comme un
-            bouton. La contrainte tombe si tu veux vraiment du bord à bord.
+            Boutons compacts sur mobile (max-w-[170px]) pour ne pas toucher le cordiste
           */}
-          <div class="mt-7 flex max-w-md flex-col gap-2.5 md:mt-9 md:gap-3">
+          <div class="mt-5 flex max-w-[170px] flex-col gap-2 sm:max-w-none sm:flex-row sm:items-center md:mt-9 md:gap-3">
             <Button
               href="#devis"
               variant="primaire"
               size="lg"
-              class="w-full"
+              class="w-full sm:w-auto text-sm sm:text-base py-2.5 sm:py-3.5"
               data-cta="devis-hero"
             >
-              {d.hero.buttons[0].label}
-              {/* Flèche décorative : hors du contenu, jamais lue à voix haute. */}
+              Devis gratuit
               <span aria-hidden="true">→</span>
             </Button>
             <Button
               href={`tel:${site.telephone.lien}`}
               variant="clair"
               size="lg"
-              class="w-full bg-navy/70 backdrop-blur-sm md:bg-transparent md:backdrop-blur-none"
+              class="w-full bg-navy/70 backdrop-blur-sm sm:w-auto md:bg-transparent md:backdrop-blur-none text-xs sm:text-base py-2 sm:py-3.5"
               data-cta="tel-hero"
             >
               {site.telephone.affichageInternational}
@@ -383,23 +300,25 @@ const schema = {
         </div>
 
         {/*
-          Badges. Sous `md`, ils passent en simple ligne séparée par des points
-          orange : trois pastilles y prenaient deux rangées et 94 px de haut,
-          soit exactement la place qui manquait pour dégager le bas de l'image.
-          À partir de `md` ils redeviennent les pastilles sur navy éclairci.
+          Badges de réassurance : fond transparent, icône verte certifiée
         */}
-        <ul class="mt-8 flex flex-wrap items-center gap-x-3 gap-y-2 md:mt-14 md:gap-2.5">
+        <ul class="mt-5 flex max-w-[200px] flex-col gap-2 sm:max-w-none sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-4 sm:gap-y-2 md:mt-14">
           {
-            d.hero.badges.map((badge, i) => (
-              <li class="flex items-center gap-2.5 rounded-tuile bg-navy-clair/80 px-3 py-2 backdrop-blur-sm md:bg-navy-clair/70 md:px-4 md:py-2.5">
-                {/* Séparateur sur mobile, marqueur de puce au-delà. */}
-                <span
+            d.hero.badges.map((badge) => (
+              <li class="flex items-center gap-2 text-blanc">
+                {/* Icône verte certifiée / vérifiée */}
+                <svg
+                  class="size-4 shrink-0 text-emerald-400"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
                   aria-hidden="true"
-                  class:list={[
-                    'shrink-0 rounded-full bg-orange',
-                    'h-3 w-0.5 md:h-3.5',
-                  ]}
-                />
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
                 <span class="font-display text-[0.8125rem] font-bold tracking-tight text-blanc">
                   {badge}
                 </span>
@@ -413,47 +332,25 @@ const schema = {
     {/*
       ------------------------------------------------------ 2. Socle chiffré
 
-      Collé au hero, sans respiration entre les deux : ce n'est pas une section
-      autonome mais la plinthe du hero. D'où le navy PROFOND — sur du navy
-      identique la jonction disparaîtrait, et une couleur franchement autre
-      créerait la séparation qu'on cherche justement à éviter. Le filet orange
-      en tête marque la limite sans la trancher.
+      Cartes modernes translucides en verre dépoli avec bordures subtiles.
     */}
-    <section class="relative overflow-hidden bg-navy-profond" aria-labelledby="chiffres">
-      <span
-        aria-hidden="true"
-        class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-orange/50 to-transparent"
-      ></span>
-      <span
-        aria-hidden="true"
-        class="pointer-events-none absolute -left-40 top-1/2 size-[32rem] -translate-y-1/2 rounded-full bg-orange/10 blur-3xl"
-      ></span>
-
-      <div class="relative mx-auto max-w-6xl px-5 py-[var(--espace-section-serre)] sm:px-8">
+    <section class="relative border-y border-blanc/10 bg-gradient-to-b from-[#13192c] via-navy-profond to-[#13192c] py-12 sm:py-16" aria-labelledby="chiffres">
+      <div class="relative mx-auto max-w-6xl px-5 sm:px-8">
         <h2 id="chiffres" class="sr-only">{d.chiffres.title}</h2>
 
         {/*
           Les chiffres s'incrémentent quand la section entre à l'écran.
-
-          La valeur définitive est écrite dans le HTML, jamais calculée : sans
-          JavaScript, ou avec `prefers-reduced-motion`, elle s'affiche
-          directement. Le script ne fait que remplacer temporairement le texte
-          pendant le comptage, puis restitue la chaîne d'origine au caractère
-          près — c'est elle qui porte l'espace de milliers et le « + ».
-
-          `tabular-nums` fige la largeur des chiffres : sans lui, « 1 » et « 7 »
-          n'ont pas la même chasse et le nombre tremble pendant l'animation.
         */}
         <dl
-          class="grid grid-cols-2 gap-x-8 gap-y-12 lg:grid-cols-4"
+          class="grid grid-cols-2 gap-3.5 sm:gap-6 lg:grid-cols-4"
           data-chiffres
           data-reveal-groupe
         >
           {
             d.chiffres.items.map((item) => (
-              <div>
+              <div class="flex flex-col justify-between rounded-2xl border border-blanc/[0.08] bg-blanc/[0.03] p-4 sm:p-6 backdrop-blur-sm transition-colors duration-200 hover:border-blanc/20 hover:bg-blanc/[0.06]">
                 <dt class="sr-only">{item.label}</dt>
-                <dd>
+                <dd class="flex flex-col">
                   {/*
                     La valeur est écrite deux fois : une version lue par les
                     lecteurs d'écran, toujours exacte, et la version affichée
@@ -464,16 +361,16 @@ const schema = {
                   <span class="sr-only">{item.valeur}</span>
                   <span
                     aria-hidden="true"
-                    class="block font-display text-[clamp(2.5rem,7vw,3.75rem)] font-extrabold leading-[0.9] tracking-[-0.025em] tabular-nums text-blanc"
+                    class="block font-display text-[clamp(1.875rem,5vw,3rem)] font-extrabold leading-[1] tracking-tight tabular-nums text-blanc"
                     data-chiffre
                   >
                     {item.valeur}
                   </span>
                   <span
                     aria-hidden="true"
-                    class="mt-5 block h-0.5 w-10 rounded-full bg-orange"
+                    class="mt-2.5 block h-0.5 w-6 rounded-full bg-orange sm:mt-4 sm:w-8"
                   ></span>
-                  <span class="mt-4 block text-[0.8125rem] font-light leading-snug text-blanc/70 text-pretty">
+                  <span class="mt-2.5 block text-[0.8125rem] font-light leading-snug text-blanc/80 text-pretty sm:mt-3.5">
                     {item.label}
                   </span>
                 </dd>
@@ -509,7 +406,55 @@ const schema = {
       orange cesserait d'être un accent.
     */}
 
-    {/* ------------------------------------------------------ 2. Services */}
+    {/* --------------------------------------------- 3. Notre Méthode en 4 étapes */}
+    <section
+      class="relative bg-gris py-[var(--espace-section)]"
+      aria-labelledby="methode"
+    >
+      <div class="mx-auto max-w-6xl px-5 sm:px-8">
+        <div class="grid gap-x-16 gap-y-8 lg:grid-cols-12">
+          <TitreSection texte={d.process.title} id="methode" class="max-w-[14ch] lg:col-span-5" data-reveal="titre" />
+          <p class="max-w-[56ch] self-end text-corps font-light text-navy/75 text-pretty lg:col-span-7" data-reveal>
+            {d.process.intro}
+          </p>
+        </div>
+
+        <div class="mt-14" data-etapes>
+          <ol class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4" data-reveal-groupe>
+          {
+            d.process.steps.map((step, i) => (
+              <li class="group relative flex flex-col justify-between rounded-2xl border border-gris-bord bg-blanc p-6 shadow-repos transition-all duration-300 hover:-translate-y-1 hover:border-orange/30 hover:shadow-eleve">
+                <div>
+                  <div class="flex items-center justify-between">
+                    <span class="inline-flex size-9 items-center justify-center rounded-xl bg-orange font-display text-sm font-bold text-navy shadow-sm">
+                      0{i + 1}
+                    </span>
+                    <span class="font-display text-[0.6875rem] font-bold uppercase tracking-wider text-navy/50">
+                      Étape 0{i + 1}
+                    </span>
+                  </div>
+
+                  <h3 class="mt-5 text-carte font-bold text-navy text-balance group-hover:text-orange transition-colors">
+                    {step.label}
+                  </h3>
+
+                  <p class="mt-3 text-petit font-light leading-relaxed text-navy/75 text-pretty">
+                    {step.text}
+                  </p>
+                </div>
+
+                <div class="mt-6 flex items-center gap-1.5 border-t border-gris-bord/60 pt-4 text-xs font-semibold text-orange">
+                  <span>{i === 0 ? 'Réponse sous 24h' : i === 1 ? 'Chiffrage gratuit' : i === 2 ? 'Normes sécurité' : 'Garantie décennale'}</span>
+                </div>
+              </li>
+            ))
+          }
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    {/* ------------------------------------------------------ 4. Services */}
     <section
       class="mx-auto max-w-6xl px-5 py-[var(--espace-section)] sm:px-8"
       aria-labelledby="services"
@@ -533,34 +478,11 @@ const schema = {
     </section>
 
     {/*
-      ------------------------------------------------- 4. Bande de chantiers
-
-      LA RESPIRATION de la page : pleine largeur, bord à bord, sans titre ni
-      texte par-dessus. Ces photos ne portent pas de discours — elles montrent
-      le métier, ce qu'aucun paragraphe ne fait à leur place.
-
-      La première occupe deux colonnes en 16/9, les autres suivent en 4/3 :
-      l'œil entre par une grande image, pas par une rangée de vignettes égales.
-      Traitement unifié par `.photo` (contraste +8 %, saturation −5 %, voile
-      navy 6 %) — dix chantiers photographiés dans dix conditions finissent par
-      former une série.
+      ------------------------------------------------- 5. Bande de chantiers
     */}
     {
       photosAccueil.length > 0 && (
         <section class="bg-navy" aria-label="Chantiers ALPITEC">
-          {/*
-            Deux rangées plutôt qu'une grille unique : avec quatre photos, une
-            première image à cheval sur deux colonnes laissait la quatrième
-            seule sur une deuxième rangée, orpheline et d'un autre format.
-            Ici la grande photo occupe sa propre rangée pleine largeur, et les
-            suivantes forment un triptyque en dessous.
-          */}
-          {/*
-            La seule photo du site à porter un parallax : elle est pleine
-            largeur, c'est là que le décalage se lit comme de la profondeur
-            plutôt que comme un effet. L'image est tirée à 115 % par la classe
-            `.parallax` que le script ajoute, donc aucun bord n'apparaît.
-          */}
           <div class="photo aspect-[4/3] w-full sm:aspect-[16/9] sm:max-h-[68vh]" data-parallax>
             <Image
               src={photosAccueil[0].src}
@@ -579,9 +501,6 @@ const schema = {
             <ul
               class:list={[
                 'mt-1 grid grid-cols-2 gap-1',
-                // La grille se cale sur le nombre restant : à trois photos on
-                // passe en trois colonnes, à deux on en garde deux, et aucune
-                // case ne reste vide au bout de la rangée.
                 reste.length % 3 === 0 ? 'lg:grid-cols-3' : 'lg:grid-cols-2',
               ]}
             >
@@ -589,8 +508,6 @@ const schema = {
                 <li
                   class:list={[
                     'relative',
-                    // Nombre impair : la dernière prend toute la largeur sur
-                    // mobile plutôt que de laisser une case vide à côté d'elle.
                     resteImpair && i === reste.length - 1 && 'col-span-2 lg:col-span-1',
                   ]}
                 >
@@ -615,11 +532,7 @@ const schema = {
       )
     }
 
-    {/* ------------------------------------------------ 5. Moyens d'accès */}
-    {/*
-      Deux colonnes asymétriques : le titre tient seul à gauche et reste collé
-      pendant que les trois moyens défilent à droite.
-    */}
+    {/* ------------------------------------------------ 6. Moyens d'accès */}
     <section
       class="mx-auto max-w-6xl px-5 py-[var(--espace-section)] sm:px-8"
       aria-labelledby="moyens"
@@ -654,15 +567,9 @@ const schema = {
       </div>
     </section>
 
-    {/* ---------------------------------------------- 6. Certifications */}
-    {/*
-      Plaque de qualification, pas grille de cartes : c'est le bloc qu'un
-      conducteur de travaux lit en premier quand il vérifie un sous-traitant.
-      Acronymes en très gros sur navy éclairci, chiffre de rang, intro en
-      vis-à-vis du titre plutôt qu'au-dessus.
-    */}
-    <section class="bg-navy text-blanc" aria-labelledby="certifications">
-      <div class="mx-auto max-w-6xl px-5 py-[var(--espace-section)] sm:px-8">
+    {/* ---------------------------------------------- 7. Certifications & Habilitations */}
+    <section class="border-y border-blanc/10 bg-gradient-to-b from-[#11172A] via-navy to-[#11172A] text-blanc py-[var(--espace-section)]" aria-labelledby="certifications">
+      <div class="mx-auto max-w-6xl px-5 sm:px-8">
         <div class="grid gap-x-16 gap-y-8 lg:grid-cols-12">
           <TitreSection
             texte={d.certifications.title}
@@ -675,80 +582,38 @@ const schema = {
           </p>
         </div>
 
-        <dl class="mt-16 grid gap-3 sm:grid-cols-2 lg:grid-cols-4" data-reveal-groupe>
+        <dl class="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4" data-reveal-groupe>
           {
             d.certifications.items.map((item, i) => (
-              <div class="rounded-carte bg-navy-clair p-6">
-                {/*
-                  Rang en blanc, pas en orange : sur le navy éclairci l'orange
-                  tombe à 3,7:1 pour 11 px. La règle du site vaut aussi pour un
-                  élément décoratif — pas d'orange en texte sous 24 px.
-                */}
-                <span aria-hidden="true" class="block font-display text-etiquette text-blanc/70">
-                  {String(i + 1).padStart(2, '0')}
-                </span>
-                <dt class="mt-5 font-display text-[1.75rem] font-extrabold leading-none tracking-[-0.02em] sm:text-3xl">
-                  {item.label}
-                </dt>
-                <dd class="mt-3 text-[0.8125rem] font-light leading-snug text-blanc/70 text-pretty">
-                  {item.text}
-                </dd>
+              <div class="group relative flex flex-col justify-between rounded-2xl border border-blanc/10 bg-blanc/[0.04] p-6 shadow-eleve backdrop-blur-md transition-all duration-300 hover:border-orange/40 hover:bg-blanc/[0.07]">
+                <div>
+                  <div class="flex items-center justify-between">
+                    <span class="inline-flex size-9 items-center justify-center rounded-xl bg-navy-clair border border-blanc/15 text-emerald-400">
+                      <svg class="size-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M10 1a.75.75 0 01.75.75v.56a9.5 9.5 0 005.44 5.44h.56a.75.75 0 01.75.75v3.5c0 5.42-3.8 9.55-7.25 10.93a.75.75 0 01-.5 0C6.3 20.8 2.5 16.67 2.5 11.25V8.25a.75.75 0 01.75-.75h.56A9.5 9.5 0 009.25 2.06v-.56A.75.75 0 0110 1zm2.53 7.22a.75.75 0 00-1.06-1.06L9 9.69 7.53 8.22a.75.75 0 00-1.06 1.06l2 2a.75.75 0 001.06 0l4-4z" clip-rule="evenodd" />
+                      </svg>
+                    </span>
+                    <span class="rounded-full bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-0.5 text-[0.6875rem] font-bold text-emerald-400 uppercase tracking-wider">
+                      Certifié
+                    </span>
+                  </div>
+
+                  <dt class="mt-5 font-display text-2xl font-extrabold tracking-tight text-blanc group-hover:text-orange transition-colors">
+                    {item.label}
+                  </dt>
+
+                  <dd class="mt-2 text-[0.8125rem] font-light leading-relaxed text-blanc/75 text-pretty">
+                    {item.text}
+                  </dd>
+                </div>
+
+                <div class="mt-6 border-t border-blanc/10 pt-3.5 text-xs text-blanc/50 font-medium">
+                  {i === 0 ? 'Formation d\'État cordiste' : i === 1 ? 'Standard international' : i === 2 ? 'Sécurité hauteur agréée' : 'Conducteur qualifié'}
+                </div>
               </div>
             ))
           }
         </dl>
-      </div>
-    </section>
-
-    {/* --------------------------------------------- 7. Comment ça marche */}
-    {/* Grille décalée : une étape sur deux descend d'un demi-pas sur écran
-        large, la lecture cesse d'être une rangée de cases alignées. */}
-    <section
-      class="jonction relative bg-gris"
-      style="--jonction-de: var(--color-blanc)"
-      aria-labelledby="methode"
-    >
-      {/* La corde traverse la jonction : elle file d'une section à l'autre
-          au lieu de s'arrêter au bord. Deux par page, pas davantage. */}
-      <span aria-hidden="true" class="corde-jonction"></span>
-
-      <div class="mx-auto max-w-6xl px-5 py-[var(--espace-section)] sm:px-8">
-        <div class="grid gap-x-16 gap-y-8 lg:grid-cols-12">
-          <TitreSection texte={d.process.title} id="methode" class="max-w-[14ch] lg:col-span-5" data-reveal="titre" />
-          <p class="max-w-[56ch] self-end text-corps font-light text-navy/75 text-pretty lg:col-span-7" data-reveal>
-            {d.process.intro}
-          </p>
-        </div>
-
-        {/*
-          Ligne de progression, mobile uniquement. La grille reste à UNE colonne
-          jusqu'à `md` — au-delà le rail disparaît, et une ligne verticale le
-          long de deux colonnes n'aurait aucun sens.
-        */}
-        <div class="etapes mt-16" data-etapes>
-          <span class="rail" aria-hidden="true" data-rail>
-            <span class="rail-progression"></span>
-          </span>
-
-          <ol class="grid gap-6 md:grid-cols-2 lg:grid-cols-4" data-reveal-groupe>
-          {
-            d.process.steps.map((step, i) => (
-              <li class:list={['etape eleve rounded-carte bg-blanc p-6', i % 2 === 1 && 'lg:mt-12']}>
-                <TuileIcone
-                  variant={i === 0 ? 'orange' : 'navy'}
-                  taille="sm"
-                  class="etape-point"
-                >
-                  <span class="font-display text-[0.8125rem] font-bold">{i + 1}</span>
-                </TuileIcone>
-                <p class="mt-5 font-display text-etiquette uppercase text-navy/70">{step.step}</p>
-                <h3 class="mt-2 text-carte text-navy text-balance">{step.label}</h3>
-                <p class="mt-3 text-petit font-light text-navy/75 text-pretty">{step.text}</p>
-              </li>
-            ))
-          }
-          </ol>
-        </div>
       </div>
     </section>
 
@@ -1061,7 +926,7 @@ const schema = {
       video.playsInline = true;
       video.tabIndex = -1;
       video.setAttribute('aria-hidden', 'true');
-      video.className = 'absolute inset-0 h-full w-full object-cover';
+      video.className = 'absolute inset-0 h-full w-full object-cover object-[72%_78%] md:object-[50%_52%]';
       fond.appendChild(video);
     };
 
