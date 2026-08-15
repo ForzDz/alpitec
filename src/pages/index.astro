@@ -1,4 +1,4 @@
----
+﻿---
 import { Image, getImage } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
@@ -406,55 +406,7 @@ const schema = {
       orange cesserait d'être un accent.
     */}
 
-    {/* --------------------------------------------- 3. Notre Méthode en 4 étapes */}
-    <section
-      class="relative bg-gris py-[var(--espace-section)]"
-      aria-labelledby="methode"
-    >
-      <div class="mx-auto max-w-6xl px-5 sm:px-8">
-        <div class="grid gap-x-16 gap-y-8 lg:grid-cols-12">
-          <TitreSection texte={d.process.title} id="methode" class="max-w-[14ch] lg:col-span-5" data-reveal="titre" />
-          <p class="max-w-[56ch] self-end text-corps font-light text-navy/75 text-pretty lg:col-span-7" data-reveal>
-            {d.process.intro}
-          </p>
-        </div>
-
-        <div class="mt-14" data-etapes>
-          <ol class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4" data-reveal-groupe>
-          {
-            d.process.steps.map((step, i) => (
-              <li class="group relative flex flex-col justify-between rounded-2xl border border-gris-bord bg-blanc p-6 shadow-repos transition-all duration-300 hover:-translate-y-1 hover:border-orange/30 hover:shadow-eleve">
-                <div>
-                  <div class="flex items-center justify-between">
-                    <span class="inline-flex size-9 items-center justify-center rounded-xl bg-orange font-display text-sm font-bold text-navy shadow-sm">
-                      0{i + 1}
-                    </span>
-                    <span class="font-display text-[0.6875rem] font-bold uppercase tracking-wider text-navy/50">
-                      Étape 0{i + 1}
-                    </span>
-                  </div>
-
-                  <h3 class="mt-5 text-carte font-bold text-navy text-balance group-hover:text-orange transition-colors">
-                    {step.label}
-                  </h3>
-
-                  <p class="mt-3 text-petit font-light leading-relaxed text-navy/75 text-pretty">
-                    {step.text}
-                  </p>
-                </div>
-
-                <div class="mt-6 flex items-center gap-1.5 border-t border-gris-bord/60 pt-4 text-xs font-semibold text-orange">
-                  <span>{i === 0 ? 'Réponse sous 24h' : i === 1 ? 'Chiffrage gratuit' : i === 2 ? 'Normes sécurité' : 'Garantie décennale'}</span>
-                </div>
-              </li>
-            ))
-          }
-          </ol>
-        </div>
-      </div>
-    </section>
-
-    {/* ------------------------------------------------------ 4. Services */}
+    {/* ------------------------------------------------------ 2. Services */}
     <section
       class="mx-auto max-w-6xl px-5 py-[var(--espace-section)] sm:px-8"
       aria-labelledby="services"
@@ -478,11 +430,34 @@ const schema = {
     </section>
 
     {/*
-      ------------------------------------------------- 5. Bande de chantiers
+      ------------------------------------------------- 4. Bande de chantiers
+
+      LA RESPIRATION de la page : pleine largeur, bord à bord, sans titre ni
+      texte par-dessus. Ces photos ne portent pas de discours — elles montrent
+      le métier, ce qu'aucun paragraphe ne fait à leur place.
+
+      La première occupe deux colonnes en 16/9, les autres suivent en 4/3 :
+      l'œil entre par une grande image, pas par une rangée de vignettes égales.
+      Traitement unifié par `.photo` (contraste +8 %, saturation −5 %, voile
+      navy 6 %) — dix chantiers photographiés dans dix conditions finissent par
+      former une série.
     */}
     {
       photosAccueil.length > 0 && (
         <section class="bg-navy" aria-label="Chantiers ALPITEC">
+          {/*
+            Deux rangées plutôt qu'une grille unique : avec quatre photos, une
+            première image à cheval sur deux colonnes laissait la quatrième
+            seule sur une deuxième rangée, orpheline et d'un autre format.
+            Ici la grande photo occupe sa propre rangée pleine largeur, et les
+            suivantes forment un triptyque en dessous.
+          */}
+          {/*
+            La seule photo du site à porter un parallax : elle est pleine
+            largeur, c'est là que le décalage se lit comme de la profondeur
+            plutôt que comme un effet. L'image est tirée à 115 % par la classe
+            `.parallax` que le script ajoute, donc aucun bord n'apparaît.
+          */}
           <div class="photo aspect-[4/3] w-full sm:aspect-[16/9] sm:max-h-[68vh]" data-parallax>
             <Image
               src={photosAccueil[0].src}
@@ -501,6 +476,9 @@ const schema = {
             <ul
               class:list={[
                 'mt-1 grid grid-cols-2 gap-1',
+                // La grille se cale sur le nombre restant : à trois photos on
+                // passe en trois colonnes, à deux on en garde deux, et aucune
+                // case ne reste vide au bout de la rangée.
                 reste.length % 3 === 0 ? 'lg:grid-cols-3' : 'lg:grid-cols-2',
               ]}
             >
@@ -508,6 +486,8 @@ const schema = {
                 <li
                   class:list={[
                     'relative',
+                    // Nombre impair : la dernière prend toute la largeur sur
+                    // mobile plutôt que de laisser une case vide à côté d'elle.
                     resteImpair && i === reste.length - 1 && 'col-span-2 lg:col-span-1',
                   ]}
                 >
@@ -532,7 +512,11 @@ const schema = {
       )
     }
 
-    {/* ------------------------------------------------ 6. Moyens d'accès */}
+    {/* ------------------------------------------------ 5. Moyens d'accès */}
+    {/*
+      Deux colonnes asymétriques : le titre tient seul à gauche et reste collé
+      pendant que les trois moyens défilent à droite.
+    */}
     <section
       class="mx-auto max-w-6xl px-5 py-[var(--espace-section)] sm:px-8"
       aria-labelledby="moyens"
@@ -567,9 +551,15 @@ const schema = {
       </div>
     </section>
 
-    {/* ---------------------------------------------- 7. Certifications & Habilitations */}
-    <section class="border-y border-blanc/10 bg-gradient-to-b from-[#11172A] via-navy to-[#11172A] text-blanc py-[var(--espace-section)]" aria-labelledby="certifications">
-      <div class="mx-auto max-w-6xl px-5 sm:px-8">
+    {/* ---------------------------------------------- 6. Certifications */}
+    {/*
+      Plaque de qualification, pas grille de cartes : c'est le bloc qu'un
+      conducteur de travaux lit en premier quand il vérifie un sous-traitant.
+      Acronymes en très gros sur navy éclairci, chiffre de rang, intro en
+      vis-à-vis du titre plutôt qu'au-dessus.
+    */}
+    <section class="bg-navy text-blanc" aria-labelledby="certifications">
+      <div class="mx-auto max-w-6xl px-5 py-[var(--espace-section)] sm:px-8">
         <div class="grid gap-x-16 gap-y-8 lg:grid-cols-12">
           <TitreSection
             texte={d.certifications.title}
@@ -582,38 +572,80 @@ const schema = {
           </p>
         </div>
 
-        <dl class="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4" data-reveal-groupe>
+        <dl class="mt-16 grid gap-3 sm:grid-cols-2 lg:grid-cols-4" data-reveal-groupe>
           {
             d.certifications.items.map((item, i) => (
-              <div class="group relative flex flex-col justify-between rounded-2xl border border-blanc/10 bg-blanc/[0.04] p-6 shadow-eleve backdrop-blur-md transition-all duration-300 hover:border-orange/40 hover:bg-blanc/[0.07]">
-                <div>
-                  <div class="flex items-center justify-between">
-                    <span class="inline-flex size-9 items-center justify-center rounded-xl bg-navy-clair border border-blanc/15 text-emerald-400">
-                      <svg class="size-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                        <path fill-rule="evenodd" d="M10 1a.75.75 0 01.75.75v.56a9.5 9.5 0 005.44 5.44h.56a.75.75 0 01.75.75v3.5c0 5.42-3.8 9.55-7.25 10.93a.75.75 0 01-.5 0C6.3 20.8 2.5 16.67 2.5 11.25V8.25a.75.75 0 01.75-.75h.56A9.5 9.5 0 009.25 2.06v-.56A.75.75 0 0110 1zm2.53 7.22a.75.75 0 00-1.06-1.06L9 9.69 7.53 8.22a.75.75 0 00-1.06 1.06l2 2a.75.75 0 001.06 0l4-4z" clip-rule="evenodd" />
-                      </svg>
-                    </span>
-                    <span class="rounded-full bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-0.5 text-[0.6875rem] font-bold text-emerald-400 uppercase tracking-wider">
-                      Certifié
-                    </span>
-                  </div>
-
-                  <dt class="mt-5 font-display text-2xl font-extrabold tracking-tight text-blanc group-hover:text-orange transition-colors">
-                    {item.label}
-                  </dt>
-
-                  <dd class="mt-2 text-[0.8125rem] font-light leading-relaxed text-blanc/75 text-pretty">
-                    {item.text}
-                  </dd>
-                </div>
-
-                <div class="mt-6 border-t border-blanc/10 pt-3.5 text-xs text-blanc/50 font-medium">
-                  {i === 0 ? 'Formation d\'État cordiste' : i === 1 ? 'Standard international' : i === 2 ? 'Sécurité hauteur agréée' : 'Conducteur qualifié'}
-                </div>
+              <div class="rounded-carte bg-navy-clair p-6">
+                {/*
+                  Rang en blanc, pas en orange : sur le navy éclairci l'orange
+                  tombe à 3,7:1 pour 11 px. La règle du site vaut aussi pour un
+                  élément décoratif — pas d'orange en texte sous 24 px.
+                */}
+                <span aria-hidden="true" class="block font-display text-etiquette text-blanc/70">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <dt class="mt-5 font-display text-[1.75rem] font-extrabold leading-none tracking-[-0.02em] sm:text-3xl">
+                  {item.label}
+                </dt>
+                <dd class="mt-3 text-[0.8125rem] font-light leading-snug text-blanc/70 text-pretty">
+                  {item.text}
+                </dd>
               </div>
             ))
           }
         </dl>
+      </div>
+    </section>
+
+    {/* --------------------------------------------- 7. Comment ça marche */}
+    {/* Grille décalée : une étape sur deux descend d'un demi-pas sur écran
+        large, la lecture cesse d'être une rangée de cases alignées. */}
+    <section
+      class="jonction relative bg-gris"
+      style="--jonction-de: var(--color-blanc)"
+      aria-labelledby="methode"
+    >
+      {/* La corde traverse la jonction : elle file d'une section à l'autre
+          au lieu de s'arrêter au bord. Deux par page, pas davantage. */}
+      <span aria-hidden="true" class="corde-jonction"></span>
+
+      <div class="mx-auto max-w-6xl px-5 py-[var(--espace-section)] sm:px-8">
+        <div class="grid gap-x-16 gap-y-8 lg:grid-cols-12">
+          <TitreSection texte={d.process.title} id="methode" class="max-w-[14ch] lg:col-span-5" data-reveal="titre" />
+          <p class="max-w-[56ch] self-end text-corps font-light text-navy/75 text-pretty lg:col-span-7" data-reveal>
+            {d.process.intro}
+          </p>
+        </div>
+
+        {/*
+          Ligne de progression, mobile uniquement. La grille reste à UNE colonne
+          jusqu'à `md` — au-delà le rail disparaît, et une ligne verticale le
+          long de deux colonnes n'aurait aucun sens.
+        */}
+        <div class="etapes mt-16" data-etapes>
+          <span class="rail" aria-hidden="true" data-rail>
+            <span class="rail-progression"></span>
+          </span>
+
+          <ol class="grid gap-6 md:grid-cols-2 lg:grid-cols-4" data-reveal-groupe>
+          {
+            d.process.steps.map((step, i) => (
+              <li class:list={['etape eleve rounded-carte bg-blanc p-6', i % 2 === 1 && 'lg:mt-12']}>
+                <TuileIcone
+                  variant={i === 0 ? 'orange' : 'navy'}
+                  taille="sm"
+                  class="etape-point"
+                >
+                  <span class="font-display text-[0.8125rem] font-bold">{i + 1}</span>
+                </TuileIcone>
+                <p class="mt-5 font-display text-etiquette uppercase text-navy/70">{step.step}</p>
+                <h3 class="mt-2 text-carte text-navy text-balance">{step.label}</h3>
+                <p class="mt-3 text-petit font-light text-navy/75 text-pretty">{step.text}</p>
+              </li>
+            ))
+          }
+          </ol>
+        </div>
       </div>
     </section>
 

@@ -126,14 +126,13 @@ const schema = {
           Toutes nos prestations
         </div>
 
-        <ul class="si-grid">
-          {cartes.map((carte, i) => (
-            <li class={`si-grid__item ${i === 0 ? 'si-grid__item--featured' : ''}`}>
+        <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {cartes.map((carte) => (
+            <li class="flex">
               <ServiceCard
                 service={carte}
                 image={carte.image}
                 linkLabel={cartesAccueil.linkLabel}
-                featured={i === 0}
               />
             </li>
           ))}
