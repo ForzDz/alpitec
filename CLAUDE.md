@@ -228,6 +228,31 @@ laisserait la page vide — un défaut bien pire que l'absence d'animation.
 
 Tout tombe sous `prefers-reduced-motion`, y compris le parallax et la cascade.
 
+## Deux numéros distincts — ce n'est pas une erreur
+
+_Confirmé par le client le 14 août 2026._
+
+| Usage | Numéro | Lien |
+|---|---|---|
+| **Appels** | 07 56 96 60 56 | `tel:+33756966056` |
+| **WhatsApp** | 07 88 30 08 95 | `wa.me/33788300895` |
+
+Ce sont **deux lignes différentes**, volontairement. Le bouton « Appeler » et le
+bouton WhatsApp de la barre mobile ne pointent donc pas vers le même numéro, et
+c'est normal. Ne jamais « corriger » l'un pour le faire coïncider avec l'autre.
+
+Les deux vivent dans `src/content/site/coordonnees.md` : `telephone.lien` /
+`telephone.affichage` / `telephone.affichageInternational` d'un côté,
+`whatsapp.numero` de l'autre. Seul le numéro d'appel s'affiche en clair sur le
+site ; le numéro WhatsApp n'apparaît que dans l'URL du lien.
+
+Contrôle rapide après toute modification des coordonnées :
+
+```bash
+grep -rho 'tel:[+0-9]*' dist | sort -u        # doit ne montrer que +33756966056
+grep -rho 'wa\.me/[0-9]*' dist | sort -u      # doit ne montrer que 33788300895
+```
+
 ## Témoignages — nominatifs sur accord écrit
 
 _Règle modifiée le 14 août 2026. Elle remplace l'anonymisation systématique

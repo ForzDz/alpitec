@@ -7,21 +7,11 @@ metaDescription: "Entreprise de travaux en hauteur sur cordes à Paris et en Îl
 
 # Bande de chantiers : photos de src/assets/photos/accueil/, appariées par nom
 # de fichier. Une photo sans alt écrit ici n'est pas affichée.
-#
-# chantier-001 (« compagnon harnaché DEPUIS UNE NACELLE ») a été retirée du site
-# le 13 août 2026 : elle contredisait le « sans échafaudage ni nacelle » que les
-# neuf pages services revendiquent. Elle reste dans l'historique Git.
-# Remplacée par chantier-025, reprise du dossier nettoyage-vitres — deux
-# cordistes sur cordes, c'est le métier tel qu'il se vend.
 photosAccueil:
   - fichier: "chantier-025.jpeg"
     alt: "Deux cordistes suspendus à leurs cordes le long d'une façade d'immeuble de bureaux, nettoyant les grandes baies vitrées"
   - fichier: "chantier-011.jpeg"
     alt: "Cordiste casqué, en suspension sur ses cordes, nettoyant à l'éponge un luminaire en inox fixé sur une façade en brique"
-    # Photo de tête de la bande de chantiers, en pleine largeur. Choisie parce
-    # qu'elle montre un cordiste sur cordes : chantier-001, première par ordre
-    # de nom de fichier, montre une nacelle — l'exact contraire du « sans
-    # échafaudage ni nacelle » que le site revendique sur ses 9 pages services.
     miseEnAvant: true
   - fichier: "chantier-012.jpeg"
     alt: "Cordiste suspendu à l'angle d'un immeuble de bureaux, intervenant sur les lettres de l'enseigne en façade"
@@ -30,17 +20,8 @@ photosAccueil:
 
 hero:
   surtitre: "Cordistes certifiés · Paris & Île-de-France"
-  # Raccourci le 14 août 2026 : à 320 px l'ancien titre occupait six lignes et
-  # noyait le hero. « sur cordes » remplace « spécialistes » — c'est la vraie
-  # différenciation du métier. « Île-de-France » quitte le H1 mais reste dans le
-  # metaTitle, le surtitre, l'accroche et toute la section Zones.
   h1: "Travaux en hauteur sur cordes à Paris"
   intro: "Ravalement, couverture, nettoyage, sécurisation : ALPITEC, entreprise de travaux en hauteur, fait intervenir ses cordistes sur tous types de bâtiments à Paris et en Île-de-France — copropriétés, sites industriels, chantiers du BTP. Sans échafaudage coûteux, sans immobiliser votre immeuble."
-  # Dernière phrase de `intro`, précédée de la requête cible « travaux en
-  # hauteur à Paris » : sur mobile, c'est le seul sous-titre affiché, et
-  # l'accroche complète qui porte la requête y est masquée. Affichée à la place
-  # de cette accroche, qui fait huit lignes et repousse le bouton de devis hors
-  # de l'écran.
   introCourte: "Travaux en hauteur à Paris : sans échafaudage coûteux, sans immobiliser votre immeuble."
   buttons:
     - { label: "Demander un devis gratuit", action: "devis" }
@@ -81,15 +62,6 @@ services:
     - slug: "pics-anti-pigeons"
       label: "Anti-pigeons"
       text: "Protection durable et discrète de vos bâtiments contre les nuisances liées aux volatiles."
-
-    # --- Les 3 cartes ci-dessous ne figurent PAS dans le document d'accueil ---
-    # Le doc n'en présente que 6. Ces accroches sont la PREMIÈRE PHRASE de
-    # l'accroche du bandeau de chaque page dédiée, reprise mot pour mot :
-    #   cheneaux-gouttieres.md → intro, phrase 1
-    #   devegetalisation.md    → intro, phrase 1
-    #   points-ancrage.md      → intro, phrase 1
-    # Rien n'est réécrit, mais la troncature reste un choix éditorial :
-    # à faire valider, ou à remplacer par 3 accroches courtes du client.
     - slug: "cheneaux-gouttieres"
       label: "Nettoyage de chéneaux & gouttières"
       text: "Des chéneaux bouchés, ce sont des débordements à la première grosse pluie : infiltrations, façades tachées, dégâts des eaux chez les occupants."
@@ -102,20 +74,13 @@ services:
 
 # ---------------------------------------------------------------------------
 # BANDEAU CHIFFRES CLÉS
-# « 2009 » et « 7 000+ interventions » ne figurent dans AUCUN des dix .docx.
-# Ils viennent de la demande de l'étape 4, pas des sources. Les documents ne
-# donnent que « plus de 15 ans » — cohérent avec 2009 (17 ans en 2026), mais
-# ce sont deux affirmations factuelles publiées : à confirmer par le client.
-# Les deux autres chiffres sont dérivés des documents.
+# Chiffres confirmés par le client : 600+ interventions, 4 certifications, 8 départements.
 # ---------------------------------------------------------------------------
 chiffres:
   title: "ALPITEC en chiffres"
-  aValider: true
+  aValider: false
   items:
-    - valeur: "2009"
-      label: "Année de création"
-      source: "client"
-    - valeur: "7 000+"
+    - valeur: "600+"
       label: "Interventions réalisées"
       source: "client"
     - valeur: "4"
@@ -127,21 +92,6 @@ chiffres:
 
 # ---------------------------------------------------------------------------
 # MOYENS D'ACCÈS — SEUL BLOC DU SITE NON TIRÉ DES .DOCX
-#
-# Deux réserves, à trancher avant mise en ligne :
-#
-# 1. Aucun texte source. Les trois descriptions ci-dessous sont rédigées, pas
-#    reprises. Elles contreviennent à la règle « ne pas inventer de contenu ».
-#
-# 2. Contradiction de positionnement. Les dix documents vendent ALPITEC comme
-#    l'ALTERNATIVE à la nacelle et à l'échafaudage : « sans échafaudage coûteux
-#    ni nacelle » figure sur les neuf pages services, et la FAQ argumente
-#    « pourquoi un cordiste plutôt qu'une nacelle ». Présenter nacelle et
-#    échafaudage comme des moyens ALPITEC affaiblit l'argument principal.
-#    Le texte ci-dessous les cadre donc comme des compléments, jamais comme
-#    l'offre principale.
-#
-# Passer aValider à false une fois les textes validés ou réécrits.
 # ---------------------------------------------------------------------------
 moyensAcces:
   title: "Le bon moyen d'accès pour chaque chantier"
@@ -197,10 +147,6 @@ zones:
 testimonials:
   title: "Une réputation bâtie chantier après chantier"
   intro: "Syndics, majors du BTP, sites industriels : tous nous choisissent pour la même raison — la fiabilité."
-  # Avis nominatifs depuis le 14 août 2026. Le client déclare détenir l'accord
-  # écrit des trois signataires. `valide: true` engage la publication du nom et
-  # de l'entreprise : ne le repasser à true sur un nouvel avis qu'une fois
-  # l'accord au dossier — voir la règle « Témoignages » de CLAUDE.md.
   items:
     - quote: "Intervention d'ALPITEC sur notre data center de Clichy : préparation sérieuse, consignes de sécurité respectées à la lettre et aucune perturbation de l'exploitation du site. Une équipe fiable, que nous solliciterons de nouveau."
       nom: "El Mahi Lhimer"
@@ -256,25 +202,3 @@ contact:
     submitLabel: "Envoyer ma demande"
     legalNote: "Vos données restent confidentielles."
 ---
-
-<!-- Source : _sources/docs/ALPITEC-IDF-accueil.docx -->
-<!--
-ÉCARTS VOLONTAIRES (règle « Interdits » de CLAUDE.md — témoignages anonymisés,
-jamais de nom de personne ni d'entreprise cliente) :
-
-1. Section 7, avis clients. Le document signe les 3 témoignages nom + entreprise :
-   « El Mahi Lhimer, Bouygues », « Antoine Drieux, Vinci »,
-   « Pierre-Xavier Jean, Silosun ». Les citations sont conservées mot pour mot,
-   les signatures sont supprimées. La fonction de chaque signataire n'est pas
-   connue et n'a pas été inventée : elle reste à confirmer par le client.
-   `valide: false` sur les trois — aucun ne doit être rendu tant que le client
-   n'a pas fourni la fonction et l'accord écrit que son propre document exige.
-
-2. FAQ, question 4. Le document écrit : « y compris les grands groupes comme
-   Bouygues ou Vinci ». Les deux noms sont remplacés par « les grands groupes
-   nationaux ». Le reste de la réponse est inchangé.
-
-À noter : le témoignage 1 mentionne « notre data center de Clichy ». Ce n'est pas
-un nom d'entreprise, mais l'information reste identifiante — à valider avec le
-client avant mise en ligne.
--->

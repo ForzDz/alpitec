@@ -7,8 +7,11 @@ import { serviceHref } from '../lib/content.js';
  *
  * - Recadrage individualisé par prestation pour que le cordiste/travailleur soit TOUJOURS parfaitement visible et centré
  * - Photo 100% dégagée en haut (aucun pavé ne vient masquer l'artisan en action)
- * - Badge subtil de certification/ordre
  * - Typographie contrastée et lien « Voir le service → » élégant
+ *
+ * Le badge « 01 · CORDISTES » posé sur l'image a été retiré le 14 août 2026 à
+ * la demande du client. `ordre` ne sert donc plus qu'à la tuile de repli,
+ * affichée quand la prestation n'a pas encore de photo.
  */
 
 const { service, linkLabel = 'Voir le service', image, class: className = '' } = Astro.props;
@@ -63,12 +66,6 @@ const positionClass = CADRAGES[slug] ?? 'object-center';
       </div>
     )}
 
-    {/* Badge discret sur l'image */}
-    <div class="absolute left-3.5 top-3.5 flex items-center gap-1.5 rounded-full bg-navy-profond/75 px-2.5 py-1 text-[0.6875rem] font-bold uppercase tracking-wider text-white backdrop-blur-md border border-white/10" aria-hidden="true">
-      <span class="text-orange">{formattedOrdre}</span>
-      <span class="text-white/40">·</span>
-      <span class="text-white/85">Cordistes</span>
-    </div>
   </div>
 
   {/* Corps de la carte (aucun bloc ne masque l'image au-dessus) */}

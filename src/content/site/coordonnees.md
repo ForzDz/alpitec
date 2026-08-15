@@ -1,4 +1,4 @@
-﻿---
+---
 # Téléphone et WhatsApp : valeurs réelles, fournies par le client.
 # Restent à obtenir : rue, horaires, SIRET et les autres mentions légales.
 # Le build liste automatiquement les champs encore vides (voir lib/content.ts).
@@ -10,22 +10,22 @@ baseline: "Entreprise de travaux en hauteur sur cordes"
 telephone:
   # Affichage au format national français, plus lisible qu'un +33 pour un
   # visiteur francilien. Le lien tel:, lui, reste au format international.
-  affichage: "07 88 30 08 95"
+  affichage: "07 56 96 60 56"
   # Format international, affiché sur le bouton d'appel du hero : le CTA doit
   # se lire comme un numéro joignable depuis n'importe où, pas seulement en
   # Île-de-France.
-  affichageInternational: "+33 7 88 30 08 95"
-  lien: "+33788300895"
+  affichageInternational: "+33 7 56 96 60 56"
+  lien: "+33756966056"
 
 whatsapp:
   numero: "33788300895"
   message: "Bonjour, je souhaite un devis pour des travaux en hauteur."
 
-email: "contact@alpitec.fr" # À CONFIRMER
+email: "contact@alpitec.fr"
 
 adresse:
-  rue: "" # À RENSEIGNER
-  codePostal: "94400" # À CONFIRMER
+  rue: "36 bis rue Henri Matisse"
+  codePostal: "94400"
   ville: "Vitry-sur-Seine"
   pays: "France"
 

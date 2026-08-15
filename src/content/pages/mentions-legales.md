@@ -14,12 +14,12 @@ Le présent site est édité par **ALPITEC**, entreprise de travaux d'accès dif
 
 - Forme juridique : [À COMPLÉTER : forme juridique]
 - Capital social : [À COMPLÉTER : capital social]
-- Siège social : [À COMPLÉTER : adresse complète], 94400 Vitry-sur-Seine, France
+- Siège social : 36 bis rue Henri Matisse, 94400 Vitry-sur-Seine, France
 - SIRET : [À COMPLÉTER : numéro SIRET]
 - RCS : [À COMPLÉTER : ville et numéro RCS]
 - Numéro de TVA intracommunautaire : [À COMPLÉTER : numéro de TVA]
-- Téléphone : 07 88 30 08 95
-- Courriel : [À COMPLÉTER : adresse de contact]
+- Téléphone : 07 56 96 60 56
+- Courriel : contact@alpitec.fr
 
 **Directeur de la publication** : [À COMPLÉTER : nom du représentant légal], en qualité de représentant légal.
 

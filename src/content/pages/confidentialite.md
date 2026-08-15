@@ -12,9 +12,9 @@ ALPITEC attache de l'importance à la protection de vos données personnelles. C
 
 ## 1. Responsable du traitement
 
-Le responsable du traitement est **ALPITEC**, [À COMPLÉTER : forme juridique], dont le siège social est situé [À COMPLÉTER : adresse complète], 94400 Vitry-sur-Seine.
+Le responsable du traitement est **ALPITEC**, [À COMPLÉTER : forme juridique], dont le siège social est situé 36 bis rue Henri Matisse, 94400 Vitry-sur-Seine.
 
-Pour toute question relative à vos données : [À COMPLÉTER : adresse de contact].
+Pour toute question relative à vos données : contact@alpitec.fr.
 
 ## 2. Données collectées
 

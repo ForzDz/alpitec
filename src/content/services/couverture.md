@@ -82,12 +82,23 @@ sections:
 
   - type: "realisations"
     title: "Nos derniers chantiers de couverture"
-    photos:
-      # ⚠️ Cette photo montre une intervention en nacelle sous un filet de
-      # sécurité, pas un chantier de toiture. À vérifier : elle irait mieux sur
-      # « Filets de protection » ou sur l'accueil.
-      - fichier: "chantier-018.jpeg"
-        alt: "Compagnon casqué et harnaché aux commandes d'une nacelle, sous un filet de sécurité tendu au-dessus de la zone d'intervention"
+    # RETIRÉE le 14 août 2026, sur décision du client.
+    #
+    # chantier-018 montre une nacelle rouge sous un filet de sécurité. Une
+    # nacelle contredit frontalement le « sans échafaudage coûteux » que cette
+    # page et les huit autres revendiquent — même raison que chantier-001,
+    # écartée de l'accueil.
+    #
+    # C'était la SEULE photo du dossier couverture. Conséquences assumées :
+    # la carte de l'accueil retombe sur la tuile navy, et la section
+    # « Réalisations » disparaît de cette page tant qu'aucune photo de toiture
+    # n'est fournie. Le fichier reste dans src/assets/photos/couverture/.
+    #
+    # Pour la rétablir : décommenter les deux lignes ci-dessous.
+    #
+    # - fichier: "chantier-018.jpeg"
+    #   alt: "Compagnon casqué et harnaché aux commandes d'une nacelle, sous un filet de sécurité tendu au-dessus de la zone d'intervention"
+    photos: []
 
   - type: "cta"
     title: "Prêt à démarrer vos travaux de couverture ?"

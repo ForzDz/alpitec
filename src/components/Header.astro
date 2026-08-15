@@ -3,7 +3,7 @@ import { Image } from 'astro:assets';
 import logo from '../assets/logo-complet.jpeg';
 import logoDetoure from '../assets/logo-detoure.png';
 import Button from './Button.astro';
-import { getSite, getServices, serviceHref } from '../lib/content.js';
+import { getSite, getServices, serviceHref, whatsappHref } from '../lib/content.js';
 
 /**
  * En-tête + barre d'action mobile.
@@ -29,8 +29,9 @@ const services = await getServices();
 const { pathname } = Astro.url;
 
 const telHref = `tel:${site.telephone.lien}`;
-// Plus de WhatsApp dans l'en-tête depuis que la barre mobile est passée à
-// deux boutons : le lien vit désormais dans le pied de page et sur /contact.
+// WhatsApp revient dans la barre mobile le 14 août 2026, à la demande du
+// client : trois accès plutôt que deux.
+const waHref = whatsappHref(site);
 
 const liens = [
   { label: 'Accueil', href: '/' },
@@ -280,9 +281,17 @@ const estActif = (href) => {
   <div
     class="pointer-events-auto flex items-center gap-2 rounded-full border border-blanc/15 bg-navy-profond/90 p-1.5 shadow-[0_8px_32px_rgba(0,0,0,0.36),0_2px_8px_rgba(0,0,0,0.2)] backdrop-blur-xl w-full max-w-[340px]"
   >
+    {/*
+      Trois accès : téléphone, WhatsApp, devis. Les deux premiers en icône
+      seule — à trois boutons dans 340 px, un libellé ne tiendrait pas — le
+      troisième dominant en aplat orange.
+
+      Cibles tactiles à 48 px (`size-12` / `h-12`), au-dessus du minimum de 44
+      recommandé, parce qu'on est ici sur la zone du pouce.
+    */}
     <a
       href={telHref}
-      class="flex size-11 shrink-0 items-center justify-center rounded-full bg-navy-clair/90 text-orange border border-blanc/10 transition-transform duration-150 active:scale-90 hover:bg-navy-clair shadow-sm"
+      class="flex size-12 shrink-0 items-center justify-center rounded-full bg-navy-clair/90 text-orange border border-blanc/10 transition-transform duration-150 active:scale-90 hover:bg-navy-clair shadow-sm"
       aria-label={`Appeler ALPITEC au ${site.telephone.affichage}`}
       data-cta="tel-barre"
     >
@@ -302,8 +311,21 @@ const estActif = (href) => {
     </a>
 
     <a
+      href={waHref}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="flex size-12 shrink-0 items-center justify-center rounded-full bg-navy-clair/90 text-orange border border-blanc/10 transition-transform duration-150 active:scale-90 hover:bg-navy-clair shadow-sm"
+      aria-label="Écrire à ALPITEC sur WhatsApp"
+      data-cta="whatsapp-barre"
+    >
+      <svg aria-hidden="true" viewBox="0 0 24 24" class="size-5 text-orange" fill="currentColor">
+        <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 004.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0012.04 2zm0 18.15h-.01a8.23 8.23 0 01-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 01-1.26-4.38c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 015.83 2.42 8.19 8.19 0 012.41 5.83c0 4.54-3.69 8.23-8.24 8.23zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.15.16-.29.18-.54.06-.25-.13-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.01-.38.11-.5.11-.11.25-.29.37-.44.13-.15.17-.25.25-.42.08-.16.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.47c-.16 0-.43.06-.65.31-.22.25-.85.83-.85 2.03s.87 2.35.99 2.51c.12.16 1.71 2.61 4.15 3.66.58.25 1.03.4 1.39.51.58.19 1.11.16 1.53.1.47-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.11-.22-.17-.47-.29z" />
+      </svg>
+    </a>
+
+    <a
       href="#devis"
-      class="group/devis flex h-11 flex-1 items-center justify-center gap-2 rounded-full bg-gradient-to-r from-orange to-[#ff7a1a] px-4 font-display text-[0.9375rem] font-bold text-navy shadow-[0_2px_12px_rgba(249,101,0,0.3)] transition-transform duration-150 active:scale-[0.97]"
+      class="group/devis flex h-12 min-w-0 flex-1 items-center justify-center gap-2 rounded-full bg-gradient-to-r from-orange to-[#ff7a1a] px-4 font-display text-[0.9375rem] font-bold text-navy shadow-[0_2px_12px_rgba(249,101,0,0.3)] transition-transform duration-150 active:scale-[0.97]"
       data-cta="devis-barre"
     >
       <span>Devis gratuit</span>

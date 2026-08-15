@@ -1,4 +1,4 @@
-﻿---
+---
 import { Image, getImage } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
@@ -122,8 +122,6 @@ const departements = [
   'Seine-et-Marne',
 ];
 
-const anneeCreation = d.chiffres.items.find((i) => i.label === 'Année de création')?.valeur;
-
 const schema = {
   '@context': 'https://schema.org',
   '@graph': [
@@ -137,7 +135,6 @@ const schema = {
       telephone: site.telephone.lien,
       email: site.email,
       address: adresse,
-      ...(anneeCreation ? { foundingDate: anneeCreation } : {}),
       // `horaires` est encore vide dans coordonnees.md : on n'émet pas de
       // openingHours plutôt qu'une valeur inventée.
       ...(site.horaires ? { openingHours: site.horaires } : {}),
@@ -342,7 +339,7 @@ const schema = {
           Les chiffres s'incrémentent quand la section entre à l'écran.
         */}
         <dl
-          class="grid grid-cols-2 gap-3.5 sm:gap-6 lg:grid-cols-4"
+          class="grid grid-cols-1 gap-3.5 sm:grid-cols-3 sm:gap-6"
           data-chiffres
           data-reveal-groupe
         >
