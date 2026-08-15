@@ -125,6 +125,128 @@ const ogImageURL = new URL(ogImage, Astro.site);
         // travail, le filet de sécurité n'a plus lieu d'être.
         let revelationConstatee = false;
 
+        /*
+         * DÉCOUPAGE EN LIGNES DES GRANDS TITRES.
+         *
+         * Aucun sélecteur CSS ne sait désigner une ligne de texte : il faut la
+         * matérialiser. Chaque mot est enveloppé, on relève son `offsetTop`,
+         * et les mots qui partagent la même hauteur forment une ligne, elle
+         * aussi enveloppée — d'où le masque et le glissement.
+         *
+         * Le découpage a lieu APRÈS la mise en page, donc `text-wrap: balance`
+         * a déjà décidé des coupes : on ne fait que les constater.
+         *
+         * Le HTML d'origine est conservé pour pouvoir tout refaire au
+         * redimensionnement, où les coupes changent.
+         */
+        const titres = document.querySelectorAll('[data-reveal="titre"]');
+
+        const decouper = (titre) => {
+          if (titre.dataset.htmlOrigine === undefined) {
+            titre.dataset.htmlOrigine = titre.innerHTML;
+          } else {
+            titre.innerHTML = titre.dataset.htmlOrigine;
+          }
+
+          // Un mot = un span. On garde la classe du parent pour ne pas perdre
+          // l'accent orange que <TitreSection> pose sur le dernier mot.
+          const mots = [];
+          const parcourir = (noeud, classe) => {
+            for (const enfant of [...noeud.childNodes]) {
+              if (enfant.nodeType === 3) {
+                const morceaux = enfant.textContent.split(/(\s+)/);
+                const remplacement = document.createDocumentFragment();
+                for (const morceau of morceaux) {
+                  if (!morceau) continue;
+                  if (/^\s+$/.test(morceau)) {
+                    remplacement.appendChild(document.createTextNode(morceau));
+                  } else {
+                    const span = document.createElement('span');
+                    span.textContent = morceau;
+                    span.style.display = 'inline-block';
+                    if (classe) span.className = classe;
+                    mots.push(span);
+                    remplacement.appendChild(span);
+                  }
+                }
+                enfant.replaceWith(remplacement);
+              } else if (enfant.nodeType === 1) {
+                parcourir(enfant, enfant.className || classe);
+                // Le span d'origine n'a plus de raison d'être : ses mots
+                // portent désormais sa classe eux-mêmes.
+                enfant.replaceWith(...enfant.childNodes);
+              }
+            }
+          };
+          parcourir(titre, '');
+
+          if (mots.length === 0) return false;
+
+          // Regroupement par hauteur : une même `offsetTop` = une même ligne.
+          const lignes = [];
+          let hauteurCourante = null;
+          for (const mot of mots) {
+            const haut = mot.offsetTop;
+            if (hauteurCourante === null || Math.abs(haut - hauteurCourante) > 4) {
+              hauteurCourante = haut;
+              lignes.push([]);
+            }
+            lignes[lignes.length - 1].push(mot);
+          }
+
+          // Reconstruction : un bloc masqué par ligne.
+          const fragment = document.createDocumentFragment();
+          lignes.forEach((motsDeLigne, i) => {
+            const ligne = document.createElement('span');
+            ligne.className = 'ligne';
+            const interieur = document.createElement('span');
+            interieur.className = 'ligne-interieur';
+            interieur.style.setProperty('--retard', `${i * pas}ms`);
+            motsDeLigne.forEach((mot, j) => {
+              if (j > 0) interieur.appendChild(document.createTextNode(' '));
+              mot.style.display = '';
+              interieur.appendChild(mot);
+            });
+            ligne.appendChild(interieur);
+            fragment.appendChild(ligne);
+            /*
+             * Une espace entre deux lignes. Les blocs se suffisent à l'écran,
+             * mais `textContent` les recollerait — « spécialistesdes travaux » —
+             * et c'est ce texte-là que lisent les extracteurs et une partie des
+             * outils d'accessibilité. Sur un H1, on ne prend pas le risque.
+             */
+            if (i < lignes.length - 1) {
+              fragment.appendChild(document.createTextNode(' '));
+            }
+          });
+
+          titre.replaceChildren(fragment);
+          titre.classList.add('titre-masque');
+          return true;
+        };
+
+        for (const titre of titres) decouper(titre);
+
+        /*
+         * Au redimensionnement, les coupes changent : on redécoupe. Les titres
+         * déjà révélés le restent — on remet la classe tout de suite, sinon ils
+         * repartiraient de sous la ligne en plein milieu de lecture.
+         */
+        let redecoupage;
+        addEventListener(
+          'resize',
+          () => {
+            clearTimeout(redecoupage);
+            redecoupage = setTimeout(() => {
+              for (const titre of titres) {
+                const dejaVu = titre.classList.contains('est-visible');
+                if (decouper(titre) && dejaVu) titre.classList.add('est-visible');
+              }
+            }, 200);
+          },
+          { passive: true },
+        );
+
         const revele = new IntersectionObserver(
           (entrees) => {
             for (const entree of entrees) {

@@ -199,9 +199,15 @@ const schema = {
         un décor. La balise est injectée en JavaScript à partir de 640 px de
         large, et jamais si le visiteur demande moins de mouvement.
 
-        Cadrage : la source est en portrait. Un cadrage centré sortirait le
-        cordiste du champ sur mobile — d'où le décalage à 62 % / 30 %. À partir
-        de `sm`, le hero s'élargit et le centrage redevient le bon choix.
+        Cadrage. La source est en portrait (918 × 1536) et le cordiste s'y
+        tient autour de 71 % en largeur, 57 % en hauteur.
+
+        Sur mobile, le cadre est plus étroit que l'image : c'est la largeur qui
+        est rognée, donc X compte — 72 % amène le cordiste dans le champ.
+        À partir de `sm`, le cadre devient plus large que haut : toute la
+        largeur est visible et c'est la hauteur qui est rognée, X n'a plus
+        d'effet et seul Y décide. 52 % le place légèrement au-dessus du centre,
+        hors de la zone où les badges viennent se poser.
       */}
       <div
         class="absolute inset-0 -z-10 overflow-hidden"
@@ -220,30 +226,60 @@ const schema = {
           quality={72}
           loading="eager"
           fetchpriority="high"
-          class="h-full w-full object-cover object-[62%_30%] sm:object-center"
+          class="h-full w-full object-cover object-[72%_45%] sm:object-[50%_52%]"
         />
       </div>
 
       {/*
-        Overlay navy. Dosage : assez dense pour que le blanc reste très
-        au-dessus du seuil AA sur n'importe quelle image de la vidéo, assez
-        léger pour qu'on distingue le cordiste. Plus opaque en bas, là où se
-        trouvent les CTA. Contraste mesuré : voir le rapport.
+        VOILE — mesuré, pas estimé.
+
+        Le pixel le plus clair de la vidéo sous la zone de texte est
+        rgb(192, 212, 230), soit une luminance de 0,640 (relevé sur six images
+        réparties sur les cinq secondes). Pour que du blanc y tienne le seuil
+        AA du corps de texte, il faut au moins 55 % de navy par-dessus. Les
+        valeurs ci-dessous ne descendent jamais sous 74 % là où il y a du
+        texte, ce qui laisse une marge confortable.
+
+        Deux dispositifs distincts, parce que les deux cadrages n'ont rien à
+        voir :
+
+        · Mobile — le texte occupe toute la largeur, un dégradé horizontal
+          n'aurait aucun sens. Dégradé vertical, allégé au milieu pour laisser
+          voir le cordiste, redensifié en bas sous les boutons.
+
+        · À partir de `sm` — dégradé HORIZONTAL. Opaque à gauche derrière le
+          texte, totalement transparent à partir de 60 %, donc sur les 40 %
+          droits où se tient le cordiste. Il n'y a plus rien entre lui et
+          l'œil.
       */}
       <div
         aria-hidden="true"
-        class="absolute inset-0 -z-10 bg-gradient-to-b from-navy/75 via-navy/82 to-navy/92"
+        class="absolute inset-0 -z-10 bg-gradient-to-b from-navy/78 via-navy/62 to-navy/92 sm:hidden"
+      >
+      </div>
+      <div
+        aria-hidden="true"
+        class="absolute inset-0 -z-10 hidden sm:block"
+        style="background-image: linear-gradient(to right, rgb(35 43 74 / 0.95) 0%, rgb(35 43 74 / 0.90) 30%, rgb(35 43 74 / 0.82) 46%, rgb(35 43 74 / 0.62) 54%, rgb(35 43 74 / 0.48) 58.5%, rgb(35 43 74 / 0.12) 62%, transparent 64%)"
       >
       </div>
 
       {/*
-        Voile supplémentaire sur la bande du header transparent : garantit que
-        le logo blanc et les liens restent au-dessus du seuil AA quelle que
-        soit l'image de la vidéo qui défile derrière.
+        BANDE DU HEADER — le point que le dégradé horizontal fragilise.
+
+        Le menu, le bloc téléphone et le bouton de devis sont alignés à droite,
+        c'est-à-dire précisément dans les 40 % devenus transparents. Sans ce
+        voile, du texte blanc s'y retrouverait sur une image de ciel : 2,5:1.
+
+        Il tient donc 78 % d'opacité sur toute la hauteur du header (80 px)
+        avant de s'éteindre à 176 px. Un simple `from-navy/70 to-transparent`
+        ne suffisait pas : l'interpolation étant linéaire, il ne restait que
+        26 % au bas du header.
       */}
       <div
         aria-hidden="true"
-        class="absolute inset-x-0 top-0 -z-10 h-32 bg-gradient-to-b from-navy/70 to-transparent sm:h-40"
+        class="absolute inset-x-0 top-0 -z-10 h-44"
+        style="background-image: linear-gradient(to bottom, rgb(35 43 74 / 0.86) 0%, rgb(35 43 74 / 0.78) 5rem, transparent 11rem)"
       >
       </div>
 
@@ -284,17 +320,24 @@ const schema = {
             large, où sept lignes de titre poussaient le bouton de devis sous
             la ligne de flottaison.
           */}
-          <h1 class="mt-7 max-w-[16ch] text-[clamp(2.125rem,9.5vw,4.5rem)] font-extrabold leading-[0.99] tracking-[-0.035em] text-blanc text-balance sm:mt-8 sm:max-w-[15ch]">
+          <h1
+            class="mt-7 max-w-[16ch] text-[clamp(2.125rem,9.5vw,4.5rem)] font-extrabold leading-[0.99] tracking-[-0.035em] text-blanc text-balance sm:mt-8 sm:max-w-[13ch]"
+            data-reveal="titre"
+          >
             {d.hero.h1}
           </h1>
 
-          {/* Mobile : une seule phrase, la plus différenciante des documents. */}
-          <p class="mt-7 max-w-[30ch] text-sous-titre text-blanc text-balance sm:hidden">
-            {d.hero.introCourte}
-          </p>
+          {/*
+            L'accroche n'est plus affichée sur mobile : sous le H1 de quatre
+            lignes, elle en ajoutait trois et repoussait les boutons. Elle
+            reste dans le HTML — masquée en CSS, pas retirée du DOM — donc les
+            moteurs la lisent toujours, et le H1 porte de toute façon
+            « travaux en hauteur à Paris ».
 
-          {/* Desktop : l'accroche complète du document. */}
-          <p class="mt-7 hidden max-w-[58ch] text-corps-large font-light text-blanc/85 text-pretty sm:block">
+            `introCourte` du contenu n'est donc plus rendue nulle part sur
+            cette page ; elle reste dans accueil.md pour un usage ultérieur.
+          */}
+          <p class="mt-7 hidden max-w-[48ch] text-corps-large font-light text-blanc/85 text-pretty sm:block">
             {d.hero.intro}
           </p>
 

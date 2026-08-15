@@ -116,6 +116,24 @@ continue (`.corde`) qui descend le long du contenu et marque ses points
 d'accroche par un nœud (`.corde-noeud`). Une par page, deux au maximum : répétée,
 elle redevient un ornement.
 
+### Le voile du hero — chiffré, pas estimé
+
+Le pixel le plus clair de la vidéo sous la zone de texte est `rgb(192,212,230)`,
+luminance 0,640, relevé sur six images réparties sur les cinq secondes. Il faut
+**55 % de navy minimum** pour que du blanc y tienne le seuil AA du corps de
+texte. Toute retouche du voile se revérifie sur la vidéo réelle, jamais à l'œil.
+
+À partir de `sm`, le voile est HORIZONTAL : opaque à gauche, totalement
+transparent à partir de 64 %, soit 36 % de largeur où plus rien ne sépare l'œil
+du cordiste. Pas 40 % : les glyphes du H1 descendent jusqu'à 58,6 % et il faut
+une rampe pour les couvrir. Sur mobile le voile reste vertical — le texte y
+occupe toute la largeur, un dégradé horizontal n'aurait aucun sens.
+
+**La bande du header a son propre voile**, tenu à 78 % sur toute la hauteur de
+la barre. Le menu, le téléphone et le bouton de devis sont alignés à droite,
+c'est-à-dire dans la zone devenue transparente : sans lui, du texte blanc s'y
+retrouve à 2,5:1.
+
 ### Photos
 Deux ratios seulement, 16/9 et 4/3. La classe `.photo` applique le traitement
 qui unifie la série — contraste +8 %, saturation −5 %, voile navy 6 % en
@@ -135,9 +153,28 @@ variantes d'apparition, déclenchées une seule fois par un observateur unique :
 | Marqueur | Effet |
 |---|---|
 | `data-reveal` | monte de 20 px en fondu |
-| `data-reveal="titre"` | monte de 24 px |
+| `data-reveal="titre"` | révélation en masque, ligne par ligne |
 | `data-reveal="image"` | fondu et détente de 1,04 vers 1 |
 | `data-reveal-groupe` | les enfants directs entrent en cascade |
+
+**Le masque des grands titres.** Aucun sélecteur CSS ne sait désigner une ligne
+de texte : le script découpe le titre en mots, les regroupe par `offsetTop`
+mesuré, et enveloppe chaque ligne d'un bloc à débordement masqué dont
+l'intérieur glisse en 700 ms. Le découpage a lieu après la mise en page, donc
+`text-wrap: balance` a déjà décidé des coupes, et il est refait au
+redimensionnement.
+
+Trois pièges déjà rencontrés, à ne pas réintroduire :
+- une espace est insérée entre deux lignes, sinon `textContent` recolle les
+  mots — « spécialistesdes » — et c'est ce texte que lisent les extracteurs ;
+- `padding-block: 0.14em` compensé par une marge négative sur chaque ligne,
+  sans quoi le masque coupe l'accent d'« Île-de-France » et les jambages ;
+- le mot en orange de `<TitreSection>` doit survivre au découpage : les spans
+  de mots héritent de la classe de leur parent.
+
+Un `clip-path: inset()` calé sur la boîte de l'élément ferait la même chose en
+apparence, mais coupe les glyphes qui débordent de la line-box. Ne pas y
+revenir.
 
 **Ne jamais poser `data-reveal` sur un conteneur qui abrite déjà un
 `data-reveal-groupe`** : la section fondrait en bloc puis ses enfants

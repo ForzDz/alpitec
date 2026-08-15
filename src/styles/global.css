@@ -96,7 +96,7 @@
   --text-sous-titre--letter-spacing: -0.02em;
   --text-sous-titre--font-weight: 700;
 
-  --text-carte: 1.125rem;
+  --text-carte: clamp(1.0625rem, 0.95rem + 0.5vw, 1.25rem);
   --text-carte--line-height: 1.2;
   --text-carte--letter-spacing: -0.015em;
   --text-carte--font-weight: 700;
@@ -113,8 +113,9 @@
   --text-petit: 0.9375rem;
   --text-petit--line-height: 1.6;
 
-  /* Surtitres et étiquettes : capitales espacées, jamais en dessous de 11 px. */
-  --text-etiquette: 0.6875rem;
+  /* Surtitres et étiquettes : capitales espacées, jamais en dessous de 11 px —
+     la borne basse du clamp est ce plancher, pas une valeur décorative. */
+  --text-etiquette: clamp(0.6875rem, 0.66rem + 0.15vw, 0.75rem);
   --text-etiquette--line-height: 1.4;
   --text-etiquette--letter-spacing: 0.14em;
   --text-etiquette--font-weight: 700;
@@ -500,6 +501,46 @@
     opacity: 1;
     translate: 0 0;
     scale: 1;
+  }
+
+  /*
+    RÉVÉLATION EN MASQUE — grands titres uniquement.
+
+    Le script découpe le titre en lignes et enveloppe chacune d'un bloc à
+    débordement masqué ; l'intérieur glisse de sous la ligne vers sa place.
+    Le titre lui-même cesse alors de fondre : c'est le masque qui porte le
+    mouvement, et faire les deux donnerait une entrée molle.
+
+    `padding-block` compensé par une marge négative : sans lui, l'accent
+    circonflexe d'« Île-de-France » et les jambages de « g » et « p » se font
+    couper par le masque, la hauteur de ligne des titres étant plus courte que
+    la boîte réelle des glyphes. C'est précisément ce qu'un `clip-path` calé
+    sur la boîte de l'élément ne sait pas éviter.
+
+    Si le script ne tourne pas, aucun `.ligne` n'existe, le titre garde son
+    fondu d'origine et rien n'est masqué : le repli est l'état par défaut.
+  */
+  [data-reveal-actif] [data-reveal='titre'].titre-masque {
+    opacity: 1;
+    translate: none;
+  }
+
+  .titre-masque .ligne {
+    display: block;
+    overflow: hidden;
+    padding-block: 0.14em;
+    margin-block: -0.14em;
+  }
+
+  .titre-masque .ligne-interieur {
+    display: block;
+    translate: 0 110%;
+    transition: translate 700ms var(--sortie);
+    transition-delay: var(--retard, 0ms);
+  }
+
+  .titre-masque.est-visible .ligne-interieur {
+    translate: 0 0;
   }
 }
 
