@@ -279,7 +279,7 @@ const estActif = (href) => {
   data-action-bar
 >
   <div
-    class="pointer-events-auto flex items-center gap-2 rounded-full border border-blanc/15 bg-navy-profond/90 p-1.5 shadow-[0_8px_32px_rgba(0,0,0,0.36),0_2px_8px_rgba(0,0,0,0.2)] backdrop-blur-xl w-full max-w-[340px]"
+    class="pointer-events-auto flex items-center gap-2 rounded-carte border border-blanc/15 bg-navy-profond/90 p-1.5 shadow-[0_8px_32px_rgba(0,0,0,0.36),0_2px_8px_rgba(0,0,0,0.2)] backdrop-blur-xl w-full max-w-[340px]"
   >
     {/*
       Trois accès : téléphone, WhatsApp, devis. Les deux premiers en icône
@@ -288,10 +288,15 @@ const estActif = (href) => {
 
       Cibles tactiles à 48 px (`size-12` / `h-12`), au-dessus du minimum de 44
       recommandé, parce qu'on est ici sur la zone du pouce.
+
+      Formes alignées sur le CTA du héros le 16 août 2026 : les trois boutons
+      portent `rounded-tuile`, comme <Button>. Plus de cercle ni de pilule.
+      Le conteneur passe à `rounded-carte` pour rester concentrique — 12 px
+      dehors, 6 px de padding, 8 px dedans.
     */}
     <a
       href={telHref}
-      class="flex size-12 shrink-0 items-center justify-center rounded-full bg-navy-clair/90 text-orange border border-blanc/10 transition-transform duration-150 active:scale-90 hover:bg-navy-clair shadow-sm"
+      class="flex size-12 shrink-0 items-center justify-center rounded-tuile bg-navy-clair/90 text-orange border border-blanc/10 transition-transform duration-150 active:scale-90 hover:bg-navy-clair shadow-sm"
       aria-label={`Appeler ALPITEC au ${site.telephone.affichage}`}
       data-cta="tel-barre"
     >
@@ -314,7 +319,7 @@ const estActif = (href) => {
       href={waHref}
       target="_blank"
       rel="noopener noreferrer"
-      class="flex size-12 shrink-0 items-center justify-center rounded-full bg-navy-clair/90 text-orange border border-blanc/10 transition-transform duration-150 active:scale-90 hover:bg-navy-clair shadow-sm"
+      class="flex size-12 shrink-0 items-center justify-center rounded-tuile bg-navy-clair/90 text-orange border border-blanc/10 transition-transform duration-150 active:scale-90 hover:bg-navy-clair shadow-sm"
       aria-label="Écrire à ALPITEC sur WhatsApp"
       data-cta="whatsapp-barre"
     >
@@ -325,7 +330,7 @@ const estActif = (href) => {
 
     <a
       href="#devis"
-      class="group/devis flex h-12 min-w-0 flex-1 items-center justify-center gap-2 rounded-full bg-gradient-to-r from-orange to-[#ff7a1a] px-4 font-display text-[0.9375rem] font-bold text-navy shadow-[0_2px_12px_rgba(249,101,0,0.3)] transition-transform duration-150 active:scale-[0.97]"
+      class="group/devis flex h-12 min-w-0 flex-1 items-center justify-center gap-2 rounded-tuile bg-gradient-to-r from-orange to-[#ff7a1a] px-4 font-display text-[0.9375rem] font-bold text-navy shadow-[0_2px_12px_rgba(249,101,0,0.3)] transition-transform duration-150 active:scale-[0.97]"
       data-cta="devis-barre"
     >
       <span>Devis gratuit</span>
