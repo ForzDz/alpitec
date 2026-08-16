@@ -291,10 +291,11 @@ deux accords existent.
 
 # État du projet
 
-_Dernière mise à jour : 13 août 2026._
+_Dernière mise à jour : 16 août 2026, après l'audit avant livraison._
 
-**Le site est complet et fonctionnel : 17 pages, build vert, 4 261 Ko.**
-Il n'est pas encore déployable en l'état — voir « En attente » plus bas.
+**17 pages, build vert, `dist/` à 13 Mo.** Le site est complet, conforme AA et
+prêt techniquement. **Il n'est pas livrable en l'état** : il manque des
+informations que seul le client peut fournir — voir « En attente ».
 
 ## Fait
 
@@ -302,44 +303,181 @@ Il n'est pas encore déployable en l'état — voir « En attente » plus bas.
 |---|---|
 | 1 | Rangement des sources brutes, inventaire, renommage séquentiel |
 | 2 | Socle Astro + Tailwind, collections de contenu, extraction des 10 `.docx` |
-| 3 | Design system : 8 composants, direction visuelle « le fil orange » |
+| 3 | Design system, première direction visuelle « le fil orange » |
 | 4 | Gabarit unique des 9 pages services + hub `/services` |
-| 5 | Page d'accueil : hero vidéo, 9 services, chiffres, témoignages, zones |
+| 5 | Page d'accueil : héro vidéo, 9 services, chiffres, témoignages, zones |
 | 6 | Contact, formulaire Netlify, pages légales, blog, SEO technique |
 | 7 | Audits mobile et performance, sécurité, relecture design |
+| 8 | Refonte visuelle « Acier & altitude » sur les 17 pages |
+| 9 | Couche de mouvement : révélations au scroll, masque de titre, parallax |
+| 10 | Extraction et écriture des 25 redirections 301 de l'ancien Joomla |
+| 11 | Audit avant livraison + correction des points 2, 3, 4 et 6 |
 
-Depuis : téléphone réel intégré, hero mobile retravaillé, filigrane de la vidéo
-supprimé au recadrage, photos triées intégrées, barre d'action mobile renforcée,
-header transparent sur l'accueil, mise en dépôt Git.
+### Détail des étapes 8 à 11
 
-**Vérifié** : 0 page sans `title` / meta description / H1 unique / canonical.
-0 image sans `alt`. 34 tests mobile (17 pages × 320 et 375 px) sans échec.
-Contrastes AA mesurés sur la vidéo réelle. 0 erreur console.
+**Refonte « Acier & altitude ».** Direction validée le 13 août 2026, décrite en
+détail dans la première moitié de ce fichier. Jetons dans `src/styles/global.css`
+comme source unique. Technor puis Montserrat pour les titres, Switzer pour le
+corps, auto-hébergées. Contrastes AA recalculés, y compris sur la vidéo réelle
+du héros.
 
-## En attente — bloque la mise en ligne
+**Mouvement.** Aucune bibliothèque : tout tient dans `global.css` et le script
+de `Base.astro`. Un observateur unique, une courbe, une durée, un pas de
+cascade. Masque de révélation ligne par ligne sur les grands titres, rail de
+progression mobile sur les 4 étapes, parallax limité aux photos pleine largeur.
 
-1. **Redirections 301 des anciennes URLs Joomla.** Section prête dans
-   `netlify.toml`, vide. Sans elles, tout l'historique SEO tombe en 404.
-2. **9 champs légaux** dans `src/content/site/coordonnees.md` : SIRET, forme
-   juridique, capital, RCS, TVA, directeur de publication, assureur, adresse,
-   horaires. Le build les liste à chaque exécution.
-3. **Mentions `[À COMPLÉTER]`** encore visibles sur `/mentions-legales` et
-   `/confidentialite` — conséquence directe du point 2.
-4. **Chiffres « 2009 » et « 7 000+ »** de l'accueil : absents des `.docx`,
-   fournis oralement. Affirmations factuelles publiées, à confirmer.
-5. **Bloc « Moyens d'accès »** : seule copie du site non tirée des `.docx`, et
-   elle nuance le positionnement « sans échafaudage ni nacelle » des 9 pages
-   services. À valider ou réécrire.
-6. **Témoignages** : fonction des signataires + accord écrit. La section est
-   masquée tant qu'aucun avis ne porte `valide: true`.
-7. **Protection anti-spam** du formulaire à activer côté Netlify (honeypot seul
-   aujourd'hui), et `maxlength` à poser sur les champs.
-8. **Page `/merci`** à tester après un envoi réel.
+**Vidéo v2 du héros.** 7,46 Mo → 454 Ko, filigrane KlingAI recadré, audio
+supprimé, `faststart`. Poster WebP régénéré.
 
-À surveiller aussi : le filigrane « KlingAI 3.0 » a été retiré par recadrage,
-mais la vidéo du hero reste vraisemblablement générée par IA — à trancher avant
-de la présenter comme un chantier ALPITEC. Et 4 photos sur 10 ne correspondent
-pas à leur dossier de prestation (commentaires « ATTENTION » dans les `.md`).
+**Redirections Joomla.** Le client n'a jamais fourni la liste : elle a été
+extraite en crawlant alpitec.fr. 25 redirections écrites dans `netlify.toml`,
+dont 5 marquées `# À VÉRIFIER` — **ne pas retirer ces commentaires**, ils
+signalent des correspondances incertaines. Quatre blocs supplémentaires
+couvrent l'apex → www, soit 29 blocs `[[redirects]]` au total.
+
+**Témoignages publiés.** Trois avis nominatifs (Bouygues, Vinci, Silosun) depuis
+le 14 août 2026, sur déclaration du client qu'il détient les accords des
+signataires. Voir la réserve en attente plus bas.
+
+**Audit avant livraison (16 août 2026).** SEO, contenu et technique sur les 17
+pages. Les points 2, 3, 4 et 6 ont été corrigés dans la foulée :
+
+- **238 valeurs en dur** retirées des 8 blocs `<style>` d'un aller-retour par
+  Antigravity (commit `ec804e8`) : `oklch()` converti en `color-mix()` sur les
+  jetons, hexadécimaux, rayons ramenés aux trois valeurs du système, tailles de
+  police remises sur l'échelle `@theme`, courbes de transition bricolées
+  remplacées par `--sortie`. Un vert émeraude `#34d399`, hors palette, a
+  disparu au passage.
+- **26 couleurs de texte** remontées au plancher `/70`, plus le pied de page.
+  Les surtitres de section (11 px) passent de l'orange au navy sur fond clair
+  et au blanc sur navy ; l'orange reste sur le filet.
+- **Héros des pages services** basculés de `background-image` sur le JPEG
+  d'origine à `<Image>` en WebP.
+- **Formulaire** : `maxlength`, reCAPTCHA Netlify, CSP étendue en conséquence.
+- 8 `<title>` et 9 meta descriptions raccourcis.
+
+### Vérifié
+
+- 17/17 pages avec `title`, meta description, **H1 unique**, canonical. Tous les
+  canonical en `https://www.alpitec.fr` — **aucun vers netlify.app**.
+- Longueurs de `<title>` ≤ 65 et de description ≤ 165 caractères, **mesurées en
+  décodé** : `&amp;` compte pour un caractère, pas cinq. Un script qui lit le
+  HTML brut signalera de faux dépassements.
+- `sitemap-index.xml` + `sitemap-0.xml`, 14 URLs (404, blog et merci exclus
+  volontairement). `robots.txt` cohérent.
+- Aucun débordement horizontal sur les 17 pages en 320 et 375 px.
+- **Contrastes AA : aucun échec.** Mesurés au canvas, fonds en dégradé compris
+  — voir « Comment mesurer un contraste ici » plus bas.
+- Toutes les images ont un `alt`. Les 9 `alt` vides sont des photos décoratives
+  dans un conteneur `aria-hidden="true"` : c'est la forme correcte.
+- Aucune photo de nacelle ni d'échafaudage publiée.
+- En-têtes de sécurité complets : CSP, HSTS, X-Frame-Options,
+  X-Content-Type-Options, Referrer-Policy, Permissions-Policy.
+- `npm run build` en code de sortie 0.
+
+## En attente — chaque point et son blocage
+
+### 1. Huit champs légaux, plus deux informations hors schéma
+
+Vides dans `src/content/site/coordonnees.md` : **SIRET, forme juridique,
+capital social, RCS, TVA intracommunautaire, directeur de publication,
+assureur, horaires**. Seule l'adresse est renseignée. Le build les liste à
+chaque exécution.
+
+Il manque en plus **deux informations qui ne correspondent à aucun champ
+existant** et qu'il faudra ajouter au schéma :
+
+- le **numéro de police d'assurance** ;
+- le **médiateur de la consommation** (nom et coordonnées), obligatoire au
+  titre de l'article L.616-1 du code de la consommation.
+
+**Pourquoi ça bloque :** ces mentions sont légalement obligatoires. En leur
+absence, 12 marqueurs `[À COMPLÉTER]` sont visibles par le public — 9 sur
+`/mentions-legales`, 3 sur `/confidentialite`. Publier ainsi expose le client.
+
+### 2. Le dossier photo `couverture` est vide
+
+`src/assets/photos/couverture/` ne contient plus aucun fichier. La seule photo
+disponible, `chantier-018`, montrait un compagnon aux commandes d'une **nacelle**
+— retirée le 14 août 2026 sur décision du client, puis supprimée du disque le
+16 août. La carte de service affiche donc une tuile navy de repli.
+
+**Pourquoi ça bloque :** la page se vend sur « sans échafaudage coûteux ». Une
+photo de nacelle contredit frontalement l'argument. **Il faut une nouvelle photo
+de chantier de couverture réalisé sur cordes**, fournie par le client.
+
+Deux autres photos restent douteuses, signalées par des commentaires
+`# ATTENTION` dans leur `.md` :
+
+| Fichier | Classé dans | Ce qu'on y voit réellement |
+|---|---|---|
+| `chantier-007` | `devegetalisation` | traitement d'une coulure de rouille, aucune végétation |
+| `chantier-015` | `points-ancrage` | rebouchage de fissure à la spatule, aucun point d'ancrage |
+
+Les `alt` décrivent honnêtement ce qui est visible, donc rien n'est mensonger
+pour un lecteur d'écran ; mais l'illustration ne sert pas la prestation.
+
+### 3. Le bloc « Moyens d'accès » à trancher
+
+Dans `src/content/home/accueil.md`, porte `aValider: true`, et le build le
+signale à chaque exécution. C'est la **seule copie du site non tirée des
+`.docx`** — elle a été rédigée faute de source.
+
+**Pourquoi ça bloque :** le bloc présente trois moyens d'accès, dont
+« Nacelle » et « Échafaudage », alors que les 9 pages services affichent « Sans
+échafaudage coûteux ». Le site se contredit d'une page à l'autre. Soit le
+client assume un positionnement plus large et il faut reformuler les 9 pages,
+soit il tient la ligne « cordes » et le bloc disparaît. Ce n'est pas un
+arbitrage de rédaction, c'est un arbitrage commercial.
+
+### 4. Témoignages : l'autorisation d'entreprise manque
+
+Les trois avis sont publiés (`valide: true`) sur déclaration du client qu'il
+détient l'accord écrit des trois signataires.
+
+**Pourquoi ça reste ouvert : il faut deux autorisations, pas une.** L'accord de
+la personne couvre son nom et ses propos. Il ne couvre **pas** l'usage du nom
+de son employeur comme référence commerciale. Les grands groupes encadrent cet
+usage par une autorisation distincte, et beaucoup de contrats-cadres
+contiennent une clause de communication. **Bouygues et Vinci sont exactement le
+profil concerné.**
+
+Rappel du verrou : `valide: false` empêche tout rendu, et la section entière
+disparaît si aucun avis n'est validé. **Ne jamais passer un avis à `true` sans
+que l'accord existe.**
+
+### 5. Le reCAPTCHA doit être déclaré dans `/confidentialite`
+
+Le formulaire de devis active `data-netlify-recaptcha="true"` depuis le
+16 août 2026. Le widget charge des scripts depuis `google.com` et
+`gstatic.com`, et transmet à Google des données du visiteur — adresse IP,
+comportement de navigation, cookies.
+
+**Pourquoi ça bloque :** la page `/confidentialite` ne le mentionne nulle part.
+Elle est donc inexacte au sens du RGPD, qui impose de déclarer les
+destinataires des données et les transferts hors UE. À écrire en même temps que
+les informations du point 1 : mention de Google comme sous-traitant, finalité
+(protection anti-spam), base légale (intérêt légitime), et lien vers la
+politique de confidentialité de Google.
+
+### 6. Points à surveiller, sans blocage dur
+
+- **La vidéo du héros est vraisemblablement générée par IA.** Le filigrane
+  « KlingAI 3.0 » a été retiré par recadrage. À trancher avant de la présenter
+  comme un chantier ALPITEC.
+- **La page `/merci`** n'a jamais été testée après un envoi réel. À faire une
+  fois le site déployé sur Netlify.
+- **Le blog est vide** : `src/content/blog/` ne contient que `_MODELE.md.txt`.
+  Le build émet un avertissement à chaque exécution, `/blog` est en `noindex`
+  et hors sitemap. Cohérent, mais on livre une rubrique vide.
+- **alpitec.fr est compromis.** 2 000 des 2 001 URLs de son sitemap sont du
+  spam injecté (`/?adzajsq-148759mitems/etidm`), et `robots.txt` déclare 5
+  sitemaps parasites. Décision prise : **ne pas rediriger le spam**, ce sont des
+  chaînes de requête sur `/` que le nouveau canonical neutralise. **Prévenir le
+  client avant la bascule DNS** : l'hébergement actuel doit être nettoyé,
+  sinon la compromission le suivra.
+- **La redirection apex → www** est écrite dans `netlify.toml`, mais le domaine
+  principal doit aussi être réglé sur `www.alpitec.fr` côté Netlify.
 
 ## Décisions techniques
 
@@ -351,21 +489,35 @@ _legacy content collections_ : l'ancien emplacement déclenche
 dans `src/content/`. Le fichier est en TypeScript, comme `src/lib/content.ts` —
 les imports y font référence en `.js`, c'est la convention TS attendue.
 
-**Inter auto-hébergée.** woff2 variable dans `public/fonts/`, sous-ensemble latin
-seul, `font-display: swap`, préchargée. Pas de `<link>` vers Google Fonts : une
-requête tierce en moins sur le LCP mobile et aucune donnée visiteur envoyée à
-Google. Le sous-ensemble latin-ext a été retiré, le français n'en a pas besoin.
+**Montserrat + Switzer auto-hébergées.** woff2 variables dans `public/fonts/`,
+sous-ensemble latin seul, `font-display: swap`. Montserrat seule est préchargée :
+elle porte le H1, donc le LCP. Pas de `<link>` vers Google Fonts — une requête
+tierce en moins sur le LCP mobile, et aucune donnée visiteur envoyée à Google.
+Le sous-ensemble latin-ext a été retiré, le français n'en a pas besoin.
+Technor reste dans `public/fonts/` : rebrancher `--font-display` suffit à
+revenir en arrière. _Inter, mentionnée dans les versions antérieures de ce
+fichier, n'est plus utilisée._
 
-**Témoignages anonymisés et verrouillés.** Les `.docx` les signent avec des noms
-de personnes et d'entreprises clientes, ce que `CLAUDE.md` interdit. Citations
-conservées mot pour mot, signatures supprimées, fonctions jamais inventées. Le
-champ `valide: false` empêche tout rendu tant que le client n'a pas fourni la
-fonction et l'accord écrit que son propre document réclame.
+**Aucune valeur en dur dans un composant.** Couleurs, ombres, rayons, tailles de
+texte et courbes viennent tous de `src/styles/global.css`. Cette règle a été
+violée une fois, par un aller-retour dans Antigravity (commit `ec804e8`), et il
+a fallu 238 remplacements pour revenir à l'état voulu. **Contrôle après toute
+intervention d'un autre outil :**
 
-**Vidéo du hero sur desktop uniquement.** `autoplay` annule `preload` : déclarer
-la balise coûtait 467 Ko à chaque première visite mobile pour un décor. Elle est
-injectée en JavaScript à partir de 640 px, jamais si `prefers-reduced-motion`.
-Sur mobile, seul le poster WebP est chargé.
+```bash
+grep -rn "color: *#\|background: *#\|font-size: *[0-9]\|oklch(" src --include=*.astro
+```
+
+Toute sortie est une régression. Les classes Tailwind de la palette par défaut
+(`bg-white`, `text-slate-*`, `bg-emerald-*`) en sont une aussi : la palette du
+projet est `blanc`, `navy`, `orange`, `gris`.
+
+**Les photos passent par `<Image>`, jamais par `background-image`.** Le héros
+des pages services a été écrit en `background-image: url(...)` sur le JPEG
+d'origine, ce qui court-circuite le pipeline d'Astro : 380 à 577 Ko sur
+l'élément LCP, en mobile. Basculé en `<Image>` WebP le 16 août 2026 — la page
+ravalement est passée de 444 Ko à 79 Ko en mobile. Le seul `background-image`
+restant est un bruit SVG en `data:`, ce qui est légitime.
 
 **Photos dans `src/assets/photos/`, pas `_sources/`.** `_sources/` garde le
 matériel brut du client (docx, vidéos originales, photos non triées, 27 Mo) et
@@ -375,7 +527,13 @@ build dépend : un glob sur `_sources/` ferait échouer le déploiement Netlify.
 **Une photo sans `alt` écrit n'est pas affichée.** `<Image>` d'Astro exige un
 `alt` : sans ce garde-fou, déposer une photo sans éditer le frontmatter casse le
 build. La galerie complète alors avec des tuiles navy, et le build indique quoi
-écrire.
+écrire. Exception : les photos purement décoratives portent `alt=""` dans un
+conteneur `aria-hidden="true"` — c'est la forme correcte, pas un oubli.
+
+**Vidéo du héros sur desktop uniquement.** `autoplay` annule `preload` : déclarer
+la balise coûtait 467 Ko à chaque première visite mobile pour un décor. Elle est
+injectée en JavaScript à partir de 640 px, jamais si `prefers-reduced-motion`.
+Sur mobile, seul le poster WebP est chargé.
 
 **Header transparent : écouteur de scroll, pas `IntersectionObserver`.** Ni l'un
 ni l'autre ne se déclenchent sur une page masquée, mais avec l'observateur le
@@ -383,3 +541,54 @@ header serait resté blanc sur blanc au retour sur un onglet d'arrière-plan.
 
 **Page `/design-system` hors production.** Route dynamique dont
 `getStaticPaths` renvoie `[]` en production. Accessible en `npm run dev`.
+
+**CSP élargie pour le reCAPTCHA.** `script-src`, `img-src` et `frame-src`
+autorisent `google.com` et `gstatic.com`. Sans ces entrées la CSP bloquerait le
+widget et **le formulaire deviendrait impossible à soumettre**. Si le reCAPTCHA
+est un jour retiré, retirer aussi ces entrées.
+
+**Le spam de l'ancien site n'est pas redirigé.** Ce sont des chaînes de requête
+sur `/`, pas des chemins : le nouveau canonical les neutralise. Les rediriger
+aurait légitimé 2 000 URLs parasites auprès de Google.
+
+## Deux numéros distincts — rappel
+
+| Usage | Numéro | Lien |
+|---|---|---|
+| **Appels** | 07 56 96 60 56 | `tel:+33756966056` |
+| **WhatsApp** | 07 88 30 08 95 | `wa.me/33788300895` |
+
+**Ce sont deux lignes différentes, volontairement**, confirmées par le client le
+14 août 2026. Le bouton « Appeler » et le bouton WhatsApp de la barre mobile ne
+pointent donc pas vers le même numéro. **Ne jamais « corriger » l'un pour le
+faire coïncider avec l'autre** — c'est l'erreur que tout nouveau venu commet.
+Règle complète et emplacement des champs : section « Deux numéros distincts »
+plus haut dans ce fichier.
+
+```bash
+grep -rho 'tel:[+0-9]*' dist | sort -u        # doit ne montrer que +33756966056
+grep -rho 'wa\.me/[0-9]*' dist | sort -u      # doit ne montrer que 33788300895
+```
+
+## Comment mesurer un contraste ici
+
+Trois pièges ont fait produire des chiffres faux pendant l'audit. Ils se
+reproduiront sur quiconque écrit un vérificateur naïf.
+
+1. **Tailwind v4 émet `color-mix(in oklab, ...)`** pour les modificateurs
+   d'opacité. Une expression régulière qui extrait des nombres d'une chaîne
+   `rgb()` renvoie n'importe quoi.
+2. **Les fonds en dégradé ne sont pas des `background-color`.** Remonter la
+   chaîne des ancêtres en ne lisant que `backgroundColor` donne « blanc » sous
+   un panneau navy, et donc des échecs imaginaires.
+3. **Les voiles en pseudo-élément sont invisibles au style calculé.** Le texte
+   blanc du héros paraîtra toujours en 1,00:1 sur blanc. Ces contrastes-là se
+   mesurent sur l'image réelle, pas sur le DOM.
+
+La méthode qui marche : peindre la pile de fonds réelle dans un `<canvas>` 1×1
+— le canvas résout CSS Color 4, dégradés et transparences compris — puis lire
+le pixel. Pour le héros, échantillonner la vidéo elle-même.
+
+Et pour mesurer une transition ou une élévation, injecter d'abord
+`transition: none !important` : sans ça, les valeurs se lisent à leur état de
+départ.
