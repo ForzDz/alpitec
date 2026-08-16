@@ -12,16 +12,13 @@ noindex: false
 
 Le présent site est édité par **ALPITEC**, entreprise de travaux d'accès difficile sur cordes.
 
-- Forme juridique : [À COMPLÉTER : forme juridique]
-- Capital social : [À COMPLÉTER : capital social]
-- Siège social : 36 bis rue Henri Matisse, 94400 Vitry-sur-Seine, France
-- SIRET : [À COMPLÉTER : numéro SIRET]
-- RCS : [À COMPLÉTER : ville et numéro RCS]
-- Numéro de TVA intracommunautaire : [À COMPLÉTER : numéro de TVA]
+- Forme juridique : Société par actions simplifiée (SAS)
+- Siège social : Dockissimo Bâtiment B2, 412 boulevard National, 13003 Marseille, France
+- Établissement d'Île-de-France : 36 bis rue Henri Matisse, 94400 Vitry-sur-Seine
+- RCS : Marseille 984 029 983
+- Numéro de TVA intracommunautaire : FR12984029983
 - Téléphone : 07 56 96 60 56
 - Courriel : contact@alpitec.fr
-
-**Directeur de la publication** : [À COMPLÉTER : nom du représentant légal], en qualité de représentant légal.
 
 ## 2. Hébergement
 
@@ -31,9 +28,10 @@ Le site est hébergé par **Netlify, Inc.**, 512 2nd Street, Suite 200, San Fran
 
 ALPITEC est titulaire d'une assurance de responsabilité civile professionnelle et d'une garantie décennale couvrant ses activités de travaux en hauteur.
 
-- Assureur : [À COMPLÉTER : nom de l'assureur]
-- Numéro de police : [À COMPLÉTER : numéro de police]
-- Couverture géographique : France
+- Assureur : MAAF Assurances S.A., Chaban, 79180 Chauray
+- Contrat : Multirisque professionnelle du bâtiment et des travaux publics n° 194103183 R - MCE - 001
+- Garantie décennale : police n° 194103183 R 001
+- Couverture géographique : France et Principauté de Monaco
 
 ## 4. Propriété intellectuelle
 
@@ -56,8 +54,6 @@ ALPITEC ne saurait être tenue responsable des dommages directs ou indirects ré
 ## 7. Médiation de la consommation
 
 Conformément à l'article L.612-1 du Code de la consommation, tout consommateur a le droit de recourir gratuitement à un médiateur de la consommation en vue de la résolution amiable d'un litige l'opposant à un professionnel.
-
-- Médiateur désigné : [À COMPLÉTER : nom et coordonnées du médiateur de la consommation]
 
 Ce recours n'est ouvert qu'aux clients particuliers, après une réclamation écrite préalable adressée à ALPITEC restée sans réponse satisfaisante.
 

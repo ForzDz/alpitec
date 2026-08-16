@@ -2,7 +2,7 @@
 import { getSite, getServices, serviceHref, whatsappHref } from '../lib/content.js';
 
 /**
- * Pied de page — coordonnées, les 9 services, certifications, mentions.
+ * Pied de page — coordonnées, la liste des services, certifications, mentions.
  *
  * La liste des services est calculée depuis la collection, comme partout
  * ailleurs : jamais de liste écrite à la main.
@@ -61,7 +61,7 @@ const adresseComplete = [site.adresse.rue, `${site.adresse.codePostal} ${site.ad
             <a href="/" class="text-blanc/75 transition-colors hover:text-orange">Accueil</a>
           </li>
           <li>
-            <a href="/services" class="text-blanc/75 transition-colors hover:text-orange">Nos 9 prestations sur cordes</a>
+            <a href="/services" class="text-blanc/75 transition-colors hover:text-orange">Toutes nos prestations sur cordes</a>
           </li>
           <li>
             <a href="/contact" class="text-blanc/75 transition-colors hover:text-orange">Contact & Devis gratuit</a>

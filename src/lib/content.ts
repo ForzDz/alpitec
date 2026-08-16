@@ -24,6 +24,9 @@ export async function getSite() {
       ['legal.tvaIntracom', d.legal.tvaIntracom],
       ['legal.directeurPublication', d.legal.directeurPublication],
       ['legal.assureur', d.legal.assureur],
+      // Obligatoire dès qu'il y a des clients particuliers — art. L.612-1 du
+      // code de la consommation. Absent des documents fournis le 16/08/2026.
+      ['legal.mediateur', d.legal.mediateur],
     ]
       .filter(([, valeur]) => !String(valeur ?? '').trim())
       .map(([champ]) => champ);
@@ -33,7 +36,10 @@ export async function getSite() {
       console.warn(
         '\n⚠️  ALPITEC — src/content/site/coordonnees.md, champs encore vides :\n' +
           manquants.map((c) => `   · ${c}`).join('\n') +
-          '\n   Les mentions légales sont incomplètes tant qu\'ils le sont.\n',
+          "\n   Les mentions légales sont incomplètes tant qu'ils le sont." +
+          "\n   ⚠️  Aucun « [À COMPLÉTER] » n'est affiché au visiteur : les lignes" +
+          '\n   sans valeur sont retirées des pages. La page paraît donc complète' +
+          '\n   alors qu\'elle ne l\'est pas — cet avertissement est le seul garde-fou.\n',
       );
     }
   }
@@ -82,7 +88,7 @@ export async function getAccueil() {
   return d;
 }
 
-/** Les 9 services, triés par le champ `ordre`. */
+/** Tous les services, triés par le champ `ordre`. */
 export async function getServices() {
   const services = await getCollection('services');
   return services.sort((a, b) => a.data.ordre - b.data.ordre);

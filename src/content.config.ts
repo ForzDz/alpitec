@@ -393,14 +393,29 @@ const site = defineCollection({
     certifications: z.array(itemSchema),
 
     legal: z.object({
+      siren: z.string().default(''),
       siret: z.string(),
       formeJuridique: z.string(),
       capital: z.string().default(''),
       rcs: z.string().default(''),
       tvaIntracom: z.string().default(''),
       directeurPublication: z.string().default(''),
+      /**
+       * Siège social — Marseille. À ne pas confondre avec `adresse`, qui est
+       * l'établissement secondaire de Vitry-sur-Seine, celui que le site met
+       * en avant. Les mentions légales doivent porter le siège.
+       */
+      siegeSocial: z
+        .object({ rue: z.string(), codePostal: z.string(), ville: z.string() })
+        .default({ rue: '', codePostal: '', ville: '' }),
       assurance: z.string(),
       assureur: z.string().default(''),
+      policeContrat: z.string().default(''),
+      policeNumero: z.string().default(''),
+      policeDecennale: z.string().default(''),
+      assuranceValidite: z.string().default(''),
+      /** Médiateur de la consommation — art. L.612-1 du code de la consommation. */
+      mediateur: z.string().default(''),
       hebergeur: z
         .object({ nom: z.string(), adresse: z.string(), site: z.string() })
         .default({ nom: 'Netlify, Inc.', adresse: '', site: 'https://www.netlify.com' }),

@@ -21,10 +21,11 @@ iconOrImage:
 sections:
   - type: "keyFacts"
     items:
-      - { label: "Zone d'intervention", text: "Paris & Île-de-France" }
-      - { label: "Devis", text: "Gratuit et sans engagement" }
+      - { label: "Délai d'intervention", text: "48h à 72h" }
+      - { label: "Zone", text: "Île-de-France + France entière sur devis" }
       - { label: "Certifications", text: "CQP, IRATA, CATSC, CACES" }
-      - { label: "Assurance", text: "Garantie décennale" }
+      - { label: "Garanties", text: "RC Pro + décennale fournies" }
+      - { label: "Devis", text: "Gratuit, sous 24h ouvrées" }
 
   - type: "expertise"
     title: "L'expertise cordiste au service de votre façade"

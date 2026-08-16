@@ -13,6 +13,8 @@ PAS de SPA, PAS de React côté client sauf nécessité absolue.
 
 ## Sources
 _sources/docs/     10 fichiers .docx (1 accueil + 9 services) = les textes
+                   La 10e prestation, événementiel, n'a pas de .docx : copie
+                   écrite le 16/08/2026 sur brief client.
 _sources/logo/     logo-symbole, logo-complet
 _sources/photos/   triées par prestation
 _sources/videos/   vidéo de chantier
@@ -20,8 +22,8 @@ _sources/videos/   vidéo de chantier
 ## Règles de code
 - Le contenu vit dans src/content/, JAMAIS en dur dans les composants.
   Le client renverra des v2 de ses textes.
-- Un seul template pour les 9 pages services : src/pages/services/[slug].astro
-- Composant OtherServices : calcule automatiquement les 8 autres services.
+- Un seul template pour les 10 pages services : src/pages/services/[slug].astro
+- Composant OtherServices : calcule automatiquement les 9 autres services.
   Aucune liste manuelle.
 - Direction artistique : voir « Acier & altitude » plus bas. Aucune couleur,
   ombre, rayon ou taille de texte en dur dans un composant — tout vient des
@@ -47,6 +49,7 @@ qu'on a vraiment vus.
 | `orange` | `#F96500` | Marque (logo). CTA, corde, accents. Aplat, ou texte ≥ 24 px sur navy. |
 | `orange-texte` | `#D95A00` | Le SEUL orange autorisé en texte sur fond clair, et seulement ≥ 24 px. |
 | `alerte` | `#B03A00` | Erreurs de formulaire. Seule couleur d'alerte du site. |
+| `succes` | `#3DBE72` | Coches du bloc « Infos clés ». **Fonds navy uniquement.** |
 | `navy` | `#232B4A` | Marque (logo). Texte, aplats de section, tuiles d'icône. |
 | `navy-profond` | `#1A2039` | Bandeaux de conversion, pied de page. |
 | `navy-clair` | `#2F3960` | Surfaces posées SUR du navy, où une ombre ne se voit pas. |
@@ -59,6 +62,15 @@ En texte il ne sert qu'à partir de 24 px, en `orange-texte` sur fond clair et e
 orange de marque sur navy. Sous 24 px, un lien actif se signale par un
 soulignement orange, jamais par la couleur. Aucun texte en dessous de
 `navy/70` ni de `blanc/70`.
+
+**Le vert de validation suit exactement la règle de l'orange.** `succes`
+(`#3DBE72`) donne 5,81:1 sur `navy` et 6,72:1 sur `navy-profond`, mais
+**2,38:1 sur blanc** : il est réservé aux fonds navy. Il n'existe pas de
+variante pour fond clair — si le besoin apparaît, il faudra l'assombrir comme
+`orange-texte` l'est pour l'orange, jamais réemployer celui-ci. Il est
+volontairement désaturé : un vert vif à côté de l'orange de marque ferait
+tableau de bord, pas dossier technique. Les coches qu'il colore sont
+`aria-hidden` — l'information est portée par le texte, pas par la coche.
 
 _Une exception, une seule : le filigrane décoratif — la guillemet géante
 derrière les témoignages, en `orange/8`. Ce n'est pas du texte à lire mais
@@ -269,6 +281,8 @@ garde-fou entre un brouillon et une publication nominative.
 
 Trois avis sont publiés depuis le 14 août 2026 (Bouygues, Vinci, Silosun),
 sur déclaration du client qu'il détient les accords des trois signataires.
+**Le client a reconfirmé le 16 août 2026 que les personnes citées sont
+d'accord.** Les trois avis restent donc publiés en l'état, rien à changer.
 
 **Deux autorisations, pas une.** L'accord de la personne couvre son nom et ses
 propos. Il ne couvre PAS l'usage du nom de son employeur comme référence
@@ -276,6 +290,10 @@ commerciale : les grands groupes encadrent cet usage par une autorisation
 distincte, et beaucoup de contrats-cadres contiennent une clause de
 communication. Avant d'ajouter un nouveau nom d'entreprise, vérifier que les
 deux accords existent.
+
+_La confirmation du 16 août porte sur les **personnes**. Elle ne dit rien de
+l'autorisation d'entreprise pour Bouygues et Vinci, qui reste à obtenir — la
+réserve ci-dessus tient toujours._
 
 ## Interdits
 - Ne pas afficher de logos de clients tant que je ne l'ai pas validé.
@@ -293,7 +311,7 @@ deux accords existent.
 
 _Dernière mise à jour : 16 août 2026, après l'audit avant livraison._
 
-**17 pages, build vert, `dist/` à 13 Mo.** Le site est complet, conforme AA et
+**18 pages, build vert.** Le site est complet, conforme AA et
 prêt techniquement. **Il n'est pas livrable en l'état** : il manque des
 informations que seul le client peut fournir — voir « En attente ».
 
@@ -312,6 +330,8 @@ informations que seul le client peut fournir — voir « En attente ».
 | 9 | Couche de mouvement : révélations au scroll, masque de titre, parallax |
 | 10 | Extraction et écriture des 25 redirections 301 de l'ancien Joomla |
 | 11 | Audit avant livraison + correction des points 2, 3, 4 et 6 |
+| 12 | Mise en ligne du dépôt GitHub, purge de l'historique (7,5 Mo de vidéo v1 + photo de nacelle) |
+| 13 | Réponses du client : mentions légales, « Infos clés », moyens d'accès, redirections, page événementiel, reCAPTCHA |
 
 ### Détail des étapes 8 à 11
 
@@ -358,14 +378,14 @@ pages. Les points 2, 3, 4 et 6 ont été corrigés dans la foulée :
 
 ### Vérifié
 
-- 17/17 pages avec `title`, meta description, **H1 unique**, canonical. Tous les
+- 18/18 pages avec `title`, meta description, **H1 unique**, canonical. Tous les
   canonical en `https://www.alpitec.fr` — **aucun vers netlify.app**.
 - Longueurs de `<title>` ≤ 65 et de description ≤ 165 caractères, **mesurées en
   décodé** : `&amp;` compte pour un caractère, pas cinq. Un script qui lit le
   HTML brut signalera de faux dépassements.
 - `sitemap-index.xml` + `sitemap-0.xml`, 14 URLs (404, blog et merci exclus
   volontairement). `robots.txt` cohérent.
-- Aucun débordement horizontal sur les 17 pages en 320 et 375 px.
+- Aucun débordement horizontal sur les 18 pages en 320 et 375 px.
 - **Contrastes AA : aucun échec.** Mesurés au canvas, fonds en dégradé compris
   — voir « Comment mesurer un contraste ici » plus bas.
 - Toutes les images ont un `alt`. Les 9 `alt` vides sont des photos décoratives
@@ -374,37 +394,84 @@ pages. Les points 2, 3, 4 et 6 ont été corrigés dans la foulée :
 - En-têtes de sécurité complets : CSP, HSTS, X-Frame-Options,
   X-Content-Type-Options, Referrer-Policy, Permissions-Policy.
 - `npm run build` en code de sortie 0.
+## Réponses du client du 16 août 2026
+
+Le client a fourni trois documents — **Extrait Kbis**, **attestation décennale
+MAAF**, **attestation RC Pro MAAF** — et tranché cinq points restés ouverts.
+Ce qui en découle est appliqué ; ce qui manque encore est plus bas.
+
+| Point | Décision | État |
+|---|---|---|
+| Mentions légales | 3 PDF fournis | Partiellement rempli — voir « En attente » |
+| Bloc « Infos clés » | Passer au niveau de détail du concurrent | Fait |
+| Moyens d'accès | « On peut les utiliser mais ne pas les mettre en avant » | Fait, `aValider: false` |
+| Témoignages | Personnes citées d'accord | Rien à changer |
+| 5 redirections « À VÉRIFIER » | Destinations arbitrées | Fait, marqueurs retirés |
+| Événementiel | Prestation conservée | Page créée, **10 prestations** |
+| reCAPTCHA | — | Déclaré dans `/confidentialite` |
+
+**Ce que les trois PDF apportent**, désormais dans `coordonnees.md` et publié :
+forme juridique (SAS), RCS Marseille 984 029 983, SIREN, siège social,
+assureur MAAF, contrat multirisque `194103183 R - MCE - 001`, décennale
+`194103183 R 001`.
+
+**Une découverte du Kbis à connaître : le siège social est à MARSEILLE**
+(Dockissimo Bâtiment B2, 412 boulevard National, 13003), pas à Vitry-sur-Seine.
+Vitry est l'**établissement secondaire**, immatriculé au greffe de Créteil sous
+le n° de gestion 2024B02850. Les mentions légales portent donc le siège
+marseillais, tandis que le site, le `schema.org` et le SEO local continuent de
+mettre Vitry en avant — c'est le lieu d'exploitation francilien. Les deux
+adresses coexistent volontairement : `adresse` d'un côté, `legal.siegeSocial`
+de l'autre. **Ne pas « corriger » l'une par l'autre.**
 
 ## En attente — chaque point et son blocage
 
-### 1. Huit champs légaux, plus deux informations hors schéma
+### 1. Cinq informations légales manquent encore
 
-Vides dans `src/content/site/coordonnees.md` : **SIRET, forme juridique,
-capital social, RCS, TVA intracommunautaire, directeur de publication,
-assureur, horaires**. Seule l'adresse est renseignée. Le build les liste à
-chaque exécution.
+Les trois documents fournis ne les contiennent pas :
 
-Il manque en plus **deux informations qui ne correspondent à aucun champ
-existant** et qu'il faudra ajouter au schéma :
+| Manque | Pourquoi c'est bloquant |
+|---|---|
+| **Capital social** | Mention obligatoire pour une SAS. Absent des trois PDF. |
+| **Directeur de la publication** | Obligatoire (LCEN). Le Kbis d'établissement secondaire ne nomme pas le président. |
+| **SIRET** | Le Kbis ne donne que le SIREN ; il manque le NIC à 5 chiffres de l'établissement de Vitry. |
+| **Médiateur de la consommation** | Obligatoire (art. L.612-1 code de la consommation) dès lors qu'il y a des clients particuliers. |
+| **Horaires** | Pas bloquant légalement, mais absent du `schema.org`, ce qui pénalise le SEO local. |
 
-- le **numéro de police d'assurance** ;
-- le **médiateur de la consommation** (nom et coordonnées), obligatoire au
-  titre de l'article L.616-1 du code de la consommation.
+**Aucun `[À COMPLÉTER]` n'est plus visible côté public** : les lignes sans
+valeur ont été retirées des pages plutôt que d'afficher un marqueur au
+visiteur. Le revers, à garder en tête : **la page a l'air complète alors
+qu'elle ne l'est pas.** Le seul garde-fou restant est l'avertissement du build,
+qui liste les champs vides à chaque exécution. Ne pas le désactiver.
 
-**Pourquoi ça bloque :** ces mentions sont légalement obligatoires. En leur
-absence, 12 marqueurs `[À COMPLÉTER]` sont visibles par le public — 9 sur
-`/mentions-legales`, 3 sur `/confidentialite`. Publier ainsi expose le client.
+**Le numéro de TVA publié est CALCULÉ, pas lu.** Aucun document ne le porte.
+`FR12984029983` est dérivé du SIREN par l'algorithme officiel — clé =
+(12 + 3 × (SIREN mod 97)) mod 97 = 12. Il est juste pour toute entreprise
+assujettie, mais si ALPITEC relève de la franchise en base, elle n'a pas de
+numéro de TVA et la ligne doit disparaître. À faire confirmer.
 
-### 2. Le dossier photo `couverture` est vide
+### 2. Les deux attestations d'assurance sont EXPIRÉES
 
-`src/assets/photos/couverture/` ne contient plus aucun fichier. La seule photo
-disponible, `chantier-018`, montrait un compagnon aux commandes d'une **nacelle**
-— retirée le 14 août 2026 sur décision du client, puis supprimée du disque le
-16 août. La carte de service affiche donc une tuile navy de repli.
+Les attestations MAAF fournies couvrent le **01/01/2025 → 31/12/2025**. Elles
+ont été établies le 3 janvier 2025 et sont périmées depuis plus de sept mois.
+
+**Pourquoi ça bloque :** les mentions légales affirment qu'ALPITEC est
+titulaire d'une RC Pro et d'une décennale, en citant des numéros de police
+issus de documents qui ne sont plus valides. Le contrat a très probablement été
+reconduit — mais **il faut les attestations de l'exercice en cours** avant
+publication. Les numéros de police ne changeront sans doute pas ; les dates,
+si.
+
+### 3. Le dossier photo `couverture` est vide
+
+`src/assets/photos/couverture/` ne contient aucun fichier. La seule photo
+disponible, `chantier-018`, montrait un compagnon aux commandes d'une
+**nacelle** — retirée le 14 août 2026 sur décision du client, supprimée du
+disque le 16 août, puis purgée de l'historique Git le même jour.
 
 **Pourquoi ça bloque :** la page se vend sur « sans échafaudage coûteux ». Une
-photo de nacelle contredit frontalement l'argument. **Il faut une nouvelle photo
-de chantier de couverture réalisé sur cordes**, fournie par le client.
+photo de nacelle contredit frontalement l'argument. **Il faut une nouvelle
+photo de chantier de couverture réalisé sur cordes.**
 
 Deux autres photos restent douteuses, signalées par des commentaires
 `# ATTENTION` dans leur `.md` :
@@ -417,67 +484,68 @@ Deux autres photos restent douteuses, signalées par des commentaires
 Les `alt` décrivent honnêtement ce qui est visible, donc rien n'est mensonger
 pour un lecteur d'écran ; mais l'illustration ne sert pas la prestation.
 
-### 3. Le bloc « Moyens d'accès » à trancher
+### 4. Photos de l'événementiel — autorisation en suspens
 
-Dans `src/content/home/accueil.md`, porte `aValider: true`, et le build le
-signale à chaque exécution. C'est la **seule copie du site non tirée des
-`.docx`** — elle a été rédigée faute de source.
+`src/assets/photos/evenementiel/` est **volontairement vide**. Les photos du
+Grand Palais disponibles montrent les **anneaux olympiques** et la mention
+« PARIS 2024 » : marques déposées du CIO et du COJO, dont l'usage commercial
+est réservé aux partenaires officiels. Le client demande confirmation avant de
+les employer.
 
-**Pourquoi ça bloque :** le bloc présente trois moyens d'accès, dont
-« Nacelle » et « Échafaudage », alors que les 9 pages services affichent « Sans
-échafaudage coûteux ». Le site se contredit d'une page à l'autre. Soit le
-client assume un positionnement plus large et il faut reformuler les 9 pages,
-soit il tient la ligne « cordes » et le bloc disparaît. Ce n'est pas un
-arbitrage de rédaction, c'est un arbitrage commercial.
+En attendant, la section « realisations » de la page reste vide et la carte de
+service affiche une tuile navy de repli — le même mécanisme que pour
+`couverture`.
 
-### 4. Témoignages : l'autorisation d'entreprise manque
+**Le texte de la page est déjà écrit en conséquence.** Le client voulait mettre
+en avant les Jeux Olympiques ; la copie parle des « grands événements accueillis
+par la capitale en 2024 » sans employer les termes protégés — « Jeux
+Olympiques », « JO », « Paris 2024 », « olympique » — dont l'usage promotionnel
+est réservé aux partenaires officiels par l'article L.141-5 du code du sport.
+**Ne pas les réintroduire** sans avoir vérifié le statut d'ALPITEC au regard de
+cette règle. Le risque n'est pas théorique : le COJO a poursuivi des PME pour
+moins que ça.
 
-Les trois avis sont publiés (`valide: true`) sur déclaration du client qu'il
-détient l'accord écrit des trois signataires.
+### 5. Témoignages : l'autorisation d'entreprise manque toujours
 
-**Pourquoi ça reste ouvert : il faut deux autorisations, pas une.** L'accord de
-la personne couvre son nom et ses propos. Il ne couvre **pas** l'usage du nom
-de son employeur comme référence commerciale. Les grands groupes encadrent cet
-usage par une autorisation distincte, et beaucoup de contrats-cadres
-contiennent une clause de communication. **Bouygues et Vinci sont exactement le
-profil concerné.**
+Le client a confirmé le 16 août que les **personnes** citées sont d'accord.
+C'est la première des deux autorisations nécessaires.
 
-Rappel du verrou : `valide: false` empêche tout rendu, et la section entière
-disparaît si aucun avis n'est validé. **Ne jamais passer un avis à `true` sans
-que l'accord existe.**
+**La seconde manque : l'usage du nom de l'employeur comme référence
+commerciale.** Bouygues et Vinci encadrent cet usage par une autorisation
+distincte, et beaucoup de contrats-cadres contiennent une clause de
+communication. Voir la règle complète plus haut dans ce fichier.
 
-### 5. Le reCAPTCHA doit être déclaré dans `/confidentialite`
+### 6. Netlify Forms n'est pas activé
 
-Le formulaire de devis active `data-netlify-recaptcha="true"` depuis le
-16 août 2026. Le widget charge des scripts depuis `google.com` et
-`gstatic.com`, et transmet à Google des données du visiteur — adresse IP,
-comportement de navigation, cookies.
+L'API Netlify renvoie `forms: "not enabled"` sur le projet `alpitec`, et la
+liste des formulaires détectés est vide.
 
-**Pourquoi ça bloque :** la page `/confidentialite` ne le mentionne nulle part.
-Elle est donc inexacte au sens du RGPD, qui impose de déclarer les
-destinataires des données et les transferts hors UE. À écrire en même temps que
-les informations du point 1 : mention de Google comme sous-traitant, finalité
-(protection anti-spam), base légale (intérêt légitime), et lien vers la
-politique de confidentialité de Google.
+**Pourquoi ça bloque : le formulaire de devis s'affiche mais n'enregistre
+rien.** C'est le premier objectif commercial du site. Le balisage est correct
+(`data-netlify`, `form-name`, honeypot, `action="/merci"`, reCAPTCHA) — c'est
+la détection côté Netlify qui est désactivée. Elle est devenue opt-in : à
+activer dans *Site configuration → Forms*, **puis redéployer** pour que la
+détection s'exécute. C'est aussi ce qui rendra `/merci` testable.
 
-### 6. Points à surveiller, sans blocage dur
+### 7. Points à surveiller, sans blocage dur
 
 - **La vidéo du héros est vraisemblablement générée par IA.** Le filigrane
   « KlingAI 3.0 » a été retiré par recadrage. À trancher avant de la présenter
   comme un chantier ALPITEC.
-- **La page `/merci`** n'a jamais été testée après un envoi réel. À faire une
-  fois le site déployé sur Netlify.
 - **Le blog est vide** : `src/content/blog/` ne contient que `_MODELE.md.txt`.
-  Le build émet un avertissement à chaque exécution, `/blog` est en `noindex`
-  et hors sitemap. Cohérent, mais on livre une rubrique vide.
+  Le build émet un avertissement, `/blog` est en `noindex` et hors sitemap.
+  C'est aussi la seule redirection dont la destination n'est pas arbitrée :
+  `/actualite` y pointe, donc vers une page vide et non indexée.
 - **alpitec.fr est compromis.** 2 000 des 2 001 URLs de son sitemap sont du
-  spam injecté (`/?adzajsq-148759mitems/etidm`), et `robots.txt` déclare 5
-  sitemaps parasites. Décision prise : **ne pas rediriger le spam**, ce sont des
+  spam injecté. Décision prise : **ne pas rediriger le spam**, ce sont des
   chaînes de requête sur `/` que le nouveau canonical neutralise. **Prévenir le
-  client avant la bascule DNS** : l'hébergement actuel doit être nettoyé,
-  sinon la compromission le suivra.
+  client avant la bascule DNS** : l'hébergement actuel doit être nettoyé, sinon
+  la compromission le suivra.
 - **La redirection apex → www** est écrite dans `netlify.toml`, mais le domaine
   principal doit aussi être réglé sur `www.alpitec.fr` côté Netlify.
+- **Le Kbis écrit « rue Henri Matissa »**, les attestations et le site écrivent
+  « rue Henri Matisse ». La voie réelle de Vitry-sur-Seine est Matisse : c'est
+  très probablement une coquille du greffe. Signalé, non corrigé.
 
 ## Décisions techniques
 

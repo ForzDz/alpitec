@@ -23,13 +23,16 @@ whatsapp:
 
 email: "contact@alpitec.fr"
 
+# Adresse de l'ÉTABLISSEMENT de Vitry-sur-Seine : c'est le site d'exploitation
+# francilien, celui qu'on met en avant sur le site et dans le schema.org.
+# ⚠️ Ce n'est PAS le siège social — voir `legal.siegeSocial` plus bas.
 adresse:
   rue: "36 bis rue Henri Matisse"
   codePostal: "94400"
   ville: "Vitry-sur-Seine"
   pays: "France"
 
-horaires: "" # À RENSEIGNER
+horaires: "" # À RENSEIGNER — absent des trois documents fournis
 
 # Reprises de la section « Nos certifications » du document d'accueil.
 certifications:
@@ -38,15 +41,53 @@ certifications:
   - { label: "CATSC", text: "Aptitude sur cordes" }
   - { label: "CACES", text: "Conduite d'engins" }
 
+# ---------------------------------------------------------------------------
+# MENTIONS LÉGALES
+# ---------------------------------------------------------------------------
+# Renseignées le 16 août 2026 à partir des trois documents fournis par le
+# client : Extrait Kbis (greffe de Créteil, à jour au 29/03/2024) et les deux
+# attestations MAAF (décennale et RC Pro, établies le 03/01/2025).
+#
+# Ce que les documents NE contiennent PAS, et qui reste à obtenir :
+#   · capital social            (obligatoire pour une SAS)
+#   · directeur de publication  (le Kbis d'établissement secondaire ne nomme
+#                                pas le président)
+#   · SIRET                     (le Kbis ne donne que le SIREN, il manque le
+#                                NIC à 5 chiffres de l'établissement de Vitry)
+#   · médiateur de la consommation
+#   · horaires
+# ---------------------------------------------------------------------------
 legal:
-  siret: "" # À RENSEIGNER — obligatoire dans les mentions légales
-  formeJuridique: "" # À RENSEIGNER — SARL, SAS, EURL…
-  capital: "" # À RENSEIGNER — montant du capital social
-  rcs: "" # À RENSEIGNER — ex. « RCS Créteil 500 000 000 »
-  tvaIntracom: "" # À RENSEIGNER — ex. « FR00500000000 »
-  directeurPublication: "" # À RENSEIGNER — nom du représentant légal
-  assurance: "Garantie décennale"
-  assureur: "" # À RENSEIGNER — nom de l'assureur et n° de police
+  siren: "984 029 983"
+  # SIRET = SIREN + NIC de l'établissement. Le NIC n'est sur aucun document.
+  siret: "" # À RENSEIGNER — SIREN connu, NIC à 5 chiffres manquant
+  formeJuridique: "Société par actions simplifiée (SAS)"
+  capital: "" # À RENSEIGNER — absent des trois documents
+  rcs: "RCS Marseille 984 029 983"
+  # ⚠️ CALCULÉ, PAS LU. Aucun document ne porte le numéro de TVA. Celui-ci est
+  # dérivé du SIREN par l'algorithme officiel — clé = (12 + 3 × (SIREN mod 97))
+  # mod 97 = 12 — et vaut donc pour toute entreprise assujettie. À faire
+  # confirmer par le client : s'il relève de la franchise en base, il n'en a pas.
+  tvaIntracom: "FR12984029983"
+  directeurPublication: "" # À RENSEIGNER — non nommé sur le Kbis fourni
+  # Le siège social est à MARSEILLE. Vitry-sur-Seine est l'établissement
+  # secondaire, immatriculé au greffe de Créteil sous le n° de gestion
+  # 2024B02850. Les mentions légales doivent porter le siège, pas l'exploitation.
+  siegeSocial:
+    rue: "Dockissimo Bâtiment B2, 412 boulevard National"
+    codePostal: "13003"
+    ville: "Marseille"
+  assurance: "Responsabilité civile professionnelle et garantie décennale"
+  assureur: "MAAF Assurances S.A."
+  # Un seul contrat multirisque couvre la RC Pro et la décennale.
+  policeContrat: "Multirisque professionnelle du bâtiment et des travaux publics"
+  policeNumero: "194103183 R - MCE - 001"
+  policeDecennale: "194103183 R 001"
+  # ⚠️ Les deux attestations fournies couvrent le 01/01/2025 → 31/12/2025.
+  # Elles sont EXPIRÉES. Demander les attestations de l'exercice en cours
+  # avant toute mise en ligne.
+  assuranceValidite: "01/01/2025 – 31/12/2025"
+  mediateur: "" # À RENSEIGNER — obligatoire (art. L.612-1 code de la consommation)
   hebergeur:
     nom: "Netlify, Inc."
     adresse: "512 2nd Street, Suite 200, San Francisco, CA 94107, États-Unis"

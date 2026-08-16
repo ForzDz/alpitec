@@ -12,7 +12,7 @@ ALPITEC attache de l'importance à la protection de vos données personnelles. C
 
 ## 1. Responsable du traitement
 
-Le responsable du traitement est **ALPITEC**, [À COMPLÉTER : forme juridique], dont le siège social est situé 36 bis rue Henri Matisse, 94400 Vitry-sur-Seine.
+Le responsable du traitement est **ALPITEC**, société par actions simplifiée immatriculée au RCS de Marseille sous le numéro 984 029 983, dont le siège social est situé Dockissimo Bâtiment B2, 412 boulevard National, 13003 Marseille, et dont l'établissement d'Île-de-France se trouve 36 bis rue Henri Matisse, 94400 Vitry-sur-Seine.
 
 Pour toute question relative à vos données : contact@alpitec.fr.
 
@@ -44,7 +44,7 @@ Vos données sont traitées par les seules personnes habilitées au sein d'ALPIT
 Les sous-traitants techniques suivants peuvent y avoir accès dans le cadre strict de leur mission :
 
 - **Netlify, Inc.** — hébergement du site et réception des formulaires. Les données transitent par des serveurs situés hors de l'Union européenne ; ce transfert est encadré par les clauses contractuelles types de la Commission européenne.
-- [À COMPLÉTER : autres prestataires éventuels — messagerie, logiciel de devis, CRM]
+- **Google Ireland Limited / Google LLC** — service reCAPTCHA, qui protège le formulaire de devis contre les envois automatisés. Voir la section 8 ci-dessous.
 
 ## 5. Durée de conservation
 
@@ -65,22 +65,41 @@ Conformément au Règlement général sur la protection des données et à la lo
 - **Opposition** : vous opposer au traitement fondé sur notre intérêt légitime.
 - **Portabilité** : recevoir vos données dans un format structuré et lisible par machine.
 
-Pour exercer ces droits, écrivez à [À COMPLÉTER : adresse de contact], en joignant si nécessaire un justificatif d'identité. Nous répondons dans un délai d'un mois.
+Pour exercer ces droits, écrivez à contact@alpitec.fr, ou par courrier à ALPITEC, 36 bis rue Henri Matisse, 94400 Vitry-sur-Seine, en joignant si nécessaire un justificatif d'identité. Nous répondons dans un délai d'un mois.
 
 Si vous estimez, après nous avoir contactés, que vos droits ne sont pas respectés, vous pouvez adresser une réclamation à la **CNIL** — 3 place de Fontenoy, TSA 80715, 75334 Paris Cedex 07 — [cnil.fr](https://www.cnil.fr).
 
 ## 7. Cookies et traceurs
 
-**En l'état actuel, ce site ne dépose aucun cookie de mesure d'audience, de publicité ou de réseau social.** Les polices de caractères sont hébergées sur nos propres serveurs : aucune requête n'est adressée à un service tiers lors de la consultation des pages.
+**Ce site ne dépose aucun cookie de mesure d'audience, de publicité ou de réseau social.** Les polices de caractères sont hébergées sur nos propres serveurs : la consultation des pages n'adresse aucune requête à un service tiers.
 
-La carte de localisation n'est chargée **qu'après un clic de votre part**. Son affichage établit alors une connexion avec OpenStreetMap, qui peut enregistrer votre adresse IP.
+Deux exceptions, toutes deux limitées à une action de votre part :
+
+- La **carte de localisation** n'est chargée qu'après un clic. Son affichage établit alors une connexion avec OpenStreetMap, qui peut enregistrer votre adresse IP.
+- La **page de contact** charge le service reCAPTCHA de Google, décrit à la section suivante.
 
 L'ajout ultérieur d'un outil de mesure d'audience ou de suivi publicitaire nécessitera la mise en place d'un bandeau de consentement préalable et la mise à jour de la présente politique.
 
-## 8. Sécurité
+## 8. reCAPTCHA et transfert de données à Google
+
+Le formulaire de demande de devis est protégé contre les envois automatisés par le service **reCAPTCHA**, fourni par **Google Ireland Limited** (Gordon House, Barrow Street, Dublin 4, Irlande) et **Google LLC** (1600 Amphitheatre Parkway, Mountain View, Californie, États-Unis).
+
+**Quelles données sont transmises.** Lorsque la page de contact s'affiche, votre navigateur charge des scripts depuis `google.com` et `gstatic.com`. Google reçoit alors votre **adresse IP**, des informations sur votre **navigateur et votre appareil**, la **page consultée**, ainsi que des données relatives à votre **comportement de navigation** (mouvements de souris, frappes, temps passé). Google peut déposer des **cookies** sur votre terminal à cette occasion.
+
+**Pourquoi.** Distinguer un visiteur d'un robot, et empêcher que le formulaire ne soit utilisé pour du spam ou des envois massifs.
+
+**Base légale.** L'**intérêt légitime** d'ALPITEC à protéger son formulaire et sa messagerie contre les abus (art. 6.1.f du RGPD).
+
+**Transfert hors Union européenne.** Ces données peuvent être transférées vers les États-Unis. Google adhère au **Data Privacy Framework** UE–États-Unis et applique les **clauses contractuelles types** de la Commission européenne.
+
+**Pour en savoir plus.** [Politique de confidentialité de Google](https://policies.google.com/privacy) et [conditions d'utilisation de reCAPTCHA](https://policies.google.com/terms).
+
+Si vous ne souhaitez pas que ces données soient transmises, vous pouvez nous contacter directement par téléphone au 07 56 96 60 56 ou par courriel à contact@alpitec.fr, sans passer par le formulaire.
+
+## 9. Sécurité
 
 Le site est servi exclusivement en HTTPS. Les données transmises par le formulaire sont chiffrées en transit. L'accès aux demandes reçues est restreint aux personnes habilitées.
 
-## 9. Modification
+## 10. Modification
 
 Cette politique peut être modifiée pour tenir compte d'évolutions légales ou techniques. La date de dernière mise à jour figure en tête de page.

@@ -24,11 +24,12 @@ iconOrImage:
 sections:
   - type: "keyFacts"
     items:
-      - { label: "Zone d'intervention", text: "Paris & Île-de-France" }
-      - { label: "Norme", text: "Filets de sécurité conformes EN 1263-1" }
-      - { label: "Devis", text: "Gratuit et sans engagement" }
+      - { label: "Délai d'intervention", text: "48h à 72h" }
+      - { label: "Zone", text: "Île-de-France + France entière sur devis" }
       - { label: "Certifications", text: "CQP, IRATA, CATSC, CACES" }
-      - { label: "Assurance", text: "Entreprise pleinement assurée" }
+      - { label: "Garanties", text: "RC Pro + décennale fournies" }
+      - { label: "Devis", text: "Gratuit, sous 24h ouvrées" }
+      - { label: "Norme", text: "Filets de sécurité conformes EN 1263-1" }
 
   - type: "expertise"
     title: "La pose de filets de sécurité, un métier de cordiste"

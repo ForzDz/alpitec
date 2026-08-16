@@ -72,9 +72,9 @@
 # du spam injecté (voir la note en fin de fichier). La table ci-dessous vient
 # donc d'un parcours des liens réels du site, 24 pages, toutes en 200.
 #
-# Les lignes marquées « À VÉRIFIER » associent une ancienne prestation qui n'a
-# pas d'équivalent exact sur le nouveau site. Elles fonctionnent, mais le choix
-# de destination est le mien et mérite une relecture du client.
+# Les correspondances incertaines ont été soumises au client et arbitrées le
+# 16 août 2026 : plus aucune ligne n'est marquée « À VÉRIFIER ». Seule la
+# destination de /actualite reste ouverte, signalée sur place.
 
 # --- Accueil ------------------------------------------------------------------
 [[redirects]]
@@ -114,9 +114,9 @@
   status = 301
   force = true
 
-# À VÉRIFIER — « audit de sécurité » n'existe plus tel quel. La page la plus
-# proche est celle des points d'ancrage, qui parle d'étude technique du
-# bâtiment et de conformité EN 795. Alternative possible : /services.
+# « Audit de sécurité » n'a pas d'équivalent direct. Destination arbitrée par
+# le client le 16 août 2026 : les points d'ancrage, qui traitent de l'étude
+# technique du bâtiment et de la conformité EN 795.
 [[redirects]]
   from = "/services/batiment/audit-de-securite"
   to = "/services/points-ancrage"
@@ -136,9 +136,8 @@
   status = 301
   force = true
 
-# À VÉRIFIER — « entretien de façades » recouvre à la fois le nettoyage et la
-# dévégétalisation sur le nouveau site. J'ai retenu le ravalement, qui traite
-# du nettoyage de façade dans son contenu. Alternative : /services/devegetalisation.
+# « Entretien de façades » recouvrait le nettoyage et la dévégétalisation.
+# Destination arbitrée par le client le 16 août 2026 : le ravalement.
 [[redirects]]
   from = "/services/nettoyage/entretien-de-facades"
   to = "/services/ravalement"
@@ -172,10 +171,8 @@
   force = true
 
 # --- Prestations abandonnées --------------------------------------------------
-# À VÉRIFIER — ces trois prestations ne figurent nulle part sur le nouveau
-# site. Faute de page équivalente, elles pointent vers le hub. Si le client
-# souhaite les conserver commercialement, il faut leur créer une page plutôt
-# que les rediriger.
+# Abandon confirmé par le client le 16 août 2026 : ces deux prestations ne sont
+# plus proposées. Faute de page équivalente, elles pointent vers le hub.
 [[redirects]]
   from = "/services/autres-services/ouverture-de-porte"
   to = "/services"
@@ -188,15 +185,18 @@
   status = 301
   force = true
 
-[[redirects]]
-  from = "/services/evenementiel"
-  to = "/services"
-  status = 301
-  force = true
+# --- Événementiel : prestation CONSERVÉE, AUCUNE REDIRECTION ------------------
+# Le client garde cette prestation et une page lui a été créée le 16 août 2026.
+# L'ancienne URL Joomla était /services/evenementiel — exactement celle de la
+# nouvelle page. Il ne faut donc AUCUNE règle ici : la redirection qui pointait
+# vers /services a été retirée, et en écrire une de /services/evenementiel vers
+# lui-même créerait une boucle. Le lien historique est conservé tel quel, ce qui
+# est le meilleur cas possible pour le référencement.
 
 # --- Actualité ----------------------------------------------------------------
-# À VÉRIFIER — /actualite était la rubrique d'actualités. Le blog du nouveau
-# site en tient lieu, mais il est vide et en noindex pour l'instant.
+# Seule destination que le client n'a pas encore arbitrée. /actualite était la
+# rubrique d'actualités ; le blog en tient lieu, mais il est vide et en noindex.
+# À revoir le jour où le blog reçoit son premier article.
 [[redirects]]
   from = "/actualite"
   to = "/blog"

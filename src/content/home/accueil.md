@@ -71,6 +71,9 @@ services:
     - slug: "points-ancrage"
       label: "Points d'ancrage & lignes de vie"
       text: "Toiture à entretenir, équipements techniques à maintenir, façade à nettoyer régulièrement : chaque intervention future en hauteur exige des ancrages fiables."
+    - slug: "evenementiel"
+      label: "Événementiel & structures temporaires"
+      text: "Accroche de matériel scénique, habillages et levage en hauteur : des montages en temps contraint, souvent de nuit, sans immobiliser le lieu."
 
 # ---------------------------------------------------------------------------
 # BANDEAU CHIFFRES CLÉS
@@ -113,19 +116,26 @@ pourquoiCordes:
       text: "Vous payez l'intervention, pas l'installation. Et quand le chantier impose un autre moyen d'accès, nous le disons."
 
 # ---------------------------------------------------------------------------
-# MOYENS D'ACCÈS — SEUL BLOC DU SITE NON TIRÉ DES .DOCX
+# MOYENS D'ACCÈS — ARBITRÉ PAR LE CLIENT LE 16 AOÛT 2026
+# ---------------------------------------------------------------------------
+# Copie non tirée des .docx, mais validée : « On peut utiliser les nacelles et
+# échafaudages mais il ne faut pas le mettre en avant. »
+#
+# D'où la forme actuelle, à conserver : les cordes en premier et développées,
+# les autres moyens réunis en un seul point court, présentés comme des cas
+# minoritaires. Ne pas les remonter en items distincts — ce serait revenir à
+# la version qui contredisait le « sans échafaudage coûteux » des pages
+# services. `aValider` est passé à false : l'arbitrage est fait.
 # ---------------------------------------------------------------------------
 moyensAcces:
   title: "Le bon moyen d'accès pour chaque chantier"
-  intro: "L'accès sur cordes est notre métier et couvre la grande majorité des interventions. Quand la configuration l'impose, nous mobilisons d'autres moyens : c'est le chantier qui décide, pas l'outil."
-  aValider: true
+  intro: "L'accès sur cordes est notre métier et couvre la très grande majorité de nos interventions. C'est le chantier qui décide du moyen d'accès, jamais l'inverse."
+  aValider: false
   items:
     - label: "Accès sur cordes"
-      text: "Notre cœur de métier. Nos cordistes accèdent directement à la zone à traiter, sans emprise au sol ni autorisation de voirie. Le chantier démarre vite et le bâtiment reste pleinement accessible."
-    - label: "Nacelle"
-      text: "Pour les surfaces dégagées et les interventions au sol accessible, quand le rendement prime et que l'emprise sur la voirie ne pose pas de difficulté."
-    - label: "Échafaudage"
-      text: "Pour les chantiers lourds et de longue durée nécessitant un poste de travail fixe sur toute la façade. Nous le mettons en œuvre quand il est réellement justifié."
+      text: "Notre cœur de métier, et la solution que nous proposons par défaut. Nos cordistes certifiés accèdent directement à la zone à traiter, sans emprise au sol ni autorisation de voirie. Le chantier démarre en quelques jours au lieu de plusieurs semaines, votre immeuble reste pleinement accessible, et vous ne payez que l'intervention — pas le montage d'une installation. C'est ce qui nous permet d'intervenir sur des façades, des toitures et des ouvrages où l'échafaudage serait disproportionné."
+    - label: "Autres moyens d'accès, ponctuellement"
+      text: "Certaines configurations sortent du champ de la corde : un poste de travail fixe sur toute une façade pendant des mois, ou une surface dégagée au sol où le rendement prime. Nous disposons alors de la nacelle et de l'échafaudage, et nous vous le disons franchement plutôt que de forcer la corde. Ces cas restent minoritaires."
 
 process:
   title: "De la demande à l'intervention"

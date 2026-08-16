@@ -78,6 +78,14 @@
      même `orange-texte` n'atteint pas (3,9). Celui-ci donne 6,1:1 et reste dans
      la famille chromatique de la marque — un rouge franc jurerait. */
   --color-alerte: #b03a00;
+  /* Vert de validation — les coches du bloc « Infos clés ».
+     RÉSERVÉ AUX FONDS NAVY, exactement comme l'orange de marque : mesuré à
+     5,81:1 sur `navy` et 6,72:1 sur `navy-profond`, mais 2,38:1 sur blanc. Il n'existe pas encore de variante pour fond clair : si le besoin
+     apparaît, il faudra l'assombrir comme `orange-texte` l'est pour l'orange,
+     et non réutiliser celui-ci.
+     Volontairement désaturé : un vert vif à côté de l'orange de marque ferait
+     signalétique de tableau de bord, pas dossier technique. */
+  --color-succes: #3dbe72;
 
   /* --- Familles --- */
   --font-display: 'Montserrat', ui-sans-serif, system-ui, sans-serif;
