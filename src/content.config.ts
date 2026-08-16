@@ -252,6 +252,21 @@ const home = defineCollection({
     }),
 
     /**
+     * Pourquoi les cordes — argumentaire comparatif face à l'échafaudage et
+     * à la nacelle. Copie fournie directement par le client le 16 août 2026,
+     * pas tirée des .docx : elle n'a donc pas de drapeau `aValider`, le
+     * client en est l'auteur.
+     *
+     * Cette section précède immédiatement « Moyens d'accès » et la prépare :
+     * les cordes d'abord, les autres moyens quand le chantier l'impose.
+     */
+    pourquoiCordes: z.object({
+      title: z.string(),
+      intro: z.string(),
+      items: z.array(itemSchema),
+    }),
+
+    /**
      * Moyens d'accès.
      * ATTENTION : aucun texte source. C'est le seul bloc du site dont la copie
      * n'est pas tirée des .docx. Voir le commentaire dans accueil.md.

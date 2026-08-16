@@ -387,19 +387,38 @@ const schema = {
         2  Socle chiffré   navy profond collé au hero, chiffres qui comptent
         3  Services        blanc        en-tête 5/7, grille de 9 cartes
         4  Chantiers       PHOTO        pleine largeur, parallax, respiration
-        5  Moyens d'accès  blanc        titre à gauche collant, cartes à droite
-        6  Certifications  navy plein   plaque de qualification
-        7  Méthode         gris         grille décalée
-        8  Pourquoi nous   blanc        deux colonnes de cartes
-        9  Témoignages     gris         cartes décalées, guillemet en filigrane
-       10  Zones           navy plein   colonne unique + encart
-       11  FAQ             blanc        colonne étroite
-       12  Conversion      navy profond bandeau
-       13  Contact         gris         formulaire
+        5  Pourquoi cordes gris         en-tête centré, 3 colonnes à filets
+        6  Moyens d'accès  blanc        titre à gauche collant, cartes à droite
+        7  Certifications  navy plein   plaque de qualification
+        8  Témoignages     blanc        cartes décalées, guillemet en filigrane
+        9  Méthode         gris         grille décalée
+       10  Pourquoi nous   blanc        deux colonnes de cartes
+       11  Zones           navy plein   colonne unique + encart
+       12  FAQ             blanc        colonne étroite
+       13  Conversion      navy profond bandeau
+       14  Contact         gris         formulaire
 
-      Les jonctions de fond portent un dégradé de 96 px (`.jonction`), et deux
-      d'entre elles un segment de corde qui traverse la ligne : avant la
-      méthode et avant les zones. Pas davantage — au troisième, l'accent
+      Deux réordonnancements du 16 août 2026 :
+
+      « Pourquoi les cordes » s'insère en 5, juste AVANT « Moyens d'accès ».
+      L'enchaînement est voulu : d'abord pourquoi la corde est la réponse par
+      défaut, ensuite qu'on mobilise autre chose quand le chantier l'impose.
+      Le troisième point de la section 5 ouvre explicitement sur la 6. Ne pas
+      les séparer ni les inverser.
+
+      Les témoignages remontent de 9 à 8, avant la méthode : la preuve sociale
+      arrive avant le processus. Ils passent de gris à BLANC — restés gris,
+      ils auraient doublé le fond de la méthode qui les suit désormais.
+
+      Les jonctions de fond portent un dégradé de 96 px (`.jonction`), dont le
+      `--jonction-de` doit toujours valoir le fond de la section PRÉCÉDENTE.
+      Elles ne font saigner que du clair — blanc ou gris. Après une section
+      navy, on coupe net : un dégradé navy sur un fond clair macule le haut de
+      la section, et le contenu commence à 96 px, là où le dégradé s'éteint,
+      donc sans aucune marge.
+
+      Deux jonctions portent un segment de corde qui traverse la ligne : avant
+      la méthode et avant les zones. Pas davantage — au troisième, l'accent
       orange cesserait d'être un accent.
     */}
 
@@ -509,16 +528,87 @@ const schema = {
       )
     }
 
-    {/* ------------------------------------------------ 5. Moyens d'accès */}
+    {/* -------------------------------------------- 5. Pourquoi les cordes */}
+    {/*
+      Argumentaire comparatif, posé juste avant « Moyens d'accès » : d'abord
+      pourquoi la corde est la réponse par défaut, ensuite qu'on mobilise
+      autre chose quand le chantier l'impose. Les deux sections se lisent
+      ensemble — ne pas les séparer ni les inverser.
+
+      Mise en page tenue à l'écart de ses deux voisines : en-tête centré
+      pleine largeur là où les services ouvrent en 5/7 et où les moyens
+      d'accès collent leur titre à gauche ; trois colonnes séparées par un
+      filet, sans carte ni ombre, là où le reste de la page empile des cartes.
+    */}
+    <section class="bg-gris" aria-labelledby="pourquoi-cordes">
+      <div class="mx-auto max-w-6xl px-5 py-[var(--espace-section)] sm:px-8">
+        <div class="mx-auto max-w-[42rem] text-center">
+          <TitreSection
+            texte={d.pourquoiCordes.title}
+            id="pourquoi-cordes"
+            class="mx-auto max-w-[18ch]"
+            data-reveal="titre"
+          />
+          <p class="mx-auto mt-6 max-w-[54ch] text-corps font-light text-navy/75 text-pretty" data-reveal>
+            {d.pourquoiCordes.intro}
+          </p>
+        </div>
+
+        <ul
+          class="mt-14 grid divide-y divide-gris-bord sm:mt-16 sm:grid-cols-3 sm:divide-x sm:divide-y-0"
+          data-reveal-groupe
+        >
+          {
+            d.pourquoiCordes.items.map((item, i) => (
+              <li class="py-8 first:pt-0 last:pb-0 sm:px-7 sm:py-0 sm:first:pl-0 sm:last:pr-0">
+                <TuileIcone variant="navy">
+                  {i === 0 && (
+                    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M2 17h16" />
+                      <path d="M5.5 14V6.5h9V14" />
+                      <path d="M3.5 3.5l13 13" />
+                    </svg>
+                  )}
+                  {i === 1 && (
+                    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M4 17.5V3.5a1 1 0 011-1h10a1 1 0 011 1v14" />
+                      <path d="M2 17.5h16" />
+                      <path d="M8 17.5v-5h4v5" />
+                    </svg>
+                  )}
+                  {i === 2 && (
+                    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M14.5 6a5 5 0 100 8" />
+                      <path d="M4 9h7" />
+                      <path d="M4 11.5h7" />
+                    </svg>
+                  )}
+                </TuileIcone>
+
+                <h3 class="mt-5 text-carte text-navy text-balance">{item.label}</h3>
+                <p class="mt-2.5 max-w-[42ch] text-petit font-light text-navy/75 text-pretty">
+                  {item.text}
+                </p>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+
+    {/* ------------------------------------------------ 6. Moyens d'accès */}
     {/*
       Deux colonnes asymétriques : le titre tient seul à gauche et reste collé
       pendant que les trois moyens défilent à droite.
     */}
+    {/* La jonction doit couvrir toute la largeur : elle vit sur la <section>,
+        et la colonne de contenu passe dans un conteneur intérieur. */}
     <section
-      class="mx-auto max-w-6xl px-5 py-[var(--espace-section)] sm:px-8"
+      class="jonction"
+      style="--jonction-de: var(--color-gris)"
       aria-labelledby="moyens"
     >
-      <div class="grid gap-x-16 gap-y-10 lg:grid-cols-12">
+      <div class="mx-auto grid max-w-6xl gap-x-16 gap-y-10 px-5 py-[var(--espace-section)] sm:px-8 lg:grid-cols-12">
         <div class="lg:col-span-5">
           <div class="lg:sticky lg:top-28">
             <TitreSection texte={d.moyensAcces.title} id="moyens" class="max-w-[14ch]" data-reveal="titre" />
@@ -593,6 +683,100 @@ const schema = {
         </dl>
       </div>
     </section>
+
+    {/* --------------------------------------------------- 9. Témoignages */}
+    {/*
+      Avis NOMINATIFS depuis le 14 août 2026 : le client a fourni l'accord
+      écrit des trois signataires, ce qui lève la règle d'anonymisation.
+      Format : « citation » — Nom, Entreprise.
+
+      Le verrou reste en place : la section n'apparaît que si au moins un avis
+      porte `valide: true`, et ce drapeau ne se lève qu'accord en main. Un avis
+      ajouté sans accord reste donc invisible sans que personne ait à y penser.
+
+      Fond BLANC et non gris : remontée avant « Comment ça marche » le
+      16 août 2026, la section suit désormais les certifications (navy) et
+      précède la méthode (gris). En gris elle aurait doublé le fond de la
+      méthode. Les cartes blanches tiennent sur blanc par leur ombre, comme
+      les cartes de service plus haut.
+
+      AUCUNE jonction ici, et c'est délibéré. Les trois jonctions de la page
+      font toutes saigner du BLANC vers la section suivante. Poser une
+      jonction navy sur ce fond blanc aurait maculé le haut de la section, et
+      le titre commence à 96 px du bord, exactement là où le dégradé s'éteint
+      — aucune marge. Une coupe nette, comme après la photo pleine largeur.
+
+      Ce commentaire reste HORS de `{avisPublies.length > 0 && (…)}` : un
+      commentaire JSX placé avant l'élément racine d'une expression casse la
+      compilation Astro.
+    */}
+    {avisPublies.length > 0 && (
+      <section class="bg-blanc" aria-labelledby="temoignages">
+        <div class="mx-auto max-w-6xl px-5 py-[var(--espace-section)] sm:px-8">
+          <div class="grid gap-x-16 gap-y-8 lg:grid-cols-12">
+            <TitreSection
+              texte={d.testimonials.title}
+              id="temoignages"
+              class="max-w-[14ch] lg:col-span-5"
+              data-reveal="titre"
+            />
+            <p class="max-w-[56ch] self-end text-corps font-light text-navy/75 text-pretty lg:col-span-7" data-reveal>
+              {d.testimonials.intro}
+            </p>
+          </div>
+
+          {/*
+            Les trois cartes entrent en cascade, et celle du milieu descend de
+            24 px À PARTIR DE `lg` seulement : en dessous elles sont empilées,
+            un décalage vertical n'y voudrait plus rien dire. C'est ce léger
+            désalignement qui empêche le bloc de se lire comme un tableau.
+          */}
+          <ul class="mt-16 grid gap-6 lg:grid-cols-3" data-reveal-groupe>
+            {avisPublies.map((avis, i) => (
+              <li class:list={['flex', i === 1 && 'lg:mt-6']}>
+                <figure class="eleve relative isolate flex h-full flex-col overflow-hidden rounded-carte bg-blanc p-7">
+                  {/*
+                    Guillemet ouvrante en filigrane. Technor la dessine avec
+                    ses terminaisons carrées, donc elle appartient au système
+                    plutôt qu'à une police décorative. `-z-10` la range derrière
+                    le texte, `isolate` empêche qu'elle passe derrière la carte.
+                  */}
+                  <span
+                    aria-hidden="true"
+                    class="pointer-events-none absolute -right-2 -top-10 -z-10 select-none font-display text-[11rem] font-black leading-none text-orange/8"
+                  >
+                    &ldquo;
+                  </span>
+
+                  <span
+                    aria-hidden="true"
+                    class="mb-5 block h-0.5 w-9 rounded-full bg-orange"
+                  ></span>
+                  <blockquote class="flex-1">
+                    <p class="text-petit font-light leading-relaxed text-navy/85 text-pretty">
+                      {avis.quote}
+                    </p>
+                  </blockquote>
+                  {/*
+                    Le nom porte la graisse et le navy plein, l'entreprise
+                    suit en gris : c'est la personne qui signe, l'entreprise
+                    situe. La fonction s'intercale quand le client l'a donnée.
+                  */}
+                  <figcaption class="mt-6 border-t border-gris-bord pt-4 text-[0.8125rem] font-light leading-snug text-navy/70">
+                    <span class="block font-display text-[0.9375rem] font-bold tracking-tight text-navy">
+                      {avis.nom}
+                    </span>
+                    <span class="mt-0.5 block">
+                      {avis.role ? `${avis.role}, ${avis.company}` : avis.company}
+                    </span>
+                  </figcaption>
+                </figure>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )}
 
     {/* --------------------------------------------- 7. Comment ça marche */}
     {/* Grille décalée : une étape sur deux descend d'un demi-pas sur écran
@@ -669,88 +853,6 @@ const schema = {
         }
       </ul>
     </section>
-
-    {/* --------------------------------------------------- 9. Témoignages */}
-    {/*
-      Avis NOMINATIFS depuis le 14 août 2026 : le client a fourni l'accord
-      écrit des trois signataires, ce qui lève la règle d'anonymisation.
-      Format : « citation » — Nom, Entreprise.
-
-      Le verrou reste en place : la section n'apparaît que si au moins un avis
-      porte `valide: true`, et ce drapeau ne se lève qu'accord en main. Un avis
-      ajouté sans accord reste donc invisible sans que personne ait à y penser.
-    */}
-    {avisPublies.length > 0 && (
-      <section
-        class="jonction bg-gris"
-        style="--jonction-de: var(--color-blanc)"
-        aria-labelledby="temoignages"
-      >
-        <div class="mx-auto max-w-6xl px-5 py-[var(--espace-section)] sm:px-8">
-          <div class="grid gap-x-16 gap-y-8 lg:grid-cols-12">
-            <TitreSection
-              texte={d.testimonials.title}
-              id="temoignages"
-              class="max-w-[14ch] lg:col-span-5"
-              data-reveal="titre"
-            />
-            <p class="max-w-[56ch] self-end text-corps font-light text-navy/75 text-pretty lg:col-span-7" data-reveal>
-              {d.testimonials.intro}
-            </p>
-          </div>
-
-          {/*
-            Les trois cartes entrent en cascade, et celle du milieu descend de
-            24 px À PARTIR DE `lg` seulement : en dessous elles sont empilées,
-            un décalage vertical n'y voudrait plus rien dire. C'est ce léger
-            désalignement qui empêche le bloc de se lire comme un tableau.
-          */}
-          <ul class="mt-16 grid gap-6 lg:grid-cols-3" data-reveal-groupe>
-            {avisPublies.map((avis, i) => (
-              <li class:list={['flex', i === 1 && 'lg:mt-6']}>
-                <figure class="eleve relative isolate flex h-full flex-col overflow-hidden rounded-carte bg-blanc p-7">
-                  {/*
-                    Guillemet ouvrante en filigrane. Technor la dessine avec
-                    ses terminaisons carrées, donc elle appartient au système
-                    plutôt qu'à une police décorative. `-z-10` la range derrière
-                    le texte, `isolate` empêche qu'elle passe derrière la carte.
-                  */}
-                  <span
-                    aria-hidden="true"
-                    class="pointer-events-none absolute -right-2 -top-10 -z-10 select-none font-display text-[11rem] font-black leading-none text-orange/8"
-                  >
-                    &ldquo;
-                  </span>
-
-                  <span
-                    aria-hidden="true"
-                    class="mb-5 block h-0.5 w-9 rounded-full bg-orange"
-                  ></span>
-                  <blockquote class="flex-1">
-                    <p class="text-petit font-light leading-relaxed text-navy/85 text-pretty">
-                      {avis.quote}
-                    </p>
-                  </blockquote>
-                  {/*
-                    Le nom porte la graisse et le navy plein, l'entreprise
-                    suit en gris : c'est la personne qui signe, l'entreprise
-                    situe. La fonction s'intercale quand le client l'a donnée.
-                  */}
-                  <figcaption class="mt-6 border-t border-gris-bord pt-4 text-[0.8125rem] font-light leading-snug text-navy/70">
-                    <span class="block font-display text-[0.9375rem] font-bold tracking-tight text-navy">
-                      {avis.nom}
-                    </span>
-                    <span class="mt-0.5 block">
-                      {avis.role ? `${avis.role}, ${avis.company}` : avis.company}
-                    </span>
-                  </figcaption>
-                </figure>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-    )}
 
     {/* ------------------------------------------------------ 10. Zones */}
     <section

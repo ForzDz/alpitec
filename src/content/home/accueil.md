@@ -91,6 +91,28 @@ chiffres:
       source: "docx"
 
 # ---------------------------------------------------------------------------
+# POURQUOI LES CORDES
+# ---------------------------------------------------------------------------
+# Copie fournie par le client le 16 août 2026, pas tirée des .docx : il en est
+# l'auteur, donc pas de drapeau `aValider`.
+#
+# Cette section précède immédiatement « Moyens d'accès » et la prépare. Le
+# troisième point ouvre volontairement sur l'idée qu'un autre moyen d'accès
+# est parfois nécessaire : sans cette phrase, les deux blocs se contredisent.
+# Ne pas les séparer ni inverser leur ordre.
+# ---------------------------------------------------------------------------
+pourquoiCordes:
+  title: "Pourquoi nous travaillons sur cordes"
+  intro: "Face à l'échafaudage et à la nacelle, l'accès sur cordes change trois choses concrètes pour vous."
+  items:
+    - label: "Pas d'emprise au sol"
+      text: "Aucune autorisation de voirie, aucun échafaudage à monter. Le chantier démarre en quelques jours."
+    - label: "Votre immeuble reste accessible"
+      text: "Les occupants entrent et sortent normalement, les commerces restent ouverts pendant l'intervention."
+    - label: "Un coût maîtrisé"
+      text: "Vous payez l'intervention, pas l'installation. Et quand le chantier impose un autre moyen d'accès, nous le disons."
+
+# ---------------------------------------------------------------------------
 # MOYENS D'ACCÈS — SEUL BLOC DU SITE NON TIRÉ DES .DOCX
 # ---------------------------------------------------------------------------
 moyensAcces:
