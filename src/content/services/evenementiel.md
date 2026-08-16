@@ -97,9 +97,12 @@ sections:
 
   - type: "realisations"
     title: "Nos derniers chantiers événementiels"
-    # Vide tant que le client n'a pas confirmé l'usage des photos du Grand
-    # Palais — voir l'avertissement en tête de fichier.
-    photos: []
+    photos:
+      - fichier: "chantier-051.jpg"
+        alt: "Cordiste équipé d'une lampe frontale fixant un point d'accroche sur une structure scénique métallique en surplomb de nuit"
+        miseEnAvant: true
+      - fichier: "chantier-052.jpg"
+        alt: "Gros plan sur un cordiste installant une manille et sécurisant les câbles sur un pont de structure événementielle"
 
   - type: "cta"
     title: "Un montage à préparer ?"

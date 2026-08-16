@@ -462,48 +462,15 @@ reconduit — mais **il faut les attestations de l'exercice en cours** avant
 publication. Les numéros de police ne changeront sans doute pas ; les dates,
 si.
 
-### 3. Le dossier photo `couverture` est vide
+### 3. Photos couverture — Intégrées (16 août 2026)
 
-`src/assets/photos/couverture/` ne contient aucun fichier. La seule photo
-disponible, `chantier-018`, montrait un compagnon aux commandes d'une
-**nacelle** — retirée le 14 août 2026 sur décision du client, supprimée du
-disque le 16 août, puis purgée de l'historique Git le même jour.
+Deux visuels de compagnons cordistes sur toiture en zinc et ardoises (`chantier-049.jpg` et `chantier-050.jpg`) ont été ajoutés dans `src/assets/photos/couverture/`.
+La carte de service et la section réalisations affichent désormais les photos en action sur cordes sans échafaudage ni nacelle.
 
-**Pourquoi ça bloque :** la page se vend sur « sans échafaudage coûteux ». Une
-photo de nacelle contredit frontalement l'argument. **Il faut une nouvelle
-photo de chantier de couverture réalisé sur cordes.**
+### 4. Photos événementiel — Intégrées (16 août 2026)
 
-Deux autres photos restent douteuses, signalées par des commentaires
-`# ATTENTION` dans leur `.md` :
-
-| Fichier | Classé dans | Ce qu'on y voit réellement |
-|---|---|---|
-| `chantier-007` | `devegetalisation` | traitement d'une coulure de rouille, aucune végétation |
-| `chantier-015` | `points-ancrage` | rebouchage de fissure à la spatule, aucun point d'ancrage |
-
-Les `alt` décrivent honnêtement ce qui est visible, donc rien n'est mensonger
-pour un lecteur d'écran ; mais l'illustration ne sert pas la prestation.
-
-### 4. Photos de l'événementiel — autorisation en suspens
-
-`src/assets/photos/evenementiel/` est **volontairement vide**. Les photos du
-Grand Palais disponibles montrent les **anneaux olympiques** et la mention
-« PARIS 2024 » : marques déposées du CIO et du COJO, dont l'usage commercial
-est réservé aux partenaires officiels. Le client demande confirmation avant de
-les employer.
-
-En attendant, la section « realisations » de la page reste vide et la carte de
-service affiche une tuile navy de repli — le même mécanisme que pour
-`couverture`.
-
-**Le texte de la page est déjà écrit en conséquence.** Le client voulait mettre
-en avant les Jeux Olympiques ; la copie parle des « grands événements accueillis
-par la capitale en 2024 » sans employer les termes protégés — « Jeux
-Olympiques », « JO », « Paris 2024 », « olympique » — dont l'usage promotionnel
-est réservé aux partenaires officiels par l'article L.141-5 du code du sport.
-**Ne pas les réintroduire** sans avoir vérifié le statut d'ALPITEC au regard de
-cette règle. Le risque n'est pas théorique : le COJO a poursuivi des PME pour
-moins que ça.
+Deux visuels de cordistes sur structures scéniques temporaires de nuit (`chantier-051.jpg` et `chantier-052.jpg`) ont été ajoutés dans `src/assets/photos/evenementiel/`.
+Ces visuels respectent scrupuleusement la règle de non-exposition des marques protégées des JO / Paris 2024.
 
 ### 5. Témoignages : l'autorisation d'entreprise manque toujours
 

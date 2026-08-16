@@ -1,4 +1,4 @@
-﻿---
+---
 title: "Travaux de couverture"
 slug: "couverture"
 ordre: 2
@@ -83,23 +83,12 @@ sections:
 
   - type: "realisations"
     title: "Nos derniers chantiers de couverture"
-    # RETIRÉE le 14 août 2026, sur décision du client.
-    #
-    # chantier-018 montre une nacelle rouge sous un filet de sécurité. Une
-    # nacelle contredit frontalement le « sans échafaudage coûteux » que cette
-    # page et les huit autres revendiquent — même raison que chantier-001,
-    # écartée de l'accueil.
-    #
-    # C'était la SEULE photo du dossier couverture. Conséquences assumées :
-    # la carte de l'accueil retombe sur la tuile navy, et la section
-    # « Réalisations » disparaît de cette page tant qu'aucune photo de toiture
-    # n'est fournie. Le fichier reste dans src/assets/photos/couverture/.
-    #
-    # Pour la rétablir : décommenter les deux lignes ci-dessous.
-    #
-    # - fichier: "chantier-018.jpeg"
-    #   alt: "Compagnon casqué et harnaché aux commandes d'une nacelle, sous un filet de sécurité tendu au-dessus de la zone d'intervention"
-    photos: []
+    photos:
+      - fichier: "chantier-049.jpg"
+        alt: "Compagnon cordiste casqué et harnaché en intervention sur la toiture en ardoise et zinc d'un immeuble parisien"
+        miseEnAvant: true
+      - fichier: "chantier-050.jpg"
+        alt: "Main gantée d'un couvreur cordiste procédant au remplacement minutieux d'une ardoise sur un toit en pente"
 
   - type: "cta"
     title: "Prêt à démarrer vos travaux de couverture ?"
