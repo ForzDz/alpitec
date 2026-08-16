@@ -45,7 +45,7 @@ sections:
       - { label: "Délai d'intervention", text: "48h à 72h" }
       - { label: "Zone", text: "Île-de-France + France entière sur devis" }
       - { label: "Certifications", text: "CQP, IRATA, CATSC, CACES" }
-      - { label: "Garanties", text: "RC Pro + décennale fournies" }
+      - { label: "Assurance", text: "RC Pro + décennale" }
       - { label: "Devis", text: "Gratuit, sous 24h ouvrées" }
 
   - type: "expertise"
@@ -103,6 +103,8 @@ sections:
         miseEnAvant: true
       - fichier: "chantier-052.jpg"
         alt: "Gros plan sur un cordiste installant une manille et sécurisant les câbles sur un pont de structure événementielle"
+      - fichier: "chantier-053.jpeg"
+        alt: "Compagnon cordiste en suspension intervenant sur les installations techniques en hauteur sous la verrière monumentale du Grand Palais"
 
   - type: "cta"
     title: "Un montage à préparer ?"

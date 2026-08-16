@@ -1,4 +1,4 @@
-﻿---
+---
 title: "Points d'ancrage & lignes de vie"
 slug: "points-ancrage"
 ordre: 9
@@ -27,7 +27,7 @@ sections:
       - { label: "Délai d'intervention", text: "48h à 72h" }
       - { label: "Zone", text: "Île-de-France + France entière sur devis" }
       - { label: "Certifications", text: "CQP, IRATA, CATSC, CACES" }
-      - { label: "Garanties", text: "RC Pro + décennale fournies" }
+      - { label: "Assurance", text: "RC Pro + décennale" }
       - { label: "Devis", text: "Gratuit, sous 24h ouvrées" }
       - { label: "Norme", text: "Points d'ancrage et lignes de vie conformes EN 795" }
 
