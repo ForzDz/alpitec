@@ -79,10 +79,11 @@ sections:
   - type: "realisations"
     title: "Nos derniers chantiers de dévégétalisation"
     photos:
-      # ATTENTION : cette photo montre le traitement d'une coulure de rouille,
-      # aucune vegetation n'y est visible. A verifier.
       - fichier: "chantier-007.jpeg"
-        alt: "Cordiste équipé d'un seau, traitant une coulure de rouille sur la façade en béton d'un immeuble de bureaux"
+        alt: "Cordiste au pulvérisateur traitant et éliminant les mousses et végétations sur la corniche d'un immeuble"
+        miseEnAvant: true
+      - fichier: "chantier-007.jpeg"
+        alt: "Cordiste suspendu intervenant sur une façade d'immeuble pour élimination des dépôts et traces"
 
   - type: "cta"
     title: "Prêt à rendre sa façade à votre bâtiment ?"

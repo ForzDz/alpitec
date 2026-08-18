@@ -6,12 +6,9 @@ import TitreSection from './TitreSection.astro';
  * Galerie « Réalisations » — redesign premium.
  *
  * Layout :
- *   1 photo → pleine largeur 16/9 avec légende
- *   2 photos → split 60/40
+ *   1 photo  → pleine largeur 16/9 avec légende
+ *   2 photos → duo équilibré en 2 colonnes avec légendes
  *   3+ photos → grande photo gauche + colonne droite empilée
- *
- * Les tuiles navy viennent compléter si < 3 photos totales pour éviter
- * une galerie à une seule image sans suite.
  */
 
 const { photos = [], title, shortLabel, ordre } = Astro.props;
@@ -21,9 +18,6 @@ if (photos.length === 0) return;
 
 const enTete = photos.find((p) => p.miseEnAvant) ?? photos[0];
 const reste = photos.filter((p) => p !== enTete);
-
-// Tuiles de rembourrage si moins de 3 photos au total
-const tuiles = photos.length < 3 ? Math.max(0, 2 - reste.length) : 0;
 ---
 
 {photos.length > 0 && (
@@ -38,7 +32,7 @@ const tuiles = photos.length < 3 ? Math.max(0, 2 - reste.length) : 0;
         <TitreSection texte={title} id="realisations" class="gallery-section__title" data-reveal="titre" />
       </div>
 
-      {/* Disposition principale */}
+      {/* Disposition selon le nombre de photos */}
       {photos.length === 1 ? (
         /* ── 1 seule photo : pleine largeur ── */
         <figure class="gallery-solo" data-reveal="image">
@@ -60,8 +54,33 @@ const tuiles = photos.length < 3 ? Math.max(0, 2 - reste.length) : 0;
             <figcaption class="gallery-caption">{enTete.caption}</figcaption>
           )}
         </figure>
+      ) : photos.length === 2 ? (
+        /* ── 2 photos : duo 2 colonnes équilibré ── */
+        <div class="gallery-duo" data-reveal-groupe>
+          {photos.map((photo) => (
+            <figure class="gallery-duo__item">
+              <div class="gallery-duo__img-wrap">
+                <Image
+                  src={photo.src}
+                  alt={photo.alt}
+                  width={720}
+                  widths={[360, 540, 720]}
+                  sizes="(min-width: 768px) 46vw, 92vw"
+                  format="webp"
+                  quality={72}
+                  loading="lazy"
+                  decoding="async"
+                  class="gallery-duo__img"
+                />
+              </div>
+              {photo.caption && (
+                <figcaption class="gallery-caption">{photo.caption}</figcaption>
+              )}
+            </figure>
+          ))}
+        </div>
       ) : (
-        /* ── 2+ photos : grande gauche + grille droite ── */
+        /* ── 3+ photos : grande gauche + grille droite ── */
         <div class="gallery-split" data-reveal-groupe>
           {/* Photo principale */}
           <figure class="gallery-split__main">
@@ -106,16 +125,6 @@ const tuiles = photos.length < 3 ? Math.max(0, 2 - reste.length) : 0;
                   <figcaption class="gallery-caption">{photo.caption}</figcaption>
                 )}
               </figure>
-            ))}
-
-            {/* Tuiles navy de rembourrage */}
-            {Array.from({ length: tuiles }).map(() => (
-              <div class="gallery-tile" aria-hidden="true">
-                <span class="gallery-tile__index">
-                  {String(ordre ?? 0).padStart(2, '0')}
-                </span>
-                <span class="gallery-tile__label">{shortLabel}</span>
-              </div>
             ))}
           </div>
         </div>
@@ -197,7 +206,45 @@ const tuiles = photos.length < 3 ? Math.max(0, 2 - reste.length) : 0;
   transform: scale(1.04);
 }
 
-/* ─── Split (2+ photos) ── */
+/* ─── Duo (2 photos) ───── */
+.gallery-duo {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .gallery-duo {
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+}
+
+.gallery-duo__item {
+  margin: 0;
+}
+
+.gallery-duo__img-wrap {
+  position: relative;
+  aspect-ratio: 16/10;
+  border-radius: var(--radius-bloc);
+  overflow: hidden;
+  background: var(--color-gris);
+}
+
+.gallery-duo__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 6s ease-out;
+}
+
+.gallery-duo__img-wrap:hover .gallery-duo__img {
+  transform: scale(1.04);
+}
+
+/* ─── Split (3+ photos) ── */
 .gallery-split {
   display: grid;
   grid-template-columns: 1fr;
@@ -262,39 +309,6 @@ const tuiles = photos.length < 3 ? Math.max(0, 2 - reste.length) : 0;
 .gallery-split__main-img-wrap:hover .gallery-split__img,
 .gallery-split__thumb-img-wrap:hover .gallery-split__img {
   transform: scale(1.05);
-}
-
-/* ─── Tuile de rembourrage ── */
-.gallery-tile {
-  flex: 1;
-  border-radius: var(--radius-bloc);
-  background: linear-gradient(135deg, var(--color-navy) 0%, var(--color-navy-profond) 100%);
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  min-height: 140px;
-  border: 1px solid color-mix(in srgb, var(--color-blanc) 6%, transparent);
-}
-
-.gallery-tile__index {
-  font-family: var(--font-display);
-  font-size: var(--text-etiquette);
-  font-weight: 800;
-  letter-spacing: var(--text-etiquette--letter-spacing);
-  color: var(--color-orange);
-}
-
-.gallery-tile__label {
-  font-family: var(--font-display);
-  font-size: var(--text-petit);
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  color: color-mix(in srgb, var(--color-blanc) 80%, transparent);
-  text-wrap: balance;
-  max-width: 16ch;
-  line-height: 1.25;
-  text-transform: uppercase;
 }
 
 /* ─── Légende ── */

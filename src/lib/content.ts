@@ -1,4 +1,4 @@
-﻿import { getCollection, getEntry } from 'astro:content';
+import { getCollection, getEntry } from 'astro:content';
 
 let avertissementEmis = false;
 
@@ -192,5 +192,11 @@ export function getServicePhotos(slug, legendes = [], max = 4) {
     }
   }
 
-  return trouvees.filter((p) => p.alt?.trim()).slice(0, max);
+  const valides = trouvees.filter((p) => p.alt?.trim());
+  const enTete = valides.find((p) => p.miseEnAvant);
+  const ordonnees = enTete
+    ? [enTete, ...valides.filter((p) => p !== enTete)]
+    : valides;
+
+  return ordonnees.slice(0, max);
 }

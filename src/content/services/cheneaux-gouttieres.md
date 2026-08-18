@@ -79,9 +79,11 @@ sections:
   - type: "realisations"
     title: "Nos derniers chantiers de nettoyage de chéneaux"
     photos:
-      - fichier: "chantier-027.jpeg"
-        alt: "Deux cordistes suspendus sous une corniche, au droit d'un chéneau en zinc et de sa descente d'eaux pluviales"
+      - fichier: "1.jpg"
+        alt: "Cordiste suspendu en toiture parisienne, retirant les feuilles mortes et débris obstruant un chéneau en zinc"
         miseEnAvant: true
+      - fichier: "2.jpg"
+        alt: "Curage et évacuation manuelle des feuilles mortes et boues accumulées dans le chéneau en zinc"
       - fichier: "chantier-036.jpeg"
         alt: "Chéneau en zinc vu du dessus, crapaudine engorgée de débris et eau stagnante, pieds du cordiste en bord de toiture"
       - fichier: "chantier-037.jpeg"

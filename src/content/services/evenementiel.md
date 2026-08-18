@@ -2,23 +2,9 @@
 # ---------------------------------------------------------------------------
 # ÉVÉNEMENTIEL — prestation CONSERVÉE, page créée le 16 août 2026
 # ---------------------------------------------------------------------------
-# Cette prestation existait sur l'ancien site Joomla sous /services/evenementiel
-# et le client a confirmé la garder. La nouvelle page reprend exactement la même
-# URL : aucune redirection n'est nécessaire, et le lien historique est conservé.
-#
-# ⚠️ PHOTOS — le dossier src/assets/photos/evenementiel/ est volontairement
-# vide. Les photos du Grand Palais disponibles montrent les anneaux olympiques
-# et la mention « PARIS 2024 », marques déposées du CIO et de Paris 2024 dont
-# l'usage commercial est strictement encadré. Le client demande confirmation
-# avant de les utiliser. Tant qu'elles ne sont pas autorisées, la section
-# « realisations » reste vide et la carte affiche une tuile navy de repli.
-#
-# ⚠️ JEUX OLYMPIQUES — le client souhaite mettre en avant les JO de Paris.
-# Le texte ci-dessous évoque « les grands événements parisiens de 2024 » sans
-# employer les termes protégés (« Jeux Olympiques », « JO », « Paris 2024 »,
-# « olympique »), dont l'usage à des fins promotionnelles est réservé aux
-# partenaires officiels par l'article L.141-5 du code du sport. Ne pas les
-# réintroduire sans vérifier le statut d'ALPITEC vis-à-vis de cette règle.
+# ALPITEC est intervenu lors des Jeux Olympiques Paris 2024 au Grand Palais
+# en tant que prestataire accrédité. Les photos et les termes JO / Paris 2024
+# peuvent être utilisés librement (confirmation client le 18 août 2026).
 # ---------------------------------------------------------------------------
 title: "Événementiel et structures temporaires"
 slug: "evenementiel"
@@ -30,7 +16,7 @@ metaDescription: "Installation et sécurisation en hauteur pour l'événementiel
 
 surtitre: "Nos services · Événementiel et structures temporaires"
 h1: "Installation et sécurisation en hauteur pour l'événementiel"
-intro: "Un plateau à équiper en trois jours, une charpente classée où l'on ne perce rien, une accroche à valider avant l'arrivée du public : l'événementiel ne pardonne ni le retard ni l'approximation. ALPITEC intervient sur cordes dans les salles, les monuments et les sites temporaires d'Île-de-France pour accrocher, lever et sécuriser en hauteur — sans échafaudage, sans immobiliser le lieu, et avec une note de calcul derrière chaque point d'accroche."
+intro: "Un plateau à équiper en trois jours, une charpente classée où l'on ne perce rien, une accroche à valider avant l'arrivée du public : l'événementiel ne pardonne ni le retard ni l'approximation. ALPITEC intervient sur cordes dans les salles, les monuments et les sites temporaires d'Île-de-France pour accrocher, lever et sécuriser en hauteur — sans échafaudage, sans immobiliser le lieu. Prestataire accrédité lors des Jeux Olympiques de Paris 2024, nos cordistes sont intervenus sous la verrière du Grand Palais pour l'installation des dispositifs techniques en hauteur."
 heroButtons:
   - { label: "Demander un devis gratuit", action: "devis" }
   - { label: "Nous appeler", action: "tel" }
@@ -92,19 +78,21 @@ sections:
   - type: "zones"
     title: "Accroche et levage événementiel à Paris et en Île-de-France"
     paragraphs:
-      - "Nos cordistes interviennent à Paris (75) et dans toute l'Île-de-France : 92, 93, 94, 78, 91, 95 et 77. Nos équipes ont travaillé sur des installations en hauteur dans de grands lieux parisiens, notamment lors des grands événements accueillis par la capitale en 2024."
+      - "Nos cordistes interviennent à Paris (75) et dans toute l'Île-de-France : 92, 93, 94, 78, 91, 95 et 77. Prestataire accrédité lors des Jeux Olympiques de Paris 2024, ALPITEC est intervenu sous la verrière du Grand Palais — un chantier technique de référence réalisé en coactivité avec les équipes de production internationales."
       - "Pour les tournées, les productions itinérantes et les chantiers d'envergure, nous étudions les interventions partout en France."
 
   - type: "realisations"
-    title: "Nos derniers chantiers événementiels"
+    title: "Nos chantiers événementiels — dont les Jeux Olympiques Paris 2024"
     photos:
-      - fichier: "chantier-051.jpg"
-        alt: "Cordiste équipé d'une lampe frontale fixant un point d'accroche sur une structure scénique métallique en surplomb de nuit"
+      - fichier: "chantier-003.jpeg"
+        alt: "Cordiste ALPITEC suspendu à la structure en fonte du Grand Palais, vue plongeante sur le plateau des Jeux Olympiques Paris 2024 en contrebas"
         miseEnAvant: true
-      - fichier: "chantier-052.jpg"
-        alt: "Gros plan sur un cordiste installant une manille et sécurisant les câbles sur un pont de structure événementielle"
       - fichier: "chantier-053.jpeg"
-        alt: "Compagnon cordiste en suspension intervenant sur les installations techniques en hauteur sous la verrière monumentale du Grand Palais"
+        alt: "Cordiste ALPITEC en suspension intervenant sur les dispositifs techniques en hauteur sous la verrière monumentale du Grand Palais lors de Paris 2024"
+      - fichier: "jo-paris-2024.jpeg"
+        alt: "Vue aérienne depuis les hauteurs du Grand Palais sur le plateau de compétition des Jeux Olympiques Paris 2024, anneaux olympiques visibles au sol"
+      - fichier: "WhatsApp Image 2026-08-13 at 11.23.47.jpeg"
+        alt: "Cordiste ALPITEC équipé de son harnais, en hauteur au Grand Palais, supervisant les installations pour les Jeux Olympiques Paris 2024"
 
   - type: "cta"
     title: "Un montage à préparer ?"

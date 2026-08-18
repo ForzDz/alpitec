@@ -89,12 +89,12 @@ sections:
       # champ : en pleine largeur elle deviendrait lisible et contredirait le
       # « sans échafaudage ni nacelle » revendiqué plus haut sur cette page.
       # Elles restent dans la grille, où l'engin passe inaperçu.
-      - fichier: "chantier-042.jpeg"
+      - fichier: "chantier-048.jpeg"
         alt: "Filet de sécurité horizontal tendu sous une charpente en bois, vu en contre-plongée sur ciel bleu"
         miseEnAvant: true
       - fichier: "chantier-047.jpeg"
         alt: "Cordiste suspendu sous une dalle béton, fixant un filet de protection le long du nez de dalle, seau de matériel accroché au harnais"
-      - fichier: "chantier-048.jpeg"
+      - fichier: "chantier-042.jpeg"
         alt: "Cordiste à l'horizontale sous une dalle béton, tendant un filet de protection d'une travée à l'autre"
       - fichier: "chantier-043.jpeg"
         alt: "Filet de sécurité tendu sous les poutres bois d'un bâtiment en construction, murs en parpaing bruts"

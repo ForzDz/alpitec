@@ -77,7 +77,7 @@ sections:
   - type: "realisations"
     title: "Nos derniers chantiers anti-pigeons"
     photos:
-      - fichier: "chantier-028.jpeg"
+      - fichier: "chantier-028.jpg"
         alt: "Cordiste au casque rouge sur une corniche d'immeuble parisien souillée de fientes, pulvérisant un produit de nettoyage au pulvérisateur à pression"
 
   - type: "cta"

@@ -83,10 +83,11 @@ sections:
   - type: "realisations"
     title: "Nos dernières installations d'ancrages et lignes de vie"
     photos:
-      # ATTENTION : cette photo montre un rebouchage de fissure a la spatule,
-      # aucun point d'ancrage n'y est visible. A verifier.
-      - fichier: "chantier-015.jpeg"
-        alt: "Cordiste au casque bleu appliquant un enduit de rebouchage à la spatule sur une fissure de façade"
+      - fichier: "1.jpg"
+        alt: "Cordiste équipé installant et fixant une platine d'ancrage permanent EN 795 sur le muret d'une toiture parisienne"
+        miseEnAvant: true
+      - fichier: "2.jpg"
+        alt: "Serrage et fixation de sécurité à la clé d'un anneau d'ancrage permanent en inox sur tête de mur"
 
   - type: "cta"
     title: "Prêt à sécuriser durablement votre bâtiment ?"
