@@ -2,8 +2,8 @@
 title: "Accueil"
 slug: "accueil"
 
-metaTitle: "Travaux en hauteur sur cordes à Paris & Île-de-France | ALPITEC"
-metaDescription: "Travaux en hauteur sur cordes à Paris et en Île-de-France. Cordistes certifiés CQP, IRATA, CATSC & CACES. Ravalement, couverture, nettoyage. Devis gratuit."
+metaTitle: "Cordistes à Paris & Île-de-France | Travaux en hauteur ALPITEC"
+metaDescription: "Entreprise de cordistes à Paris et en Île-de-France. Travaux acrobatiques et sur cordes : ravalement, couverture, nettoyage. Sans échafaudage. Devis gratuit."
 
 # Bande de chantiers : photos de src/assets/photos/accueil/, appariées par nom
 # de fichier. Une photo sans alt écrit ici n'est pas affichée.
@@ -19,8 +19,8 @@ photosAccueil:
     alt: "Cordiste au casque jaune, suspendu à sa corde, reprenant l'enduit sous la dalle d'un balcon d'immeuble d'habitation"
 
 hero:
-  surtitre: "Cordistes certifiés · Paris & Île-de-France"
-  h1: "Travaux en hauteur sur cordes à Paris"
+  surtitre: "Travaux acrobatiques & sur cordes · Paris"
+  h1: "Cordistes certifiés en Île-de-France"
   intro: "Ravalement, couverture, nettoyage, sécurisation : ALPITEC, entreprise de travaux en hauteur, fait intervenir ses cordistes sur tous types de bâtiments à Paris et en Île-de-France — copropriétés, sites industriels, chantiers du BTP. Sans échafaudage coûteux, sans immobiliser votre immeuble."
   introCourte: "Travaux en hauteur à Paris : sans échafaudage coûteux, sans immobiliser votre immeuble."
   buttons:
@@ -196,6 +196,12 @@ testimonials:
 faq:
   title: "Vous hésitez ? Voici les réponses"
   items:
+    - question: "Infiltration en façade dans mon immeuble : qui contacter ?"
+      answer: "Un cordiste, avant tout autre corps de métier. L'infiltration vient presque toujours d'un joint ouvert, d'une fissure, d'un chéneau bouché ou d'une souche dégradée — des points situés en hauteur, qu'il faut voir de près pour diagnostiquer. Nos cordistes montent, identifient l'origine réelle et vous adressent un rapport photo avec le devis. Pas de sondage à l'aveugle depuis le sol."
+    - question: "Chute de pierres depuis une façade : que faire en urgence ?"
+      answer: "Sécurisez d'abord le pied de l'immeuble et appelez-nous. Nous intervenons en purge de façade : nos cordistes font tomber en sécurité tout élément instable — pierre, enduit, modénature — puis posons si nécessaire un filet pare-gravats le temps des travaux définitifs. C'est une intervention rapide, sans échafaudage à monter, qui lève le danger immédiat et votre responsabilité de syndic."
+    - question: "Peut-on faire un ravalement sans échafaudage ni nacelle ?"
+      answer: "Oui, et c'est notre métier. L'accès sur cordes est l'alternative à l'échafaudage sur la grande majorité des ravalements : aucune emprise au sol, aucune autorisation de voirie, aucun montage à financer. Le chantier démarre en quelques jours au lieu de plusieurs semaines, votre immeuble reste accessible, et vous ne payez que l'intervention. Demandez un devis comparatif, l'écart parle de lui-même."
     - question: "Quelles sont les certifications de vos cordistes ?"
       answer: "Tous nos cordistes sont titulaires du CQP Cordiste, de la certification internationale IRATA, du CATSC et du CACES. Ces qualifications sont conformes à la réglementation française du travail en hauteur et régulièrement renouvelées."
     - question: "Dans quelles zones intervenez-vous ?"

@@ -4,7 +4,7 @@ slug: "maconnerie"
 ordre: 4
 shortLabel: "Maçonnerie, corniches & cheminées"
 
-metaTitle: "Maçonnerie, corniches & cheminées à Paris | Cordistes ALPITEC"
+metaTitle: "Purge de façade & maçonnerie sur corde à Paris | ALPITEC"
 metaDescription: "Restauration de corniches, cheminées et modénatures par cordistes à Paris et en Île-de-France. Spécialistes du bâti haussmannien. Devis gratuit."
 
 surtitre: "Nos services · Maçonnerie, corniches & cheminées"

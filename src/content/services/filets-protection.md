@@ -4,7 +4,7 @@ slug: "filets-protection"
 ordre: 5
 shortLabel: "Filets de protection"
 
-metaTitle: "Pose de filets anti-chute & pare-gravats à Paris | ALPITEC"
+metaTitle: "Filets anti-chute & pare-gravats à Paris | Cordistes ALPITEC"
 metaDescription: "Pose de filets de sécurité conformes EN 1263-1 par cordistes à Paris et en Île-de-France : filets anti-chute, pare-gravats, protection de chantier. Devis gratuit."
 
 surtitre: "Nos services · Filets de protection anti-chute"

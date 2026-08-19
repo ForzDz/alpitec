@@ -4,7 +4,7 @@ slug: "ravalement"
 ordre: 1
 shortLabel: "Ravalement de façades"
 
-metaTitle: "Ravalement de façades Paris & Île-de-France — Cordistes | ALPITEC"
+metaTitle: "Ravalement de façade sur corde à Paris | Cordistes ALPITEC"
 metaDescription: "Ravalement de façade par cordistes à Paris et en Île-de-France. Spécialistes du bâti haussmannien. Sans échafaudage : moins cher, plus rapide. Devis gratuit."
 
 surtitre: "Nos services · Ravalement de façades"

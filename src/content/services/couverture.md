@@ -4,7 +4,7 @@ slug: "couverture"
 ordre: 2
 shortLabel: "Travaux de couverture"
 
-metaTitle: "Travaux de couverture Paris & Île-de-France — Cordistes | ALPITEC"
+metaTitle: "Réparation de toiture difficile d'accès à Paris | ALPITEC"
 metaDescription: "Réparation de toiture, fuites, étanchéité par cordistes certifiés à Paris et en Île-de-France. Sans échafaudage : intervention rapide, coût maîtrisé. Devis gratuit."
 
 surtitre: "Nos services · Travaux de couverture"

@@ -4,7 +4,7 @@ slug: "cheneaux-gouttieres"
 ordre: 7
 shortLabel: "Nettoyage de chéneaux & gouttières"
 
-metaTitle: "Nettoyage de chéneaux & gouttières à Paris | ALPITEC"
+metaTitle: "Nettoyage de gouttières d'immeuble à Paris | ALPITEC"
 metaDescription: "Curage de chéneaux, gouttières et descentes par cordistes à Paris et en Île-de-France. Contrats d'entretien annuels. Sans échafaudage ni nacelle. Devis gratuit."
 
 surtitre: "Nos services · Nettoyage de chéneaux & gouttières"

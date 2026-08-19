@@ -12,7 +12,7 @@ ordre: 10
 shortLabel: "Événementiel"
 
 metaTitle: "Accroche et levage événementiel à Paris | Cordistes ALPITEC"
-metaDescription: "Installation et sécurisation en hauteur pour l'événementiel à Paris et en Île-de-France : accroche de matériel scénique, structures temporaires, levage. Devis gratuit."
+metaDescription: "Accroche de matériel scénique, structures temporaires et levage en hauteur sur cordes, à Paris et en Île-de-France. Devis gratuit."
 
 surtitre: "Nos services · Événementiel et structures temporaires"
 h1: "Installation et sécurisation en hauteur pour l'événementiel"
