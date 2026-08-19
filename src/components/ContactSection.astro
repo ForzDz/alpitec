@@ -204,9 +204,41 @@ const classeChamp =
             >
             </p>
 
-            <Button type="submit" variant="primaire" size="lg" class="w-full sm:w-auto" data-cta="devis-formulaire">
-              {contact.form.submitLabel}
-            </Button>
+            {/*
+              Deux voies d'envoi, volontairement.
+
+              Le bouton principal enregistre la demande dans Netlify Forms :
+              c'est la trace écrite, elle ne se perd pas. Mais la notification
+              par e-mail de Netlify est passée en offre payante — sans elle,
+              personne n'est prévenu qu'une demande est arrivée.
+
+              Le second bouton comble ce trou sans rien coûter : il ouvre
+              WhatsApp avec la demande déjà rédigée. Le client reçoit l'alerte
+              sur son téléphone, là où il lit vraiment.
+
+              Il reste secondaire à dessein : si le visiteur n'a pas WhatsApp,
+              ou refuse d'ouvrir l'application, la demande doit quand même
+              partir. C'est pourquoi il ne remplace pas la soumission.
+            */}
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+              <Button type="submit" variant="primaire" size="lg" class="w-full sm:w-auto" data-cta="devis-formulaire">
+                {contact.form.submitLabel}
+              </Button>
+              <Button
+                type="button"
+                variant="secondaire"
+                size="lg"
+                class="w-full sm:w-auto"
+                data-envoi-whatsapp
+                data-numero={site.whatsapp.numero}
+                data-cta="devis-whatsapp"
+              >
+                <svg aria-hidden="true" viewBox="0 0 24 24" class="size-5 shrink-0" fill="currentColor">
+                  <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 004.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0012.04 2zm5.52 14.15c-.25.12-1.47.72-1.69.81-.23.08-.39.12-.56-.13-.16-.24-.64-.8-.78-.97-.15-.16-.29-.18-.54-.06-.25.13-1.05.39-1.99 1.23a7.4 7.4 0 01-1.38-1.72c-.14-.25-.01-.38.11-.5.11-.11.25-.29.37-.44.13-.15.17-.25.25-.42.08-.16.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.47c-.16 0-.43.06-.65.31-.22.25-.85.83-.85 2.03s.87 2.35.99 2.51c.12.16 1.71 2.61 4.15 3.66.58.25 1.03.4 1.39.51.58.19 1.11.16 1.53.1.47-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.11-.22-.17-.47-.29z" />
+                </svg>
+                Envoyer sur WhatsApp
+              </Button>
+            </div>
             <p class="mt-4 text-[0.8125rem] text-navy/70">
               {contact.form.legalNote}
             </p>
@@ -226,6 +258,59 @@ const classeChamp =
    * Avec JavaScript, on désactive la validation native pour afficher des
    * messages en français, au bon endroit, liés au champ par aria-describedby.
    */
+  /**
+   * Envoi par WhatsApp — canal d'alerte gratuit.
+   *
+   * On lit les champs du formulaire, on compose un message lisible et on
+   * ouvre wa.me. Aucun back-end, aucune dépendance : c'est une simple URL.
+   *
+   * Le bouton valide d'abord les champs obligatoires — sans quoi le client
+   * recevrait des demandes sans nom ni téléphone, donc inexploitables.
+   */
+  const boutonWhatsapp = document.querySelector('[data-envoi-whatsapp]');
+
+  if (boutonWhatsapp) {
+    boutonWhatsapp.addEventListener('click', () => {
+      const f = document.querySelector('[data-formulaire-devis]');
+      if (!f) return;
+
+      const lire = (nom) => {
+        const el = f.querySelector(`[name="${nom}"]`);
+        if (!el) return '';
+        if (el.tagName === 'SELECT') {
+          return el.selectedIndex > 0 ? el.options[el.selectedIndex].text.trim() : '';
+        }
+        return (el.value || '').trim();
+      };
+
+      const manquants = ['prenom', 'nom', 'telephone', 'besoin'].filter((n) => !lire(n));
+      if (manquants.length > 0) {
+        // On réutilise la validation déjà en place plutôt que d'en écrire une
+        // seconde : elle affiche les messages au bon endroit.
+        f.requestSubmit ? f.requestSubmit() : f.querySelector('[type=submit]')?.click();
+        return;
+      }
+
+      const lignes = [
+        'Nouvelle demande de devis — alpitec.fr',
+        '',
+        `Nom : ${lire('prenom')} ${lire('nom')}`,
+        `Téléphone : ${lire('telephone')}`,
+      ];
+      if (lire('email')) lignes.push(`Email : ${lire('email')}`);
+      if (lire('type-projet')) lignes.push(`Prestation : ${lire('type-projet')}`);
+      if (lire('ville')) lignes.push(`Ville : ${lire('ville')}`);
+      lignes.push('', 'Besoin :', lire('besoin'));
+
+      const numero = boutonWhatsapp.dataset.numero;
+      window.open(
+        `https://wa.me/${numero}?text=${encodeURIComponent(lignes.join(String.fromCharCode(10)))}`,
+        '_blank',
+        'noopener',
+      );
+    });
+  }
+
   const formulaire = document.querySelector('[data-formulaire-devis]');
 
   if (formulaire) {
