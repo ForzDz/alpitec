@@ -77,8 +77,15 @@ sections:
   - type: "realisations"
     title: "Nos derniers chantiers anti-pigeons"
     photos:
-      - fichier: "chantier-028.jpg"
-        alt: "Cordiste au casque rouge sur une corniche d'immeuble parisien souillée de fientes, pulvérisant un produit de nettoyage au pulvérisateur à pression"
+      - fichier: "chantier-091.jpg"
+        alt: "Installation de picots anti-pigeons sur un appui de fenêtre en pierre de taille par un cordiste"
+        miseEnAvant: true
+      - fichier: "chantier-090.jpg"
+        alt: "Cordiste en suspension posant des rangées de pics anti-volatiles sur le rebord d'une corniche d'immeuble"
+      - fichier: "chantier-092.jpg"
+        alt: "Fixation de pics anti-pigeons en acier inoxydable le long d'une corniche de toiture sur un immeuble parisien"
+      - fichier: "chantier-093.jpg"
+        alt: "Cordiste sécurisé sur cordes ajustant un dispositif de protection anti-pigeons sur un bandeau de façade"
 
   - type: "cta"
     title: "Prêt à débarrasser votre bâtiment des pigeons ?"

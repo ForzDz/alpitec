@@ -80,10 +80,16 @@ sections:
     title: "Nos derniers chantiers de dévégétalisation"
     photos:
       - fichier: "chantier-007.jpeg"
-        alt: "Cordiste au pulvérisateur traitant et éliminant les mousses et végétations sur la corniche d'un immeuble"
+        alt: "Traitement biocide et démoussage de corniche par cordiste sur un immeuble parisien"
         miseEnAvant: true
-      - fichier: "chantier-007.jpeg"
-        alt: "Cordiste suspendu intervenant sur une façade d'immeuble pour élimination des dépôts et traces"
+      - fichier: "chantier-081.jpg"
+        alt: "Extraction manuelle des racines profondes de lierre incrustées dans la pierre de façade"
+      - fichier: "chantier-080.jpg"
+        alt: "Cordiste appliquant un traitement anti-mousse au pulvérisateur sur le rebord d'une façade en brique"
+      - fichier: "chantier-082.jpg"
+        alt: "Cordiste suspendu retirant du lierre envahissant sur le balcon et la corniche d'un immeuble"
+      - fichier: "chantier-028.jpeg"
+        alt: "Cordiste intervenant sur des traces de coulures et dépôts sur une façade d'immeuble"
 
   - type: "cta"
     title: "Prêt à rendre sa façade à votre bâtiment ?"

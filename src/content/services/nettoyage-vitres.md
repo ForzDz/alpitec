@@ -81,6 +81,14 @@ sections:
     photos:
       - fichier: "chantier-025.jpeg"
         alt: "Deux cordistes suspendus le long d'une façade vitrée d'immeuble de bureaux, nettoyant les vitrages étage par étage"
+      - fichier: "chantier-070.jpeg"
+        alt: "Cordiste sécurisé sur une corniche pour le nettoyage de vitres et éléments de façade"
+      - fichier: "chantier-071.jpeg"
+        alt: "Deux cordistes en intervention de nettoyage sur une verrière et façade vitrée complexe"
+      - fichier: "chantier-072.jpeg"
+        alt: "Deux cordistes effectuant le nettoyage des vitrages et du bardage d'un immeuble d'entreprise"
+      - fichier: "chantier-073.jpeg"
+        alt: "Cordiste au travail sur cordes pour le nettoyage de vitres et de l'enseigne en façade d'un bâtiment tertiaire"
 
   - type: "cta"
     title: "Prêt à redonner de l'éclat à vos vitrages ?"
