@@ -32,7 +32,15 @@ adresse:
   ville: "Vitry-sur-Seine"
   pays: "France"
 
-horaires: "" # À RENSEIGNER — absent des trois documents fournis
+# Horaires fournis par le client le 19 août 2026.
+# `horaires` est la version LUE PAR LE VISITEUR ; `horairesSchema` est la
+# version machine, au format schema.org, celle que Google exploite pour le
+# référencement local. Les deux doivent rester cohérentes.
+# ⚠️ Le client a donné la plage 7h-19h sans préciser les jours. « Mo-Sa » est
+# une hypothèse (semaine BTP classique) : à faire confirmer, un jour erroné
+# enverrait un prospect devant une porte close.
+horaires: "Du lundi au samedi, 7h – 19h"
+horairesSchema: "Mo-Sa 07:00-19:00"
 
 # Reprises de la section « Nos certifications » du document d'accueil.
 certifications:

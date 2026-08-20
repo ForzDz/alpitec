@@ -104,6 +104,17 @@ const adresseComplete = [site.adresse.rue, `${site.adresse.codePostal} ${site.ad
           </p>
 
           {
+            site.horaires && (
+              <p class="flex items-center gap-2 text-blanc/70">
+                <svg class="size-4 shrink-0 text-orange/70" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path d="M10 2.5a7.5 7.5 0 100 15 7.5 7.5 0 000-15zM10 6v4.2l2.8 1.7" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                {site.horaires}
+              </p>
+            )
+          }
+
+          {
             adresseComplete && (
               <p class="flex items-center gap-2 text-blanc/70">
                 <svg class="size-4 shrink-0 text-orange/70" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">

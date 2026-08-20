@@ -135,9 +135,9 @@ const schema = {
       telephone: site.telephone.lien,
       email: site.email,
       address: adresse,
-      // `horaires` est encore vide dans coordonnees.md : on n'émet pas de
-      // openingHours plutôt qu'une valeur inventée.
-      ...(site.horaires ? { openingHours: site.horaires } : {}),
+      // openingHours attend le format schema.org (« Mo-Sa 07:00-19:00 »), pas le
+      // libellé affiché au visiteur. D'où le champ `horairesSchema` distinct.
+      ...(site.horairesSchema ? { openingHours: site.horairesSchema } : {}),
       areaServed: departements.map((nom) => ({ '@type': 'AdministrativeArea', name: nom })),
       knowsAbout: services.map((s) => s.data.title),
       hasOfferCatalog: {

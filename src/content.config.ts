@@ -389,6 +389,9 @@ const site = defineCollection({
     }),
 
     horaires: z.string(),
+    /** Format schema.org — « Mo-Sa 07:00-19:00 ». Distinct de `horaires`,
+        qui est la version lisible affichée au visiteur. */
+    horairesSchema: z.string().default(""),
 
     certifications: z.array(itemSchema),
 
