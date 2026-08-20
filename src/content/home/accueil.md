@@ -19,7 +19,7 @@ photosAccueil:
     alt: "Cordiste au casque jaune, suspendu à sa corde, reprenant l'enduit sous la dalle d'un balcon d'immeuble d'habitation"
 
 hero:
-  surtitre: "Travaux acrobatiques & sur cordes · Paris"
+  surtitre: "Travaux d’accès difficile · Paris"
   h1: "Cordistes certifiés en Île-de-France"
   intro: "Ravalement, couverture, nettoyage, sécurisation : ALPITEC, entreprise de travaux en hauteur, fait intervenir ses cordistes sur tous types de bâtiments à Paris et en Île-de-France — copropriétés, sites industriels, chantiers du BTP. Sans échafaudage coûteux, sans immobiliser votre immeuble."
   introCourte: "Travaux en hauteur à Paris : sans échafaudage coûteux, sans immobiliser votre immeuble."
