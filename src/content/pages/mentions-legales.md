@@ -17,7 +17,7 @@ Le présent site est édité par **ALPITEC**, entreprise de travaux d'accès dif
 - Établissement d'Île-de-France : 36 bis rue Henri Matisse, 94400 Vitry-sur-Seine
 - RCS : Marseille 984 029 983
 - Numéro de TVA intracommunautaire : FR12984029983
-- Téléphone : 07 56 96 60 56
+- Téléphone : 06 25 03 07 76
 - Courriel : contact@alpitec.fr
 
 ## 2. Hébergement

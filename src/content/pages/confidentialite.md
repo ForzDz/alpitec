@@ -94,7 +94,7 @@ Le formulaire de demande de devis est protégé contre les envois automatisés p
 
 **Pour en savoir plus.** [Politique de confidentialité de Google](https://policies.google.com/privacy) et [conditions d'utilisation de reCAPTCHA](https://policies.google.com/terms).
 
-Si vous ne souhaitez pas que ces données soient transmises, vous pouvez nous contacter directement par téléphone au 07 56 96 60 56 ou par courriel à contact@alpitec.fr, sans passer par le formulaire.
+Si vous ne souhaitez pas que ces données soient transmises, vous pouvez nous contacter directement par téléphone au 06 25 03 07 76 ou par courriel à contact@alpitec.fr, sans passer par le formulaire.
 
 ## 9. Sécurité
 

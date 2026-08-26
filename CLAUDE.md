@@ -244,9 +244,16 @@ Tout tombe sous `prefers-reduced-motion`, y compris le parallax et la cascade.
 
 _Confirmé par le client le 14 août 2026._
 
+_**Le numéro d'appel a changé le 25 août 2026.** Ancien : 07 56 96 60 56
+(`tel:+33756966056`). Nouveau : 06 25 03 07 76 (`tel:+33625030776`).
+Le numéro WhatsApp **33788300895 reste inchangé**, à la demande expresse du
+client : les deux lignes restent distinctes, et l'écart entre elles n'a rien
+d'une erreur. Si un ancien 07 56 96 60 56 réapparaît quelque part, c'est une
+régression._
+
 | Usage | Numéro | Lien |
 |---|---|---|
-| **Appels** | 07 56 96 60 56 | `tel:+33756966056` |
+| **Appels** | 06 25 03 07 76 | `tel:+33625030776` |
 | **WhatsApp** | 07 88 30 08 95 | `wa.me/33788300895` |
 
 Ce sont **deux lignes différentes**, volontairement. Le bouton « Appeler » et le
@@ -261,7 +268,7 @@ site ; le numéro WhatsApp n'apparaît que dans l'URL du lien.
 Contrôle rapide après toute modification des coordonnées :
 
 ```bash
-grep -rho 'tel:[+0-9]*' dist | sort -u        # doit ne montrer que +33756966056
+grep -rho 'tel:[+0-9]*' dist | sort -u        # doit ne montrer que +33625030776
 grep -rho 'wa\.me/[0-9]*' dist | sort -u      # doit ne montrer que 33788300895
 ```
 
@@ -590,7 +597,7 @@ aurait légitimé 2 000 URLs parasites auprès de Google.
 
 | Usage | Numéro | Lien |
 |---|---|---|
-| **Appels** | 07 56 96 60 56 | `tel:+33756966056` |
+| **Appels** | 06 25 03 07 76 | `tel:+33625030776` |
 | **WhatsApp** | 07 88 30 08 95 | `wa.me/33788300895` |
 
 **Ce sont deux lignes différentes, volontairement**, confirmées par le client le
@@ -601,7 +608,7 @@ Règle complète et emplacement des champs : section « Deux numéros distincts 
 plus haut dans ce fichier.
 
 ```bash
-grep -rho 'tel:[+0-9]*' dist | sort -u        # doit ne montrer que +33756966056
+grep -rho 'tel:[+0-9]*' dist | sort -u        # doit ne montrer que +33625030776
 grep -rho 'wa\.me/[0-9]*' dist | sort -u      # doit ne montrer que 33788300895
 ```
 
