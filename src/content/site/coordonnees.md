@@ -10,12 +10,12 @@ baseline: "Entreprise de travaux en hauteur sur cordes"
 telephone:
   # Affichage au format national français, plus lisible qu'un +33 pour un
   # visiteur francilien. Le lien tel:, lui, reste au format international.
-  affichage: "06 25 03 07 76"
+  affichage: "06 05 83 75 08"
   # Format international, affiché sur le bouton d'appel du hero : le CTA doit
   # se lire comme un numéro joignable depuis n'importe où, pas seulement en
   # Île-de-France.
-  affichageInternational: "+33 6 25 03 07 76"
-  lien: "+33625030776"
+  affichageInternational: "+33 6 05 83 75 08"
+  lien: "+33605837508"
 
 whatsapp:
   numero: "33788300895"
