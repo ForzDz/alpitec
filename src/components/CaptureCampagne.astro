@@ -1,0 +1,114 @@
+---
+/**
+ * Capture des identifiants de campagne Google Ads.
+ *
+ * Google ajoute un identifiant à l'URL quand un visiteur arrive par une
+ * annonce. Il y en a trois selon le contexte :
+ *   gclid   le cas général, web ;
+ *   gbraid  campagnes iOS depuis le durcissement d'ATT ;
+ *   wbraid  campagnes web-vers-app.
+ * Les trois sont capturés séparément : Google Ads ne les interprète pas de la
+ * même façon à l'import des conversions hors ligne.
+ *
+ * ── Le problème que ça résout ──────────────────────────────────────────────
+ * Le visiteur arrive par la pub sur une page, navigue deux ou trois pages,
+ * puis remplit le formulaire. L'identifiant n'est plus dans l'URL à ce
+ * moment-là. Sans report, toutes les demandes de devis apparaîtraient comme
+ * du trafic direct et aucune campagne ne serait attribuable.
+ *
+ * ── Pourquoi la persistance est conditionnée au consentement ───────────────
+ * `sessionStorage` est un stockage sur le terminal au sens de l'article 82 de
+ * la loi Informatique et Libertés, et le GCLID est un identifiant
+ * publicitaire. On distingue donc deux opérations :
+ *
+ *   LIRE l'URL           toujours. Le visiteur a chargé cette URL lui-même,
+ *                        aucun accès au terminal n'est en jeu. Si le
+ *                        formulaire est sur la page d'arrivée, l'identifiant
+ *                        part avec la demande qu'il envoie volontairement.
+ *   ÉCRIRE sur le poste  seulement si le consentement publicitaire est
+ *                        accordé. C'est là qu'on touche au terminal.
+ *
+ * Conséquence assumée : un visiteur qui refuse n'est attribué que s'il
+ * convertit sur sa page d'arrivée.
+ *
+ * ── Netlify Forms ──────────────────────────────────────────────────────────
+ * Les champs sont écrits en dur dans le HTML du formulaire, avec `value=""`.
+ * Netlify analyse le HTML au déploiement : un champ créé en JavaScript ne
+ * serait jamais détecté et n'apparaîtrait pas dans le tableau de bord. Ce
+ * script ne fait que renseigner la valeur de champs déjà présents.
+ */
+---
+
+<script>
+  (() => {
+    const CLE = 'alpitec-campagne';
+    const IDS = ['gclid', 'gbraid', 'wbraid'];
+    /* Les identifiants Google sont alphanumériques, tirets et underscores.
+       Tout le reste est écarté : ce champ finit dans un tableau de bord et
+       dans des exports, on n'y laisse pas passer n'importe quelle chaîne. */
+    const FORME = /^[\w-]{1,200}$/;
+
+    const lire = () => {
+      try {
+        return JSON.parse(sessionStorage.getItem(CLE) || '{}') || {};
+      } catch (e) {
+        return {};
+      }
+    };
+    const ecrire = (o) => {
+      try {
+        sessionStorage.setItem(CLE, JSON.stringify(o));
+      } catch (e) {
+        /* navigation privée stricte, stockage bloqué : on continue sans */
+      }
+    };
+
+    const consenti = () => window.__alpitecConsentement?.choix?.pub === true;
+
+    /* Ce que porte l'URL courante. */
+    const params = new URLSearchParams(location.search);
+    const depuisUrl = {};
+    for (const id of IDS) {
+      const v = params.get(id);
+      if (v && FORME.test(v)) depuisUrl[id] = v;
+    }
+    const aUnIdentifiant = Object.keys(depuisUrl).length > 0;
+
+    /* État courant : le stocké (si consenti) complété par l'URL. L'URL gagne,
+       un nouveau clic publicitaire écrase l'ancien. */
+    let donnees = consenti() ? lire() : {};
+    if (aUnIdentifiant) {
+      donnees = { ...donnees, ...depuisUrl };
+      if (!donnees.origine) donnees.origine = location.pathname + location.search;
+    }
+
+    const persister = () => {
+      if (consenti() && Object.keys(donnees).length > 0) ecrire(donnees);
+    };
+    persister();
+
+    /**
+     * Renseigne les champs cachés du formulaire présent sur la page.
+     * `querySelectorAll` plutôt que `querySelector` : si une page portait un
+     * jour deux formulaires, les deux doivent être servis.
+     */
+    const remplir = () => {
+      for (const id of IDS) {
+        for (const el of document.querySelectorAll(`input[name="${id}"]`)) {
+          el.value = donnees[id] || '';
+        }
+      }
+      for (const el of document.querySelectorAll('input[name="page-origine"]')) {
+        el.value = donnees.origine || location.pathname;
+      }
+    };
+    remplir();
+
+    /**
+     * Point d'entrée pour le bandeau : quand le visiteur accepte APRÈS être
+     * arrivé par une annonce, l'identifiant de la page courante devient
+     * persistable. Sans ce rappel, il serait perdu dès la page suivante.
+     */
+    window.alpitecCampagne = { persister, remplir, donnees: () => ({ ...donnees }) };
+  })();
+</script>

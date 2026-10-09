@@ -1,5 +1,8 @@
 ---
 import '../styles/global.css';
+import ConsentementTete from '../components/ConsentementTete.astro';
+import BandeauCookies from '../components/BandeauCookies.astro';
+import CaptureCampagne from '../components/CaptureCampagne.astro';
 
 /**
  * Coquille HTML commune à toutes les pages.
@@ -30,6 +33,14 @@ const ogImageURL = new URL(ogImage, Astro.site);
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    {/*
+      PREMIER script de la page, avant tout le reste : il pose les valeurs par
+      défaut du Consent Mode à « refusé ». Déplacer cet appel plus bas ferait
+      partir les premières mesures sans état de consentement.
+    */}
+    <ConsentementTete />
+
     <meta name="generator" content={Astro.generator} />
 
     <title>{title}</title>
@@ -82,6 +93,13 @@ const ogImageURL = new URL(ogImage, Astro.site);
 
   <body>
     <slot />
+
+    {/*
+      En fin de <body> : le bandeau n'est pas modal, il ne doit pas précéder le
+      contenu dans l'ordre de tabulation ni voler le focus à l'arrivée.
+    */}
+    <BandeauCookies />
+    <CaptureCampagne />
 
     <script>
       /**

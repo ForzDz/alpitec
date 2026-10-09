@@ -595,6 +595,177 @@ est un jour retiré, retirer aussi ces entrées.
 sur `/`, pas des chemins : le nouveau canonical les neutralise. Les rediriger
 aurait légitimé 2 000 URLs parasites auprès de Google.
 
+## Consentement, GTM et mesure publicitaire
+
+_Ajouté le 9 octobre 2026. Travail commandé par le client, balises préparées
+par une prestataire Google Ads._
+
+Le site ne posait aucun cookie et ne chargeait aucun outil de mesure. Il porte
+désormais Google Tag Manager (`GTM-WCNKHLVG`) et Google Ads
+(`AW-11338137277`), derrière un consentement.
+
+### L'ordre d'exécution est la clé de voûte
+
+| Fichier | Rôle | Pourquoi là |
+|---|---|---|
+| `ConsentementTete.astro` | Consent Mode v2 + injection GTM | `is:inline`, **premier script du `<head>`** |
+| `BandeauCookies.astro` | bandeau, panneau, enregistrement | script bundlé, fin de `<body>` |
+| `CaptureCampagne.astro` | gclid / gbraid / wbraid | script bundlé, fin de `<body>` |
+
+`ConsentementTete` doit rester le **tout premier script**, avant `<title>`
+et avant le JSON-LD. Un `<script>` sans `is:inline` est sorti par Astro en
+module différé : il s'exécuterait après le rendu, donc trop tard pour poser les
+valeurs par défaut du Consent Mode. **Ne pas le déplacer, ne pas lui retirer
+`is:inline`.**
+
+### GTM n'est jamais chargé directement
+
+Aucune balise `<script src="googletagmanager">` dans le HTML. Le conteneur
+est injecté par `chargerGTM()`, appelée depuis **deux** endroits, qui
+couvrent les deux cas :
+
+1. `ConsentementTete` — consentement déjà stocké à l'arrivée ;
+2. `enregistrer()` dans `BandeauCookies` — acceptation à l'instant, sans
+   rechargement.
+
+La fonction est idempotente : un drapeau empêche une seconde injection. Deux
+conteneurs produiraient des conversions en double.
+
+Au chargement, GTM injecte lui-même `gtag/js?id=AW-11338137277`. **Voir deux
+scripts `googletagmanager.com` après acceptation est normal** — un à nous, un
+à lui.
+
+### Pas de `<noscript>` GTM — c'est voulu, pas un oubli
+
+L'iframe de repli `<noscript>` ne peut pas être conditionnée par JavaScript.
+Elle partirait donc **même en cas de refus**, ce qui est exactement
+l'infraction qu'on cherche à éviter. Par ailleurs, sans JavaScript le
+`dataLayer` n'existe pas : aucune conversion ne se déclencherait de toute
+façon, seule la « Balise Google » partirait, sans attribution utile. Le gain
+est nul, le risque réglementaire réel.
+
+**Ne pas l'ajouter en croyant corriger un oubli.** Un commentaire le rappelle
+à l'endroit même où on serait tenté de le remettre.
+
+### Le bandeau
+
+Trois actions au premier niveau. **« Tout accepter » et « Tout refuser » sont
+le même composant, même variante, même taille** — leurs chaînes de classes
+sont identiques au caractère près, c'est vérifiable. Un refus rendu moins
+visible que l'acceptation est une pratique sanctionnée : ne jamais passer l'un
+en `primaire` et l'autre en `clair`, même si on le demande.
+
+Le refus est aussi persistant que l'acceptation. Choix conservé 6 mois dans
+`localStorage` (plafond CNIL), puis la question est reposée. Tous les accès
+au stockage sont en `try/catch`.
+
+Le panneau est un `<dialog>` natif ouvert en `showModal()` : piège de
+focus, Échap et inertage de l'arrière-plan viennent du navigateur, pas d'un
+réimplémentation maison.
+
+Sur mobile, `data-consentement-ouvert` sur `<html>` masque la barre
+d'action fixe tant que le bandeau est là — les deux occupent le bas de
+l'écran.
+
+Révocation : bouton « Gérer mes cookies » en pied de page, sur les 18 pages,
+qui appelle `window.alpitecCookies.ouvrir()`.
+
+### Capture des identifiants de campagne
+
+`gclid`, `gbraid` et `wbraid` dans **trois champs distincts** : Google ne
+les interprète pas de la même façon à l'import des conversions. Plus un champ
+`page-origine`.
+
+**Les quatre champs sont écrits en dur dans le HTML avec `value=""`.**
+Netlify analyse le HTML au déploiement pour détecter les champs d'un
+formulaire : un champ créé en JavaScript n'existerait pas à ses yeux et
+n'apparaîtrait jamais dans le tableau de bord. **Ne jamais les générer
+dynamiquement.**
+
+Deux opérations distinctes, et c'est volontaire :
+
+| Opération | Conditionnée ? | Pourquoi |
+|---|---|---|
+| **Lire** l'URL et remplir le champ de la page | non | le visiteur a chargé cette URL lui-même, aucun accès au terminal |
+| **Reporter** d'une page à l'autre | **oui, consentement publicitaire** | `sessionStorage` est un stockage terminal au sens de l'**article 82** de la loi Informatique et Libertés, et le GCLID est un identifiant publicitaire |
+
+Conséquence assumée : un visiteur qui refuse n'est attribué que s'il convertit
+sur sa page d'arrivée.
+
+`sessionStorage` et non `localStorage` : c'est le bon niveau d'intrusion
+pour un identifiant publicitaire, effacé à la fermeture de l'onglet.
+
+### Un seul bouton WhatsApp est une conversion
+
+Le site compte **cinq** accès WhatsApp : barre mobile, bloc contact, page
+contact, page merci, et le bouton d'envoi du formulaire. **Seul le dernier
+porte `data-gtm="devis-whatsapp"`**, parce qu'il est le seul à envoyer un
+devis renseigné — nom, téléphone, prestation, besoin. Les quatre autres
+ouvrent une simple conversation.
+
+Sélecteur transmis à la prestataire : `[data-gtm="devis-whatsapp"]`.
+**Ne pas propager cet attribut** : compter les cinq gonflerait le volume de
+conversions et fausserait l'optimisation des enchères.
+
+⚠️ Ce bouton et le déclencheur « Formulaire Envoyé » sont deux chemins vers la
+même demande. Un visiteur qui clique sur WhatsApp **puis** soumet le
+formulaire déclenche deux conversions pour un seul devis. La déduplication est
+du ressort de la prestataire, côté GTM.
+
+### CSP élargie
+
+`script-src`, `img-src`, `connect-src` et `frame-src` ont reçu les
+domaines de GTM et Google Ads. **Rien n'a été retiré** : `google.com`,
+`gstatic.com` (reCAPTCHA) et `openstreetmap.org` (carte) sont intacts.
+Chaque nouveau domaine est commenté dans `netlify.toml`.
+
+Si une balise est bloquée, **on ajoute le domaine manquant nommément**. On
+n'assouplit jamais la politique : pas de `*`, pas de suppression de
+directive.
+
+La CSP couvre Google Ads, **pas Google Analytics**. Si GA4 est ajouté au
+conteneur, il faudra compléter avec `*.google-analytics.com` sur
+`connect-src` et `img-src` — sinon la balise se chargera mais n'enverra
+rien, **silencieusement**.
+
+### reCAPTCHA classé « nécessaire » — à réévaluer
+
+Le reCAPTCHA est chargé **automatiquement sur 13 pages** (accueil, hub
+services, les 10 prestations, contact), sans consentement, au titre de
+l'intérêt légitime.
+
+C'est un choix assumé du client, pas une évidence : la CNIL ne considère pas
+le reCAPTCHA comme strictement nécessaire. La justification est factuelle —
+ce domaine a subi **90 000 requêtes de bots en 24 h en août 2026**, héritage
+du Joomla compromis. Retirer la protection de 12 pages sur 13 rouvrirait cette
+porte.
+
+**À réévaluer après mesure du volume de spam réel. Option envisagée : le
+limiter à `/contact`.**
+
+Il ne peut de toute façon pas être conditionné proprement : c'est **Netlify
+qui l'injecte au déploiement**, côté serveur, avant que le moindre script de
+consentement ne s'exécute. Aucun code du projet ne le charge — on ne trouve
+dans `src/` que deux attributs `data-netlify-recaptcha`.
+
+### Le piège des tests qui rechargent entre les étapes
+
+Un bug est passé entre les mailles de la phase 1 et n'est apparu qu'en phase 4 :
+`window.__alpitecConsentement.choix` est un **instantané pris au chargement**.
+Après un clic sur « Accepter », il valait toujours `null` — tout ce qui
+interrogeait le consentement ensuite croyait à un refus.
+
+Mes tests de la phase 1 ne l'ont pas vu **parce qu'ils rechargeaient la page
+entre chaque étape**, ce qui reconstruisait l'instantané à chaque fois.
+
+**Leçon à retenir : un test qui recharge entre les étapes masque les bugs
+d'état en mémoire.** Pour tout ce qui touche au consentement, tester aussi
+l'enchaînement sans rechargement — accepter puis rouvrir, accepter puis
+naviguer, refuser puis changer d'avis.
+
+Correctif : `enregistrer()` mute `etat.choix`, qui est une référence vers
+l'objet partagé.
+
 ## Deux numéros distincts — rappel
 
 | Usage | Numéro | Lien |

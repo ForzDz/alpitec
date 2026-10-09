@@ -1,0 +1,306 @@
+---
+import Button from './Button.astro';
+
+/**
+ * Bandeau de consentement + panneau de personnalisation.
+ *
+ * ── Conformité CNIL ────────────────────────────────────────────────────────
+ * « Tout accepter » et « Tout refuser » sont le MÊME composant, avec la MÊME
+ * variante et la MÊME taille. Ce n'est pas un détail d'esthétique : un refus
+ * rendu moins visible que l'acceptation est une pratique sanctionnée. Ne pas
+ * passer l'un en `primaire` et l'autre en `clair`, même si on le demande.
+ * « Personnaliser » est au même niveau de lecture mais peut rester tertiaire :
+ * l'exigence de parité porte sur accepter / refuser.
+ *
+ * Pas de mur de cookies : le bandeau ne bloque rien, le site reste entièrement
+ * utilisable sans choisir. Il n'a donc pas de bouton « fermer » — fermer sans
+ * choisir équivaudrait à un refus implicite, et il faudrait reposer la
+ * question à chaque page. Le visiteur qui l'ignore navigue normalement, aucune
+ * balise ne se charge.
+ *
+ * ── Accessibilité ──────────────────────────────────────────────────────────
+ * Le bandeau est une `region`, pas un dialogue modal : il ne prend pas le
+ * focus à l'arrivée, ce qui serait hostile pour un lecteur d'écran alors que
+ * la page est parfaitement consultable. Il est en fin de <body>, donc atteint
+ * en fin de tabulation, et annoncé par son `aria-label`.
+ *
+ * Le panneau « Personnaliser », lui, est un vrai `<dialog>` ouvert en
+ * `showModal()`. L'élément natif apporte le piège de focus, la fermeture par
+ * Échap et l'inertage de l'arrière-plan sans une ligne de JavaScript — trois
+ * choses qu'une div réimplémente mal.
+ *
+ * ── Zéro CLS ───────────────────────────────────────────────────────────────
+ * `position: fixed` : le bandeau n'est jamais dans le flux, son apparition ne
+ * décale aucun contenu. Il est rendu `hidden` et révélé par le script, donc
+ * sans JavaScript il reste invisible — et sans JavaScript aucune balise ne se
+ * charge non plus, l'état est cohérent.
+ *
+ * ── Collision avec la barre d'action mobile ────────────────────────────────
+ * La barre fixe du bas (téléphone / WhatsApp / devis) occupe la même zone sur
+ * mobile. Tant que le bandeau est affiché, `data-consentement-ouvert` est posé
+ * sur <html> et la masque : un seul appel à l'action à la fois.
+ */
+---
+
+<!-- Bandeau de premier niveau -->
+<div
+  id="bandeau-cookies"
+  class="pointer-events-none fixed inset-x-0 bottom-0 z-[55] p-3 sm:p-5"
+  role="region"
+  aria-label="Gestion des cookies"
+  data-bandeau-cookies
+  hidden
+>
+  {/*
+    `max-h` + défilement interne : sur un écran de 320 px, le texte et trois
+    boutons empilés dépassaient 540 px et ne laissaient presque rien voir de
+    la page. Le bandeau ne doit jamais se comporter comme un mur.
+  */}
+  <div
+    class="pointer-events-auto mx-auto max-h-[68dvh] max-w-4xl overflow-y-auto rounded-carte border border-blanc/15 bg-navy-profond p-5 text-blanc shadow-eleve sm:p-7"
+  >
+    <h2 id="bandeau-cookies-titre" class="font-display text-carte font-bold tracking-tight text-blanc">
+      Votre choix sur les cookies
+    </h2>
+
+    <p class="mt-3 max-w-[68ch] text-petit font-light leading-relaxed text-blanc/80 text-pretty">
+      Des cookies de mesure d'audience et de publicité nous aident à savoir
+      quelles annonces amènent des demandes de devis. Ils ne se chargent
+      qu'avec votre accord. L'anti-spam du formulaire, lui, reste actif.{' '}
+      <a
+        href="/confidentialite"
+        class="font-bold text-blanc underline decoration-orange decoration-2 underline-offset-4 transition-colors hover:text-orange"
+        >En savoir plus</a
+      >.
+    </p>
+
+    {/*
+      Les deux premiers boutons sont strictement identiques : même composant,
+      même variante, même taille. Seul leur libellé change.
+    */}
+    <div class="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+      <Button variant="clair" size="sm" type="button" class="w-full sm:w-auto" data-cookies-accepter>
+        Tout accepter
+      </Button>
+      <Button variant="clair" size="sm" type="button" class="w-full sm:w-auto" data-cookies-refuser>
+        Tout refuser
+      </Button>
+      <button
+        type="button"
+        class="inline-flex min-h-11 items-center justify-center rounded-tuile px-2 font-display text-petit font-bold tracking-tight text-blanc/80 underline decoration-blanc/40 decoration-2 underline-offset-4 transition-colors hover:text-blanc hover:decoration-orange focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange sm:ml-1"
+        data-cookies-personnaliser
+      >
+        Personnaliser
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Panneau de personnalisation -->
+<dialog
+  id="panneau-cookies"
+  class="w-[min(34rem,calc(100vw-1.5rem))] rounded-carte border border-gris-bord bg-blanc p-0 text-navy shadow-eleve backdrop:bg-navy-profond/70"
+  aria-labelledby="panneau-cookies-titre"
+  data-panneau-cookies
+>
+  <form method="dialog" class="p-6 sm:p-8">
+    <h2 id="panneau-cookies-titre" class="font-display text-sous-titre font-bold tracking-tight text-navy">
+      Vos préférences
+    </h2>
+    <p class="mt-3 text-petit font-light leading-relaxed text-navy/70 text-pretty">
+      Vous pouvez accepter ou refuser chaque catégorie. Votre choix est
+      enregistré six mois, puis la question vous sera reposée.
+    </p>
+
+    <ul class="mt-6 space-y-4">
+      <li class="rounded-tuile border border-gris-bord bg-gris p-4">
+        <div class="flex items-start justify-between gap-4">
+          <div class="min-w-0">
+            <h3 class="font-display text-petit font-bold tracking-tight text-navy">
+              Strictement nécessaires
+            </h3>
+            <p class="mt-1.5 text-[0.8125rem] font-light leading-relaxed text-navy/70 text-pretty">
+              Protection anti-spam du formulaire de devis (reCAPTCHA de Google),
+              présente sur les pages qui portent ce formulaire. Sans elle, le
+              formulaire serait inutilisable. Ces cookies ne peuvent pas être
+              désactivés.
+            </p>
+          </div>
+          <span
+            class="shrink-0 rounded-tuile bg-navy px-2.5 py-1 font-display text-[0.6875rem] font-bold uppercase tracking-wider text-blanc"
+          >
+            Toujours actifs
+          </span>
+        </div>
+      </li>
+
+      <li class="rounded-tuile border border-gris-bord bg-blanc p-4">
+        <div class="flex items-start justify-between gap-4">
+          <div class="min-w-0">
+            <h3 class="font-display text-petit font-bold tracking-tight text-navy">
+              Mesure d'audience et publicité
+            </h3>
+            <p class="mt-1.5 text-[0.8125rem] font-light leading-relaxed text-navy/70 text-pretty">
+              Google Tag Manager et Google Ads, pour savoir quelles annonces
+              amènent des demandes de devis. Données transmises à Google, y
+              compris hors de l'Union européenne.
+            </p>
+          </div>
+          {/*
+            Case décochée par défaut dans le HTML : si le script ne s'exécute
+            pas, l'état affiché reste le refus. Jamais l'inverse.
+          */}
+          {/*
+            Le label fait 44x44 : c'est LUI la cible tactile, pas la case de
+            20 px. Sans cette enveloppe, le seul réglage du panneau serait
+            deux fois trop petit pour un pouce.
+          */}
+          <label class="-m-3 flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-tuile">
+            <span class="sr-only">Activer la mesure d'audience et la publicité</span>
+            <input
+              type="checkbox"
+              class="size-5 shrink-0 cursor-pointer accent-orange focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange"
+              data-cookies-case-pub
+            />
+          </label>
+        </div>
+      </li>
+    </ul>
+
+    <div class="mt-7 flex flex-col gap-3 sm:flex-row">
+      <Button variant="primaire" size="md" type="button" class="w-full sm:w-auto" data-cookies-enregistrer>
+        Enregistrer mes choix
+      </Button>
+      <Button variant="secondaire" size="md" type="button" class="w-full sm:w-auto" data-cookies-fermer>
+        Annuler
+      </Button>
+    </div>
+  </form>
+</dialog>
+
+<style is:global>
+  /* La barre d'action mobile cède la place au bandeau : deux blocs fixes au
+     même endroit se chevaucheraient, et le visiteur doit traiter une seule
+     décision à la fois. */
+  html[data-consentement-ouvert] [data-action-bar] {
+    display: none;
+  }
+
+  /* Le <dialog> natif n'est centré que s'il est en display autre que none ;
+     on neutralise la marge par défaut du navigateur. */
+  #panneau-cookies {
+    margin: auto;
+    max-height: calc(100dvh - 2rem);
+  }
+</style>
+
+<script>
+  /**
+   * Pilotage du bandeau.
+   *
+   * Ce script est bundlé (donc différé) à dessein : il ne fait que de
+   * l'interface. Tout ce qui touche au Consent Mode et à la décision de
+   * charger ou non les balises vit dans ConsentementTete.astro, en `is:inline`
+   * et en tête de <head>, parce que ça doit s'exécuter avant tout le reste.
+   */
+  const bandeau = document.querySelector('[data-bandeau-cookies]');
+  const panneau = document.querySelector('[data-panneau-cookies]');
+
+  if (bandeau && panneau) {
+    const casePub = panneau.querySelector('[data-cookies-case-pub]');
+    const racine = document.documentElement;
+    const etat = window.__alpitecConsentement ?? { cle: 'alpitec-consentement', choix: null };
+
+    const afficherBandeau = (oui) => {
+      bandeau.hidden = !oui;
+      if (oui) racine.setAttribute('data-consentement-ouvert', '');
+      else racine.removeAttribute('data-consentement-ouvert');
+    };
+
+    /**
+     * Enregistre le choix, met à jour le Consent Mode, referme le bandeau.
+     *
+     * L'écriture est protégée : si le stockage est indisponible, le choix
+     * s'applique quand même pour la session en cours — on ne refuse pas une
+     * acceptation sous prétexte qu'on ne peut pas la mémoriser — mais la
+     * question sera reposée à la visite suivante.
+     */
+    const enregistrer = (pub) => {
+      const nouveau = { v: 1, date: Date.now(), pub };
+      try {
+        localStorage.setItem(etat.cle, JSON.stringify(nouveau));
+      } catch (e) {
+        /* navigation privée stricte, cookies bloqués : on continue */
+      }
+
+      /* `etat` EST `window.__alpitecConsentement` : le muter met à jour l'état
+         partagé pour tout le reste de la page.
+         Sans cette ligne, `choix` resterait l'instantané pris au chargement —
+         donc `null` — et tout ce qui interroge le consentement après coup
+         croirait à un refus : la capture de campagne ne persisterait pas, et
+         le panneau rouvert afficherait la case dans le mauvais état. */
+      etat.choix = nouveau;
+
+      const valeur = pub ? 'granted' : 'denied';
+      window.gtag?.('consent', 'update', {
+        ad_storage: valeur,
+        ad_user_data: valeur,
+        ad_personalization: valeur,
+        analytics_storage: valeur,
+      });
+
+      /* Cas 2 — acceptation à l'instant, sans rechargement. Le conteneur est
+         injecté dans la foulée, après le passage des signaux en `granted` :
+         le visiteur qui accepte est mesuré sur la page où il a accepté, pas
+         seulement à partir de la suivante.
+         Rien n'est appelé en cas de refus, et la fonction est idempotente. */
+      if (pub) window.__alpitecConsentement?.chargerGTM?.();
+
+      /* L identifiant de campagne de la page courante devient persistable
+         au moment même de l acceptation. Sans ce rappel, un visiteur arrivé
+         par une annonce puis acceptant perdrait son attribution dès la page
+         suivante. */
+      if (pub) window.alpitecCampagne?.persister?.();
+
+      if (panneau.open) panneau.close();
+      afficherBandeau(false);
+    };
+
+    /* Premier niveau */
+    bandeau.querySelector('[data-cookies-accepter]')?.addEventListener('click', () => enregistrer(true));
+    bandeau.querySelector('[data-cookies-refuser]')?.addEventListener('click', () => enregistrer(false));
+    bandeau.querySelector('[data-cookies-personnaliser]')?.addEventListener('click', () => {
+      if (casePub) casePub.checked = etat.choix?.pub === true;
+      panneau.showModal();
+    });
+
+    /* Panneau */
+    panneau.querySelector('[data-cookies-enregistrer]')?.addEventListener('click', () => {
+      enregistrer(casePub?.checked === true);
+    });
+    panneau.querySelector('[data-cookies-fermer]')?.addEventListener('click', () => panneau.close());
+
+    /* Un clic sur le fond ferme le panneau, comme un Échap. Le <dialog> reçoit
+       le clic lui-même quand il porte sur son ::backdrop. */
+    panneau.addEventListener('click', (ev) => {
+      if (ev.target === panneau) panneau.close();
+    });
+
+    /**
+     * Point d'entrée public : le lien « Gérer mes cookies » du pied de page
+     * l'appelle pour rouvrir le choix, y compris après un enregistrement.
+     */
+    window.alpitecCookies = {
+      ouvrir() {
+        if (casePub) casePub.checked = etat.choix?.pub === true;
+        panneau.showModal();
+      },
+      etat: () => etat.choix,
+    };
+
+    /* Affichage initial : seulement si aucun choix valide n'est stocké.
+       `etat.choix` vaut déjà null si le choix est périmé — la péremption est
+       calculée dans le script de tête, pas ici. */
+    afficherBandeau(etat.choix === null);
+  }
+</script>
