@@ -287,6 +287,45 @@ import Button from './Button.astro';
     });
 
     /**
+     * Filet de sécurité sur Échap.
+     *
+     * `showModal()` ferme nativement sur Échap, et c'est vérifié : une vraie
+     * frappe clavier referme bien le panneau en local. Mais cette fermeture
+     * suppose que la touche atteigne le dialogue. Un test manuel sur un
+     * deploy preview a rapporté l'inverse — probablement parce que le focus
+     * était ailleurs, la barre d'outils Netlify étant injectée dans ces
+     * previews.
+     *
+     * On double donc la mécanique native par un écouteur au niveau du
+     * document, en phase de capture pour passer avant tout gestionnaire qui
+     * voudrait consommer l'événement.
+     *
+     * Pas de `preventDefault` : si le navigateur ferme déjà le dialogue de
+     * lui-même, `close()` sur un dialogue fermé ne fait rien. Les deux
+     * chemins peuvent coexister sans se gêner.
+     *
+     * Limite connue et assumée : si une iframe tierce a réellement le focus,
+     * l'événement ne parvient pas non plus au document parent. Aucun code de
+     * cette page ne peut rattraper ce cas — mais il ne se produit pas en
+     * production, où aucune iframe n'est chargée avant un clic du visiteur.
+     */
+    document.addEventListener(
+      'keydown',
+      (ev) => {
+        if (ev.key === 'Escape' && panneau.open) panneau.close();
+      },
+      true,
+    );
+
+    /* `cancel` est émis par le navigateur avant la fermeture native. On ne
+       l'annule jamais : annuler ici rendrait le panneau impossible à fermer
+       au clavier, ce qui est exactement le défaut qu'on corrige. Présent pour
+       que la règle soit explicite si quelqu'un est tenté d'y toucher. */
+    panneau.addEventListener('cancel', () => {
+      /* laisser faire */
+    });
+
+    /**
      * Point d'entrée public : le lien « Gérer mes cookies » du pied de page
      * l'appelle pour rouvrir le choix, y compris après un enregistrement.
      */
