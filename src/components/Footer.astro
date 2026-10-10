@@ -150,7 +150,32 @@ const adresseComplete = [site.adresse.rue, `${site.adresse.codePostal} ${site.ad
             </li>
           ))
         }
+        {/*
+          Révocation du consentement, exigée par la CNIL : retirer son accord
+          doit être aussi simple que le donner. Un <button> et non un lien —
+          il n'y a pas de page à atteindre, le panneau de choix se rouvre sur
+          place. Il reste visible même si le JavaScript est absent, mais sans
+          effet : dans ce cas aucune balise ne s'est chargée non plus.
+        */}
+        <li>
+          <button
+            type="button"
+            class="-my-3.5 inline-flex items-center py-3.5 transition-colors duration-150 hover:text-blanc focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orange"
+            data-ouvrir-cookies
+          >
+            Gérer mes cookies
+          </button>
+        </li>
       </ul>
     </div>
   </div>
 </footer>
+
+<script>
+  /* Le bandeau expose `window.alpitecCookies` ; on ne fait que l'appeler.
+     L'optional chaining couvre le cas où son script n'aurait pas encore été
+     évalué : le clic ne fait alors rien plutôt que de lever une erreur. */
+  document.querySelector('[data-ouvrir-cookies]')?.addEventListener('click', () => {
+    window.alpitecCookies?.ouvrir();
+  });
+</script>

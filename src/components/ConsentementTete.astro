@@ -1,0 +1,122 @@
+---
+/**
+ * Consentement — script de tête.
+ *
+ * Ce composant ne rend AUCUN visuel. Il ne contient qu'un script `is:inline`
+ * destiné au tout début du <head>, avant quoi que ce soit d'autre.
+ *
+ * Pourquoi `is:inline` et pas un script bundlé : un `<script>` sans directive
+ * est sorti par Astro en module différé. Il s'exécuterait donc APRÈS le rendu,
+ * c'est-à-dire trop tard. Le Consent Mode de Google impose que les valeurs par
+ * défaut soient posées avant le chargement de la moindre balise Google, sans
+ * quoi les premières mesures partent sans état de consentement.
+ *
+ * Ce qu'il fait, dans l'ordre :
+ *   1. crée `dataLayer` et `gtag` ;
+ *   2. pose les quatre signaux du Consent Mode v2 à `denied` ;
+ *   3. relit le choix stocké et, s'il est valide ET positif, repasse en
+ *      `granted`.
+ *
+ * Tant qu'aucun choix n'est enregistré, rien n'est accordé : c'est le refus
+ * qui est l'état par défaut, pas l'acceptation.
+ *
+ * Le stockage est lu ici et exposé sur `window.__alpitecConsentement` pour que
+ * le composant de bandeau n'ait pas à refaire le travail ni à redupliquer la
+ * durée de validité.
+ */
+---
+
+<script is:inline>
+  (function () {
+    var CLE = 'alpitec-consentement';
+    /* 6 mois : plafond recommandé par la CNIL pour la durée de vie d'un choix.
+       Au-delà, le bandeau réapparaît et la question est reposée. */
+    var DUREE = 182 * 24 * 60 * 60 * 1000;
+
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      window.dataLayer.push(arguments);
+    }
+    window.gtag = gtag;
+
+    /* Consent Mode v2 — état initial : tout est refusé.
+       `wait_for_update` laisse 500 ms aux balises pour recevoir un éventuel
+       passage en `granted` avant de décider de leur comportement. Sans ce
+       délai, une acceptation arrivée juste après le chargement de GTM serait
+       ignorée pour la première page vue. */
+    gtag('consent', 'default', {
+      ad_storage: 'denied',
+      ad_user_data: 'denied',
+      ad_personalization: 'denied',
+      analytics_storage: 'denied',
+      wait_for_update: 500,
+    });
+
+    /* Chaque accès au stockage est protégé : en navigation privée stricte ou
+       avec les cookies bloqués, `localStorage` lève au lieu de renvoyer null. */
+    function lire() {
+      try {
+        var brut = localStorage.getItem(CLE);
+        if (!brut) return null;
+        var c = JSON.parse(brut);
+        if (!c || typeof c.pub !== 'boolean' || typeof c.date !== 'number') return null;
+        if (Date.now() - c.date > DUREE) return null;
+        return c;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    var choix = lire();
+
+    /**
+     * Injection du conteneur GTM.
+     *
+     * Jamais appelée au chargement : elle ne l'est que si un consentement
+     * publicitaire existe. Tant que le visiteur n'a pas accepté, aucune
+     * requête ne part vers googletagmanager.com.
+     *
+     * Idempotente : le drapeau empêche une seconde injection si le visiteur
+     * accepte, ouvre « Gérer mes cookies », puis réenregistre son accord.
+     * Deux conteneurs chargés produiraient des conversions en double.
+     *
+     * Volontairement SANS <noscript> — voir la note dans CLAUDE.md. L'iframe
+     * de repli ne peut pas être conditionnée par JavaScript : elle partirait
+     * donc même en cas de refus, ce qui est exactement ce qu'on cherche à
+     * éviter. Son absence est un choix, pas un oubli.
+     */
+    var gtmCharge = false;
+    function chargerGTM() {
+      if (gtmCharge) return;
+      gtmCharge = true;
+      window.dataLayer.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+      var s = document.createElement('script');
+      s.async = true;
+      s.src = 'https://www.googletagmanager.com/gtm.js?id=GTM-WCNKHLVG';
+      document.head.appendChild(s);
+    }
+
+    window.__alpitecConsentement = {
+      cle: CLE,
+      duree: DUREE,
+      choix: choix,
+      chargerGTM: chargerGTM,
+      estCharge: function () {
+        return gtmCharge;
+      },
+    };
+
+    if (choix && choix.pub === true) {
+      /* Cas 1 — le consentement était déjà stocké à l'arrivée sur la page.
+         On repasse les signaux en `granted` AVANT d'injecter le conteneur :
+         GTM doit connaître l'état de consentement au moment où il démarre. */
+      gtag('consent', 'update', {
+        ad_storage: 'granted',
+        ad_user_data: 'granted',
+        ad_personalization: 'granted',
+        analytics_storage: 'granted',
+      });
+      chargerGTM();
+    }
+  })();
+</script>

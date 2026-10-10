@@ -301,13 +301,63 @@
     # HSTS est très difficile à annuler.
     Strict-Transport-Security = "max-age=63072000; includeSubDomains"
     # Politique de sécurité du contenu.
+    #
     # 'unsafe-inline' sur script-src est nécessaire : Astro insère les scripts
-    # de page en ligne. À remplacer par des empreintes si un audit l'exige.
-    # frame-src autorise la carte OpenStreetMap (chargée au clic) et le widget
-    # reCAPTCHA du formulaire de devis. Sans les entrées google.com et
-    # gstatic.com ci-dessous, la CSP bloquerait le reCAPTCHA et le formulaire
-    # deviendrait impossible à soumettre.
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.google.com https://www.gstatic.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://www.gstatic.com; font-src 'self'; media-src 'self'; frame-src https://www.openstreetmap.org https://www.google.com; form-action 'self'; connect-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'"
+    # de page en ligne, et Google Tag Manager en injecte lui aussi. À remplacer
+    # par des empreintes si un audit l'exige — mais GTM rendrait l'exercice
+    # très pénible, puisque ses scripts changent à chaque publication du
+    # conteneur.
+    #
+    # ── Existant, à NE PAS retirer ────────────────────────────────────────
+    #   www.google.com    reCAPTCHA : le script, l'iframe du widget et les
+    #                     images de la grille de défi.
+    #   www.gstatic.com   ressources statiques du reCAPTCHA.
+    #   www.openstreetmap.org   carte de la page contact, chargée au clic.
+    # Sans ces trois entrées, le formulaire de devis devient impossible à
+    # soumettre et la carte ne s'affiche plus.
+    #
+    # ── Ajouté le 9 octobre 2026 pour Google Ads via GTM ──────────────────
+    #   www.googletagmanager.com    conteneur GTM-WCNKHLVG : le script du
+    #                               conteneur, ses requêtes de mesure et
+    #                               l'iframe utilisée par l'aperçu Tag
+    #                               Assistant.
+    #   www.googleadservices.com    bibliothèque de conversion Google Ads
+    #                               (conversion_async.js).
+    #   googleads.g.doubleclick.net dépôt du tag de conversion et pixels
+    #                               associés.
+    #   www.google.com / www.google.fr   pixels de conversion : Google les
+    #                               émet depuis le domaine du pays du
+    #                               visiteur. google.fr couvre la France,
+    #                               google.com le reste.
+    #   td.doubleclick.net          iframe du « conversion linker », qui
+    #                               rattache le clic publicitaire à la
+    #                               conversion.
+    #
+    # ── Ajouté le 9 octobre 2026, après test sur le deploy preview ────────
+    #   ad.doubleclick.net          point de collecte « cross-conversion
+    #                               measurement » (/ccm/s/collect). Appelé
+    #                               en connect ET en img. Rien à voir avec
+    #                               les domaines par pays : il est identique
+    #                               pour tous les visiteurs, et son absence
+    #                               bloquait la mesure pour TOUT LE MONDE.
+    #
+    # ── Connu, non corrigé : les pixels par pays ──────────────────────────
+    # Google émet le pixel de remarketing /pagead/1p-user-list/ depuis le
+    # domaine du pays du visiteur (google.dz, google.be, google.ma…). Ces
+    # appels sont bloqués pour tout pays autre que .fr et .com.
+    #
+    # Ce n'est PAS un défaut de comptage des conversions : celles-ci passent
+    # par googleads.g.doubleclick.net et www.google.com/pagead/conversion/,
+    # tous deux autorisés. Seules les listes de remarketing sont concernées.
+    #
+    # Décision en attente : soit couper la collecte de remarketing côté
+    # Google Ads (le plus propre si le client n'en fait pas), soit lister
+    # explicitement les ccTLD utiles. Pas de joker.
+    #
+    # Rien n'a été retiré : cette politique est l'ancienne, augmentée.
+    # Ne jamais l'assouplir pour débloquer une balise — si quelque chose est
+    # bloqué, c'est le domaine manquant qu'il faut ajouter, nommément.
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.google.com https://www.gstatic.com https://www.googletagmanager.com https://www.googleadservices.com https://googleads.g.doubleclick.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://www.gstatic.com https://www.googletagmanager.com https://www.google.com https://www.google.fr https://googleads.g.doubleclick.net https://ad.doubleclick.net; font-src 'self'; media-src 'self'; frame-src https://www.openstreetmap.org https://www.google.com https://www.googletagmanager.com https://td.doubleclick.net; form-action 'self'; connect-src 'self' https://www.googletagmanager.com https://www.google.com https://googleads.g.doubleclick.net https://ad.doubleclick.net; base-uri 'self'; object-src 'none'; frame-ancestors 'self'"
 
 # Ressources à empreinte : elles ne changent jamais sous la même URL.
 [[headers]]

@@ -124,6 +124,23 @@ const classeChamp =
         >
           <input type="hidden" name="form-name" value="devis" />
 
+          {/*
+            Attribution Google Ads — champs renseignés par CaptureCampagne.
+
+            Écrits EN DUR avec `value=""` : Netlify analyse le HTML au
+            déploiement pour détecter les champs d'un formulaire. Un champ
+            créé en JavaScript n'existerait pas à ses yeux et n'apparaîtrait
+            jamais dans le tableau de bord. Ne pas les générer dynamiquement.
+
+            Trois identifiants distincts et non un seul : Google utilise
+            `gclid` sur le web, `gbraid` sur iOS et `wbraid` en web-vers-app,
+            et ne les interprète pas de la même façon à l'import.
+          */}
+          <input type="hidden" name="gclid" value="" />
+          <input type="hidden" name="gbraid" value="" />
+          <input type="hidden" name="wbraid" value="" />
+          <input type="hidden" name="page-origine" value="" />
+
           {/* Appât anti-robots : invisible, hors tabulation, jamais lu à voix haute. */}
           <p class="hidden" aria-hidden="true">
             <label>
@@ -232,6 +249,19 @@ const classeChamp =
                 data-envoi-whatsapp
                 data-numero={site.whatsapp.numero}
                 data-cta="devis-whatsapp"
+                {/*
+                  Déclencheur de conversion Google Ads. Sélecteur à donner à
+                  la prestataire : [data-gtm="devis-whatsapp"]
+
+                  SEUL ce bouton le porte. Le site compte cinq accès WhatsApp
+                  (barre mobile, bloc contact, page contact, page merci, et
+                  celui-ci) mais un seul envoie un devis renseigné — nom,
+                  téléphone, prestation, besoin. Les quatre autres ouvrent une
+                  simple conversation. Les compter tous comme conversions
+                  gonflerait le volume et fausserait l'optimisation des
+                  enchères. Ne pas propager cet attribut.
+                */}
+                data-gtm="devis-whatsapp"
               >
                 <svg aria-hidden="true" viewBox="0 0 24 24" class="size-5 shrink-0" fill="currentColor">
                   <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 004.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0012.04 2zm5.52 14.15c-.25.12-1.47.72-1.69.81-.23.08-.39.12-.56-.13-.16-.24-.64-.8-.78-.97-.15-.16-.29-.18-.54-.06-.25.13-1.05.39-1.99 1.23a7.4 7.4 0 01-1.38-1.72c-.14-.25-.01-.38.11-.5.11-.11.25-.29.37-.44.13-.15.17-.25.25-.42.08-.16.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.47c-.16 0-.43.06-.65.31-.22.25-.85.83-.85 2.03s.87 2.35.99 2.51c.12.16 1.71 2.61 4.15 3.66.58.25 1.03.4 1.39.51.58.19 1.11.16 1.53.1.47-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.11-.22-.17-.47-.29z" />
