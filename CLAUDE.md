@@ -728,6 +728,23 @@ conteneur, il faudra compléter avec `*.google-analytics.com` sur
 `connect-src` et `img-src` — sinon la balise se chargera mais n'enverra
 rien, **silencieusement**.
 
+**Ce que la CSP a fait remonter en production, et qu'on n'aurait pas vu
+autrement.** Deux appels invisibles jusque-là sont apparus en console le
+10 octobre 2026 :
+
+- `googleadservices.com/pagead/set_partitioned_cookie`, appelé en `connect`
+  **et** en `img` : c'est le dépôt du cookie publicitaire en stockage
+  partitionné (CHIPS), par quoi Google remplace les cookies tiers. Le
+  domaine était déjà sur `script-src` ; il est désormais sur les trois.
+- `static.cloudflareinsights.com/beacon.min.js`, **Cloudflare Web Analytics**,
+  injecté automatiquement par Cloudflare et chargé **avant tout
+  consentement**. Il a été désactivé dans le tableau de bord Cloudflare.
+  **Ne pas l'autoriser dans la CSP** : un outil de mesure qui se charge sans
+  consentement est exactement ce que cette politique doit nous faire voir.
+  La politique de confidentialité ne l'a jamais mentionné — elle ne décrit de
+  Cloudflare que le rôle de CDN et le script d'obfuscation des adresses
+  servi depuis notre domaine, qui sont tous deux exacts et restent.
+
 ### reCAPTCHA classé « nécessaire » — à réévaluer
 
 Le reCAPTCHA est chargé **automatiquement sur 13 pages** (accueil, hub
