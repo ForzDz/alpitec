@@ -341,23 +341,38 @@
     #                               pour tous les visiteurs, et son absence
     #                               bloquait la mesure pour TOUT LE MONDE.
     #
-    # ── Connu, non corrigé : les pixels par pays ──────────────────────────
-    # Google émet le pixel de remarketing /pagead/1p-user-list/ depuis le
-    # domaine du pays du visiteur (google.dz, google.be, google.ma…). Ces
-    # appels sont bloqués pour tout pays autre que .fr et .com.
+    # ── Domaines Google par pays, ajoutés le 10 octobre 2026 ──────────────
+    # Le client FAIT du remarketing (confirmé par la prestataire Ads). Le
+    # pixel /pagead/1p-user-list/ qui alimente les listes d'audience est émis
+    # par Google depuis le domaine du PAYS DU VISITEUR, pas depuis un domaine
+    # unique. Sans ces entrées, le pixel est bloqué dès qu'un visiteur n'est
+    # ni en France ni sur google.com.
     #
-    # Ce n'est PAS un défaut de comptage des conversions : celles-ci passent
-    # par googleads.g.doubleclick.net et www.google.com/pagead/conversion/,
-    # tous deux autorisés. Seules les listes de remarketing sont concernées.
+    # La liste est volontairement COURTE et justifiée, pas les ~190 ccTLD de
+    # Google. Chaque entrée a une raison :
+    #   .dz                  tests de recette menés depuis l'Algérie
+    #   .be .ch .lu          voisins francophones
+    #   .ma .tn              déplacements fréquents sur ce marché
+    #   .de .es .it .co.uk   déplacements en Europe
+    # .fr et .com sont déjà présents plus haut : ne pas les dupliquer.
     #
-    # Décision en attente : soit couper la collecte de remarketing côté
-    # Google Ads (le plus propre si le client n'en fait pas), soit lister
-    # explicitement les ccTLD utiles. Pas de joker.
+    # RÈGLE SI UN AUTRE PAYS APPARAÎT EN CONSOLE : on ajoute le domaine
+    # nommément à cette liste, sur la directive que la console indique. On
+    # n'écrit JAMAIS https://*.google.com ni aucun joker — un wildcard sur un
+    # domaine aussi large revient à désarmer la directive.
+    #
+    # Pourquoi img-src seulement : la violation observée en recette portait
+    # sur img-src, Google chargeant ce pixel comme une image. Si Google passe
+    # un jour à `fetch` ou `sendBeacon` pour le même point de collecte, les
+    # mêmes URL réapparaîtront en console sous connect-src — il faudra alors
+    # recopier la liste sur cette directive, et seulement à ce moment-là.
+    # Les conversions, elles, ne dépendent pas du pays : elles passent par
+    # googleads.g.doubleclick.net et www.google.com/pagead/conversion/.
     #
     # Rien n'a été retiré : cette politique est l'ancienne, augmentée.
     # Ne jamais l'assouplir pour débloquer une balise — si quelque chose est
     # bloqué, c'est le domaine manquant qu'il faut ajouter, nommément.
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.google.com https://www.gstatic.com https://www.googletagmanager.com https://www.googleadservices.com https://googleads.g.doubleclick.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://www.gstatic.com https://www.googletagmanager.com https://www.google.com https://www.google.fr https://googleads.g.doubleclick.net https://ad.doubleclick.net; font-src 'self'; media-src 'self'; frame-src https://www.openstreetmap.org https://www.google.com https://www.googletagmanager.com https://td.doubleclick.net; form-action 'self'; connect-src 'self' https://www.googletagmanager.com https://www.google.com https://googleads.g.doubleclick.net https://ad.doubleclick.net; base-uri 'self'; object-src 'none'; frame-ancestors 'self'"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.google.com https://www.gstatic.com https://www.googletagmanager.com https://www.googleadservices.com https://googleads.g.doubleclick.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://www.gstatic.com https://www.googletagmanager.com https://www.google.com https://www.google.fr https://googleads.g.doubleclick.net https://ad.doubleclick.net https://www.google.dz https://www.google.be https://www.google.ch https://www.google.lu https://www.google.ma https://www.google.tn https://www.google.de https://www.google.es https://www.google.it https://www.google.co.uk; font-src 'self'; media-src 'self'; frame-src https://www.openstreetmap.org https://www.google.com https://www.googletagmanager.com https://td.doubleclick.net; form-action 'self'; connect-src 'self' https://www.googletagmanager.com https://www.google.com https://googleads.g.doubleclick.net https://ad.doubleclick.net; base-uri 'self'; object-src 'none'; frame-ancestors 'self'"
 
 # Ressources à empreinte : elles ne changent jamais sous la même URL.
 [[headers]]

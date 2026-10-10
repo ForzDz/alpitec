@@ -4,7 +4,7 @@ slug: "confidentialite"
 metaTitle: "Politique de confidentialité | ALPITEC"
 metaDescription: "Comment ALPITEC collecte, utilise et protège vos données personnelles. Vos droits au titre du RGPD."
 h1: "Politique de confidentialité"
-maj: 2026-10-09
+maj: 2026-10-10
 noindex: false
 ---
 
@@ -45,8 +45,9 @@ Aucune donnée sensible au sens de l'article 9 du RGPD n'est collectée. Nous ne
 - **Respecter nos obligations comptables et légales** — obligation légale (art. 6.1.c)
 - **Protéger le formulaire contre les envois automatisés** — intérêt légitime d'ALPITEC (art. 6.1.f), voir la section 8
 - **Mesurer l'efficacité de nos annonces publicitaires** — votre consentement (art. 6.1.a), voir la section 9
+- **Vous proposer à nouveau nos annonces après votre visite (remarketing)** — votre consentement (art. 6.1.a), voir la section 9
 
-Vos données ne font l'objet d'aucune décision automatisée ni d'aucun profilage.
+Vos données ne font l'objet d'aucune décision automatisée produisant des effets juridiques à votre égard. Le remarketing décrit à la section 9 repose en revanche sur votre inscription dans une liste d'audience publicitaire, ce qui constitue une forme de ciblage : il n'a lieu qu'avec votre consentement, et vous pouvez le retirer à tout moment.
 
 ## 4. Destinataires
 
@@ -55,7 +56,7 @@ Vos données sont traitées par les seules personnes habilitées au sein d'ALPIT
 Les sous-traitants techniques suivants peuvent y avoir accès dans le cadre strict de leur mission :
 
 - **Netlify, Inc.** — hébergement du site et réception des formulaires. Les données transitent par des serveurs situés hors de l'Union européenne ; ce transfert est encadré par les clauses contractuelles types de la Commission européenne.
-- **Google Ireland Limited / Google LLC** — service reCAPTCHA, qui protège le formulaire de devis contre les envois automatisés (section 8), et Google Ads via Google Tag Manager, pour la mesure publicitaire (section 9).
+- **Google Ireland Limited / Google LLC** — service reCAPTCHA, qui protège le formulaire de devis contre les envois automatisés (section 8), et Google Ads via Google Tag Manager, pour la mesure des conversions **et le remarketing** (section 9).
 - **Cloudflare, Inc.** — réseau de diffusion et protection du site contre les attaques. Toutes les requêtes vers le site transitent par ses serveurs, qui voient donc votre adresse IP. Cloudflare sert également sur chaque page un petit script d'obfuscation des adresses électroniques, destiné à empêcher leur collecte automatisée.
 
 ## 5. Durée de conservation
@@ -134,15 +135,29 @@ Le formulaire de demande de devis est protégé contre les envois automatisés p
 
 Si vous ne souhaitez pas que ces données soient transmises, vous pouvez nous contacter directement par téléphone au 06 05 83 75 08 ou par courriel à contact@alpitec.fr, sans passer par le formulaire.
 
-## 9. Google Ads et mesure publicitaire
+## 9. Google Ads : mesure publicitaire et remarketing
 
-Nous diffusons des annonces sur Google. Pour savoir lesquelles amènent réellement des demandes de devis, nous utilisons **Google Tag Manager** et **Google Ads**, fournis par **Google Ireland Limited** et **Google LLC**.
+Nous diffusons des annonces sur Google. Nous utilisons pour cela **Google Tag Manager** et **Google Ads**, fournis par **Google Ireland Limited** et **Google LLC**, à **deux fins distinctes** :
 
-**Rien ne se charge sans votre accord.** Tant que vous n'avez pas accepté, aucune requête n'est adressée à Google Tag Manager. Si vous refusez, il en va de même, et ce refus est conservé aussi longtemps qu'une acceptation.
+1. **Mesurer les conversions** — savoir quelles annonces amènent réellement des demandes de devis.
+2. **Le remarketing** — pouvoir vous présenter à nouveau nos annonces après votre passage sur le site, lorsque vous naviguez sur d'autres sites ou services du réseau Google.
+
+**Rien ne se charge sans votre accord.** Tant que vous n'avez pas accepté, aucune requête n'est adressée à Google Tag Manager. Si vous refusez, il en va de même, et ce refus est conservé aussi longtemps qu'une acceptation. **Les deux finalités sont couvertes par le même consentement** : accepter la catégorie « Mesure d'audience et publicité » les autorise toutes les deux, la refuser les écarte toutes les deux.
 
 **Base légale : votre consentement** (art. 6.1.a du RGPD), recueilli par le bandeau décrit à la section 7.
 
 **Quelles données sont collectées.** Si vous acceptez : les pages que vous consultez, la date et l'heure, votre **adresse IP**, des informations sur votre **navigateur et votre appareil**, l'origine de votre visite, et les actions comptées comme conversions — l'envoi du formulaire de devis et l'envoi d'une demande par WhatsApp depuis le formulaire. Google dépose des **cookies** sur votre terminal à cette occasion.
+
+### Le remarketing, concrètement
+
+Si vous acceptez, votre navigateur charge un pixel de Google qui vous **inscrit dans une liste d'audience publicitaire** rattachée à notre compte Google Ads. Cette liste permet ensuite à Google de vous présenter nos annonces ailleurs sur son réseau.
+
+- **Ce que nous voyons de notre côté** : uniquement des statistiques agrégées — la taille des listes, le nombre d'affichages, le nombre de clics. **Nous ne voyons jamais qui vous êtes ni la liste nominative de ses membres**, et nous ne pouvons pas vous identifier à partir de ces données.
+- **Ce que Google reçoit** : l'identifiant de son cookie publicitaire, votre adresse IP, la page consultée et le moment de la visite.
+- **D'où partent ces requêtes** : Google émet ce pixel depuis le domaine du pays d'où vous naviguez — `google.fr` en France, `google.be` en Belgique, et ainsi de suite.
+- **Durée** : l'appartenance à une liste d'audience expire selon les durées paramétrées dans Google Ads, au maximum 540 jours pour le réseau Display.
+
+Si vous ne souhaitez pas être inscrit dans ces listes, **refusez la catégorie « Mesure d'audience et publicité »** dans le bandeau, ou retirez votre consentement via « Gérer mes cookies » en bas de page. Vous pouvez également désactiver la personnalisation des annonces directement chez Google, dans vos [paramètres de publicité](https://adssettings.google.com).
 
 **Consent Mode.** Nous appliquons le mode consentement de Google : avant tout choix de votre part, les quatre signaux `ad_storage`, `ad_user_data`, `ad_personalization` et `analytics_storage` sont positionnés sur « refusé ». Ils ne passent à « accordé » qu'après votre acceptation.
 
