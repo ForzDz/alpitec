@@ -135,10 +135,24 @@ const classeChamp =
             Trois identifiants distincts et non un seul : Google utilise
             `gclid` sur le web, `gbraid` sur iOS et `wbraid` en web-vers-app,
             et ne les interprète pas de la même façon à l'import.
+
+            ⚠️ LE PRÉFIXE `ads-` EST OBLIGATOIRE, ne pas le retirer.
+            Netlify fusionne la chaîne de requête de la page dans les données
+            de la soumission. Un champ nommé `gclid` recevait donc DEUX
+            valeurs quand le visiteur arrivait par ?gclid=… : la nôtre et
+            celle de l'URL. Le tableau de bord affichait ["TEST123",
+            "TEST123"]. `page-origine` n'était pas touché, faute de paramètre
+            d'URL du même nom — c'est ce qui a mis sur la piste.
+
+            On ne peut pas régler ça en nettoyant l'URL : le « conversion
+            linker » de Google y lit le gclid pour poser son cookie, et le
+            consentement peut arriver plusieurs secondes après le chargement.
+            Retirer le paramètre trop tôt casserait l'attribution de Google
+            elle-même.
           */}
-          <input type="hidden" name="gclid" value="" />
-          <input type="hidden" name="gbraid" value="" />
-          <input type="hidden" name="wbraid" value="" />
+          <input type="hidden" name="ads-gclid" value="" />
+          <input type="hidden" name="ads-gbraid" value="" />
+          <input type="hidden" name="ads-wbraid" value="" />
           <input type="hidden" name="page-origine" value="" />
 
           {/* Appât anti-robots : invisible, hors tabulation, jamais lu à voix haute. */}

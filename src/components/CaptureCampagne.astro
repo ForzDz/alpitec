@@ -94,7 +94,12 @@
      */
     const remplir = () => {
       for (const id of IDS) {
-        for (const el of document.querySelectorAll(`input[name="${id}"]`)) {
+        /* Le champ s'appelle `ads-gclid`, pas `gclid` : Netlify fusionne la
+           chaîne de requête de la page dans la soumission, et un champ
+           homonyme d'un paramètre d'URL recevait deux fois la même valeur.
+           Le préfixe est ce qui garantit l'unicité. Voir le commentaire
+           détaillé dans ContactSection.astro. */
+        for (const el of document.querySelectorAll(`input[name="ads-${id}"]`)) {
           el.value = donnees[id] || '';
         }
       }
